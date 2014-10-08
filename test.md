@@ -9,3 +9,10 @@
 1. aaa
 2. bbb
 
+	jQuery(function($){
+	
+		hoge
+	
+	});
+
+
