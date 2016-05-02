@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/fit-sidebar-doc/" title="レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2014-09-23</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/fit-sidebar-doc/"><img src="https://lh3.googleusercontent.com/-DGHXosHmYYI/VCwk4Ms-qWI/AAAAAAAAICE/pEND4clz3ZI/s144/fit-sidebar.png"></a>
+</div>
+<p>久しぶりのプログラム関連のエントリーです。<br>
+表題の「サイドメニューを一定範囲で固定表示」って意味通じますでしょうか？
+画面スクロール時、サイドメニューが上部に流れきって消えてしまわないように途中から position:fixed で位置固定して、フッターにかぶる位置にきたら位置固定を解除するＵＩのことです。あの有名な <a href="http://liginc.co.jp/">LIG</a> さんや<a href="http://blog.livedoor.jp/dqnplus/">痛いニュース</a>でも採用されてるデザインです。<br>
+このちょくちょく見かけるＵＩのかゆいとこを解消した jQuery プラグインを紹介します。</p>
+
+<!--more-->
+
+<h2>一定範囲固定メニューのかゆいとこ</h2>
+
+<p>個人的意見ですが、よく見かける一定範囲固定メニューで感じるかゆいとこは以下２点です。</p>
+
+<ol>
+<li>レスポンシブに対応してない</li>
+<li>上部方向にスクロールした場合、位置固定がなかなか解除されない</li>
+</ol>
+
+<p>まず１の「レスポンシブに対応してない」についてですが、レスポンシブに対応してるやつを見たことがありません。実はスマホ持ってないんで個人的にはぜんぜん困らないんですが（笑）、新しくサイトデザインする際には一応、レスポンシブ意識するんで、その辺なんとかならんもんかなーって思っちゃいます。</p>
+
+<p>あ、ちなみにここで言うレスポンシブに対応してない状態とは、以下のように画面幅を縮めてもシングルカラムレイアウトになることもなく、サイドメニューがサイドに配置されたままのことを言ってます。（<a href="http://liginc.co.jp/">LIG</a>さんすいません、サンプルに使わせていただきました・・・Facebookでいっぱい友達になってくれたんで許してくれますよね ^^;）</p>
+
+<p><img src="https://lh3.googleusercontent.com/-wAcFRwCCLE8/VCGMIhm3e5I/AAAAAAAAH30/EHrmGaeHUD8/s800/fit-sidebar1.gif" alt="LIG"></p>
+
+<p><br></p>
+
+<p>次に２の「上部方向にスクロールした場合、位置固定がなかなか解除されない」についてですが、説明が難しいんでまず以下をご覧ください。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-phv0gdXRyt4/VCGNv3n4LaI/AAAAAAAAH4o/9SAB7vuA00w/s800/fit-sidebar2.gif" alt="LIG"></p>
+
+<p>お分かりになりましたでしょうか？下部方向へのスクロール時は問題無いのですが、上部へスクロールしようとすると位置固定が解除されず、サイドメニュー上部のコンテンツになかなか辿りつけません。サイドメニューが充実したサイトでこれを見かけると若干残念な気持ちになります。</p>
+
+<p><br></p>
+
+<p>そんな訳でこれらかゆいとこを解決した jQuery プラグインを作ってみました。<a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
+
+<h2>一定範囲固定メニューのかゆいとこを解決した Fit Sidebar</h2>
+
+<p>jQuery、Fit Sidebar（または <a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a>）の JS/CSS ファイルを読み込みます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;link</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"jquery.fit-sidebar.css"</span><span class="pln"> </span><span class="atn">rel</span><span class="pun">=</span><span class="atv">"stylesheet"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text/css"</span><span class="pln"> </span><span class="atn">media</span><span class="pun">=</span><span class="atv">"screen"</span><span class="pln"> </span><span class="tag">&gt;</span></li><li class="L1"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L2"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"jquery.fit-sidebar.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><br>
+マルチカラムレイアウトでマークアップします。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"page-header"</span><span class="tag">&gt;</span><span class="pln">header</span><span class="tag">&lt;/div&gt;</span></li><li class="L1"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"page-body"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"main"</span><span class="tag">&gt;</span></li><li class="L3"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"contents"</span><span class="tag">&gt;&lt;/div&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"sub"</span><span class="tag">&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"contents"</span><span class="tag">&gt;&lt;/div&gt;</span></li><li class="L7"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L8"><span class="tag">&lt;/div&gt;</span></li><li class="L9"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"page-footer"</span><span class="tag">&gt;</span><span class="pln">footer</span><span class="tag">&lt;/div&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 234px;"></textarea></div></div></div>
+
+<p>div.main にメインコンテンツ、div.sub にサイドメニューの記述を想定してます。</p>
+
+<p><br>
+マルチカラムレイアウトになるよう CSS を定義します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">/* 800px をブレークポイントに設定 */</span></li><li class="L1"><span class="lit">@media</span><span class="pln"> </span><span class="pun">(</span><span class="pln"> min</span><span class="pun">-</span><span class="pln">width </span><span class="pun">:</span><span class="pln"> </span><span class="lit">800px</span><span class="pln"> </span><span class="pun">){</span></li><li class="L2"><span class="pln">    </span><span class="pun">.</span><span class="pln">main</span><span class="pun">{</span></li><li class="L3"><span class="pln">        display</span><span class="pun">:</span><span class="kwd">inline</span><span class="pun">-</span><span class="pln">block</span><span class="pun">;</span></li><li class="L4"><span class="pln">        vertical</span><span class="pun">-</span><span class="pln">align</span><span class="pun">:</span><span class="pln">top</span><span class="pun">;</span></li><li class="L5"><span class="pln">        width</span><span class="pun">:</span><span class="lit">75</span><span class="pun">%;</span></li><li class="L6"><span class="pln">    </span><span class="pun">}</span></li><li class="L7"><span class="pln">    </span><span class="pun">.</span><span class="kwd">sub</span><span class="pun">{</span></li><li class="L8"><span class="pln">        display</span><span class="pun">:</span><span class="kwd">inline</span><span class="pun">-</span><span class="pln">block</span><span class="pun">;</span></li><li class="L9"><span class="pln">        vertical</span><span class="pun">-</span><span class="pln">align</span><span class="pun">:</span><span class="pln">top</span><span class="pun">;</span></li><li class="L0"><span class="pln">        width</span><span class="pun">:</span><span class="lit">25</span><span class="pun">%;</span></li><li class="L1"><span class="pln">    </span><span class="pun">}</span></li><li class="L2"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 288px;"></textarea></div></div></div>
+
+<p>Media Queries を使用し、画面幅が 799px 以下になったらシングルカラムになるようにしてます。</p>
+
+<p><br>
+サイドメニューに対し、fitSidebar() メソッドを実行します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'div.sub div.contents'</span><span class="pun">).</span><span class="pln">fitSidebar</span><span class="pun">({</span></li><li class="L1"><span class="pln">    wrapper </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.page-body'</span><span class="pun">,</span></li><li class="L2"><span class="pln">    responsiveWidth </span><span class="pun">:</span><span class="pln"> </span><span class="lit">800</span></li><li class="L3"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 126px;"></textarea></div></div></div>
+
+<p>実行時 wrapper パラメータに、各カラムを包括するラッパー要素を指定します。ここでは div.page-body がそれに該当します。また、レスポンシブに対応させる場合は、responsiveWidth パラメータにブレークポイントとなる画面幅を指定します。</p>
+
+<p>これでサイドメニューが一定範囲でのみ固定表示され、画面幅を縮めた場合シングルカラムに表示が切り替わるようになります。また、上部方向にスクロールした場合、サイドメニューの上端が見えるまで固定表示は行われません。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-enQBd9xwvpQ/VCGMLsEYr5I/AAAAAAAAH4A/AnI8OAh_q34/s800/fit-sidebar3.gif" alt="fit-sidebar"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.sitekit/fit-sidebar/demo.html#!Demo1" class="demo external" target="_blank">Demo</a></div></p>
+
+<p><br></p>
+
+<h2>その他のパターン</h2>
+
+<p>メインカラムがサイドメニューのカラムより高さが無い場合、サイドメニューの固定表示は行われません。</p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.sitekit/fit-sidebar/demo.html#!Demo2" class="demo external" target="_blank">Demo | ２カラムでサイドバー固定（メインコンテンツが小さいケース）</a></div></p>
+
+<p>両カラムに fitSidebar() メソッドを適用することで、高さのない方のカラムを固定表示にすることができます。</p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.sitekit/fit-sidebar/demo.html#!Demo3" class="demo external" target="_blank">Demo | ２カラムで両カラム固定（メインコンテンツが小さいケース）</a></div></p>
+
+<p>３カラム以上でも適用可能です。</p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.sitekit/fit-sidebar/demo.html#!Demo4" class="demo external" target="_blank">Demo | ３カラムでサイドバー固定（メインコンテンツが大きいケース）</a></div></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.sitekit/fit-sidebar/demo.html#!Demo5" class="demo external" target="_blank">Demo | ３カラムでサイドバー固定（メインコンテンツが小さいケース）</a></div></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.sitekit/fit-sidebar/demo.html#!Demo6" class="demo external" target="_blank">Demo | ３カラムで全カラム固定（メインコンテンツが小さいケース）</a></div></p>
+
+<h2>パラメータ</h2>
+
+<p>プラグイン実行時、下記パラメータを指定できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">defaults </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">    wrapper </span><span class="pun">:</span><span class="pln"> </span><span class="str">'body'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// 各カラムを包括する親又は先祖要素</span></li><li class="L2"><span class="pln">    responsiveWidth </span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">    </span><span class="com">// レスポンシブのブレークポイント</span></li><li class="L3"><span class="pln">    fixedClassName </span><span class="pun">:</span><span class="pln"> </span><span class="str">'fit-sidebar-fixed-now'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// 固定時に wrapperパラメータ指定要素に割り当てられるクラス名</span></li><li class="L4"><span class="pln">    noFixedClassName </span><span class="pun">:</span><span class="pln"> </span><span class="str">'fit-sidebar-no-fixed-now'</span><span class="pln"> </span><span class="com">// 非固定時に wrapperパラメータ指定要素に割り当てられるクラス名</span></li><li class="L5"><span class="pun">},</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<h2>ダウンロード</h2>
+
+<p>こちらからどうぞ</p>
+
+<ul>
+<li><a href="https://github.com/cyokodog/jquery.sitekit">jquery.sitekit – GitHub</a></li>
+</ul>
+
+<p>ちなみにだいぶ前にも似たようなプラグインを作ったことがあります。古いんでレスポンシブには対応してませんが、コードは冗長ですがこちらの方が高機能な部分もあるのでご参考までに・・・</p>
+
+<ul>
+<li><a href="http://d.hatena.ne.jp/cyokodog/20120427/exflexfixed01">一定範囲で position:fixed させる Ex Flex Fixed がかゆいとこだらけだったので作り直しました – Cyokodog::Diary</a></li>
+</ul>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

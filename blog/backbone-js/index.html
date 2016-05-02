@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>Backbone.js ではじめるクライアントサイド MVC プログラミング | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/backbone-js/" title="Backbone.js ではじめるクライアントサイド MVC プログラミング">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2015-01-07</li>
+<!--
+        <li class="article__info__category"><a href="/category/backbone-js/" rel="category tag">Backbone.js</a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <p><div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/backbone-js/"><img src="http://lh4.googleusercontent.com/-vWEuTNpGLTE/VK3H2siMs_I/AAAAAAAAIu0/LNSy61X0aUE/s288/backbone.png"></a>
+</div></p>
+<p>MVC と言えば Apache Struts をはじめとするサーバサイド・フレームワークを想像しますが、
+今回は JavaScript による大規模開発の際に採用されるクライアントサイド MVC フレームワーク「Backbone.js」の使い方についてまとめてみました。
+(厳密にはクライアントサイドの場合、MVC とは呼ばず MVVM とか MV* とか呼ばれてるようです。)</p>
+
+<!--more-->
+<h2>前提</h2>
+
+<p>Backbone.js の構成を簡単に言ってしまうと</p>
+
+<ul>
+<li>単一データの管理を行うモデル</li>
+<li>複数件のモデルの管理を行うコレクション</li>
+<li>画面の管理を行うビュー</li>
+</ul>
+
+<p>の３つの主要モジュールを軸に構成されており、Underscore.js、jQuery(Zepto）に依存するかたちで動作するようになっています。</p>
+
+<p>利用の際は、underscore.js、jquery.js、backbone.js の順で読み込みます。</p>
+
+<pre><code>//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js
+//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js
+//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js
+</code></pre>
+
+<p>今回は簡単な TODO アプリケーションを実装してみます。
+入力データは Backbone.localStorage.js を利用する事で、ローカルストレージに保存することができるので、こちらも読み込みます。</p>
+
+<pre><code>//cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.14/backbone.localStorage-min.js
+</code></pre>
+
+<p><script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.14/backbone.localStorage-min.js"></script></p>
+
+<h2>モデルの定義</h2>
+
+<p>まずモデルの定義を行います。
+TODO アプリなので</p>
+
+<ul>
+<li>タスク名（title）</li>
+<li>完了状態フラグ（closed）</li>
+</ul>
+
+<p>の２つを定義する事とします。</p>
+
+<pre><code>//モデルの定義
+var Task = Backbone.Model.extend({
+    defaults: {
+        title: '',
+        closed: false
+    }
+});
+//インスタンスの生成
+var task = new Task({
+    title: 'backbone.jsの勉強'
+});
+</code></pre>
+
+<p><br>
+以下のよう toJSON() メソッドで中身を確認することができます。
+console.log の出力結果は Chrome の場合 F12 → Console タブより確認できます。</p>
+
+<pre><code>console.log(task.toJSON());
+</code></pre>
+
+<p><br>
+alert で確認する場合は、以下のように JSON.stringify() を使用すると見やすく整形されます。（RUN をクリックしてみてください）</p>
+
+<h4>code demo edit noAuto</h4>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js
+</code></pre>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js
+</code></pre>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.14/backbone.localStorage-min.js
+</code></pre>
+
+<h5>script noCode</h5>
+
+<pre><code>Task = Backbone.Model.extend({
+    defaults: {
+        title: '',
+        closed: false
+    }
+});
+task = new Task({
+    title: 'backbone.jsの勉強'
+});
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>alert(JSON.stringify(task.toJSON(), null, '    '));
+</code></pre>
+
+<h2>モデルに validate を定義する</h2>
+
+<p>次にモデルに validate を定義してみます。
+タスク名に値が設定されてない場合は、エラーメッセージを返すようにしてみます。
+_.isEmpty() は underscore.js の機能です。</p>
+
+<pre><code>var Task = Backbone.Model.extend({
+    defaults: {
+        title: '',
+        closed: false
+    },
+    validate: function(attrs){
+        if(_.isEmpty(attrs.title)){
+            return 'タスク名が指定されてません';
+        }
+    }
+});
+</code></pre>
+
+<p><br>
+validate() は set() メソッドでモデルに値を設定した際に起動させる事ができます。
+以下の例では title を設定してないのでエラーとなります。</p>
+
+<pre><code>var task = new Task();
+var ret = task.set({close: true}, {validate: true});
+console.log(ret); // false
+</code></pre>
+
+<p><br>
+エラーメッセージは invalid トリガー内で取得できます。</p>
+
+<pre><code>var task = new Task();
+task.on("invalid", function(model, error) {
+    alert(error); // タスク名が指定されてません
+});
+task.set({close: true}, {validate: true});
+</code></pre>
+
+<p><br>
+実際の実装の際は、エラーメッセージのみでなくエラーとなったフィールド等もろもろの関連情報が必要になったり、
+エラー表示処理においてもアプリ固有の汎用処理としての実装上の工夫が必要になるかと思います。</p>
+
+<p>簡単な例ですが invalid トリガーを使用しなくても、以下のような記述で set() メソッド実行時に、
+validate 判定とエラー情報の取得／表示を行うことができます。（RUN をクリックしてみてください）</p>
+
+<h4>code demo edit noAuto</h4>
+
+<h5>script</h5>
+
+<pre><code>var Task = Backbone.Model.extend({
+    defaults: {
+        title: '',
+        closed: false
+    },
+    validate: function(attrs){
+        if(_.isEmpty(attrs.title)){
+            var ret = {
+                name: 'title',
+                msg: 'タスク名が指定されてません'
+            }
+            this.set('errinfo', ret)
+            return ret;
+        }
+    }
+});
+var task = new Task();
+var sts = task.set({}, {validate: true});
+if(!sts){
+    var info = task.get('errinfo');
+    alert(info.msg + ' =&gt; ' + info.name);
+}
+</code></pre>
+
+<p>みなさんいろいろ工夫されてるようです。</p>
+
+<ul>
+<li><a href="http://kadoppe.com/archives/2013/07/backbone-js-model-validate-return-value.html">Backbone.js Modelのvalidateメソッドの戻り値としてどんな値を返すべき？ | CreativeStyle</a></li>
+<li><a href="http://qiita.com/yuku_t/items/cdffdff4ddb74747be7e">Backbone.js – モデルのバリデーションエラーはカスタムイベントで通知すると便利 – Qiita</a></li>
+</ul>
+
+<h2>モデルのメソッドとトリガー</h2>
+
+<p>モデルの持つメソッドを実行すると、関連するトリガーが起動されます。
+例えば、set()、save()メソッドで値を変更した場合、change トリガーが起動されます。</p>
+
+<pre><code>var task = new Task();
+task.on('change', function(task){
+    alert(task.get('title')); // task-set → task-save
+})
+task.set({title: 'task-set'});
+task.save({title: 'task-save'});
+</code></pre>
+
+<p><br>
+destroy() メソッドではデータが削除され、destroy トリガーが起動されます。</p>
+
+<pre><code>task.on('destroy', function(task){
+    alert('destroy');
+})
+task.destroy();
+</code></pre>
+
+<h2>コレクションの定義</h2>
+
+<p>つづいて、複数件のモデルの管理を行うコレクションの定義を行います。
+model パラメータに管理対象となるモデルを指定します。</p>
+
+<pre><code>var Tasks = Backbone.Collection.extend({
+    model: Task
+});
+</code></pre>
+
+<p><br>
+インスタンス生成時に任意の数のモデルを生成できます。</p>
+
+<pre><code>var tasks = new Tasks([
+    {title: 'task-1'},
+    {title: 'task-2'},
+    {title: 'task-3'}
+]);
+console.log(tasks.length); // 3
+</code></pre>
+
+<h2>コレクションのメソッドとトリガー</h2>
+
+<p>create() メソッドでは新しいモデルをコレクションに追加することができます。
+その際 add トリガーが起動され、
+トリガー内にて追加されたモデルを参照することができます。</p>
+
+<pre><code>tasks.on('add', function(task){
+    alert(task.get('title')); // task-4
+})
+tasks.create({title: 'task-4'});
+</code></pre>
+
+<p><br>
+Backbone.localStorage.js を読み込むことで、モデルをローカルストレージに保存することができます。</p>
+
+<pre><code>&lt;script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.14/backbone.localStorage-min.js'&gt;&lt;/script&gt;
+</code></pre>
+
+<p><br>
+コレクションの定義で localStorage の保存領域を指定します。
+この指定により、create() メソッドでモデルを追加した際、対象のモデルがローカルストレージに保存されるようになります。</p>
+
+<pre><code>var Tasks = Backbone.Collection.extend({
+    model: Task,
+    localStorage: new Store('backbone-task')
+});
+</code></pre>
+
+<p><br>
+ローカルストレージに保存されたモデルをコレクションに展開したい場合は、fetch() メソッドを使用します。
+その際、create() メソッド同様に add トリガーが起動されます（読み込んだモデルの件数分起動されます）。</p>
+
+<pre><code>tasks.fetch();
+</code></pre>
+
+<p><br>
+ここまでの情報を元に、リスト項目の追加と全削除を行う簡単な画面を作ってみます。
+ローカルストレージにモデルを保存してるので、F5 でページをリロードしてもリストは再現されます。</p>
+
+<h4>code demo</h4>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js
+</code></pre>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js
+</code></pre>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.14/backbone.localStorage-min.js
+</code></pre>
+
+<h5>html</h5>
+
+<pre><code>&lt;button class="add"&gt;add&lt;/button&gt;
+&lt;button class="clear"&gt;clear&lt;/button&gt;
+&lt;ul&gt;&lt;/ul&gt;
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>//-----------------------------
+// モデル
+//-----------------------------
+var Task = Backbone.Model.extend({
+    defaults: {title:''}
+});
+//-----------------------------
+// コレクション
+//-----------------------------
+var Tasks = Backbone.Collection.extend({
+    model: Task,
+    localStorage: new Store('backbone-local-storage-task')
+});
+//-----------------------------
+// ビュー（画面全体）
+//-----------------------------
+//コレクションを生成しトリガーを割り当てる
+var tasks = new Tasks();
+tasks.on('add', function(task){
+    //-----------------------------
+    // ビュー（リストアイテム部分）
+    //-----------------------------
+    var taskView = $('&lt;li/&gt;').text(task.get('title')).prependTo($DEMO.find('ul'))
+    task.on('destroy', function(){
+        taskView.remove();
+    });
+})
+//画面上のパーツにトリガーを割り当てる
+$DEMO.find('.add').on('click', function(){
+    tasks.create({title: 'task-'+(tasks.length+1)});
+});
+$DEMO.find('.clear').on('click', function(){
+    tasks.each(function(task){
+        tasks.first().destroy();
+    });
+});
+//ローカルストレージの保存モデルの読み込み
+tasks.fetch();
+</code></pre>
+
+<p>ポイントは画面操作に対して行う処理はモデル（コレクション）の変更のみで、
+画面の描画は、モデルに割り当てられたトリガーを経由してのみ行われてるという部分です。</p>
+
+<h2>ビューの定義（リストアイテム部分）</h2>
+
+<p>先のサンプルのビューの部分を Backbone.View で定義し直してみます。
+まず、リストアイテム部分（LI）のビューを作ります。</p>
+
+<p>修正前</p>
+
+<pre><code>var taskView = $('&lt;li/&gt;').text(task.get('title')).prependTo($DEMO.find('ul'))
+task.on('destroy', function(){
+    taskView.remove();
+});
+</code></pre>
+
+<p>修正後</p>
+
+<pre><code>var TaskView = Backbone.View.extend({
+    tagName: 'li', //(1)
+    initialize: function(){
+        this.model.on('destroy', this.remove, this); //(2)
+    },
+    template: _.template('&lt;span&gt;&lt;%-title%&gt;&lt;/span&gt;'), //(3)
+    render: function(){
+        var html = this.template(this.model.toJSON());
+        this.$el.html(html); //(4)
+        return this;
+    }
+});
+</code></pre>
+
+<ul>
+<li>(1) tagName
+
+<ul>
+<li>生成するビューのルート要素を指定します。</li>
+</ul></li>
+<li>(2) this.model
+
+<ul>
+<li>このビューのインスタンス生成時に指定されるモデル(task)を指します。</li>
+</ul></li>
+<li>(3) _.template
+
+<ul>
+<li>Underscore.js の機能で、画面テンプレートを生成する function を返します。</li>
+</ul></li>
+<li>(4) $el
+
+<ul>
+<li>ビューのルート要素を jQuery 形式で参照できます（この例では (1) の li）。</li>
+</ul></li>
+</ul>
+
+<h2>ビューの定義（画面全体部分）</h2>
+
+<p>次に画面全体部分のビューを定義します。</p>
+
+<p>修正前</p>
+
+<pre><code>//コレクションを生成しトリガーを割り当てる
+var tasks = new Tasks();
+tasks.on('add', function(task){
+    // ビュー（リストアイテム部分）の生成
+})
+//画面上のパーツにトリガーを割り当てる
+$DEMO.find('.add').on('click', function(){
+    tasks.create({title: 'task-'+(tasks.length+1)});
+});
+$DEMO.find('.clear').on('click', function(){
+    tasks.each(function(task){
+        tasks.first().destroy();
+    });
+});
+//ローカルストレージの保存モデルの読み込み
+tasks.fetch();
+</code></pre>
+
+<p>修正後</p>
+
+<pre><code>var TaskApp = Backbone.View.extend({
+    events: { // (1)
+        'click .add': 'addTask',
+        'click .clear': 'clearTask'
+    },
+    initialize: function(){
+        var ul = this.$el.find('ul');
+        this.collection.on('add', function(task){ // (2)
+            var taskView = new TaskView({model: task});
+            ul.prepend(taskView.render().el)
+        })
+        this.collection.fetch();
+    },
+    addTask : function(){
+        this.collection.create({title: 'task-'+(this.collection.length+1)});
+    },
+    clearTask : function(){
+        var collection = this.collection;
+        this.collection.each(function(task){
+            collection.first().destroy();
+        });
+    }
+});
+</code></pre>
+
+<ul>
+<li>(1) events
+
+<ul>
+<li>トリガーをまとめて記述できます。’click .add': ‘addTask’ という記述は、ビューのルート要素内の .add クラスを持つ要素をクリックした場合、addTask() メソッドを実行するという意味になります。</li>
+</ul></li>
+<li>(2) this.collection
+
+<ul>
+<li>このビューのインスタンス生成時に指定されるコレクション(tasks)を指します。</li>
+</ul></li>
+</ul>
+
+<p>以下のように実行します。</p>
+
+<pre><code>var taskApp = new TaskApp({
+    el: $DEMO,
+    collection: new Tasks()
+});
+</code></pre>
+
+<h4>code demo</h4>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js
+</code></pre>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js
+</code></pre>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.14/backbone.localStorage-min.js
+</code></pre>
+
+<h5>html</h5>
+
+<pre><code>&lt;button class="add"&gt;add&lt;/button&gt;
+&lt;button class="clear"&gt;clear&lt;/button&gt;
+&lt;ul&gt;&lt;/ul&gt;
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>//モデル
+var Task = Backbone.Model.extend({
+    defaults: {title:''}
+});
+//コレクション
+var Tasks = Backbone.Collection.extend({
+    model: Task,
+    localStorage: new Store('backbone-local-storage-task')
+});
+// ビュー（リストアイテム部分）
+var TaskView = Backbone.View.extend({
+    tagName: 'li',
+    initialize: function(){
+        this.model.on('destroy', this.remove, this);
+    },
+    template: _.template('&lt;span&gt;&lt;%-title%&gt;&lt;/span&gt;'),
+    render: function(){
+        var html = this.template(this.model.toJSON());
+        this.$el.html(html);
+        return this;
+    }
+});
+// ビュー（画面全体）
+var TaskApp = Backbone.View.extend({
+    events: {
+        'click .add': 'addTask',
+        'click .clear': 'clearTask'
+    },
+    initialize: function(){
+        var ul = this.$el.find('ul');
+        this.collection.on('add', function(task){
+            var taskView = new TaskView({model: task});
+            ul.prepend(taskView.render().el)
+        })
+        this.collection.fetch();
+    },
+    addTask : function(){
+        this.collection.create({title: 'task-'+(this.collection.length+1)});
+    },
+    clearTask : function(){
+        var collection = this.collection;
+        this.collection.each(function(task){
+            collection.first().destroy();
+        });
+    }
+});
+var taskApp = new TaskApp({
+    el: $DEMO,
+    collection: new Tasks()
+});
+</code></pre>
+
+<h2>TODO アプリの実装</h2>
+
+<p>前述のサンプルをベースに TODO アプリを実装してみます。</p>
+
+<h4>code demo</h4>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js
+</code></pre>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js
+</code></pre>
+
+<h5>jsFile noCode</h5>
+
+<pre><code>http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.1.14/backbone.localStorage-min.js
+</code></pre>
+
+<h5>css</h5>
+
+<pre><code>.taskApp input.title{
+    padding:8px;
+    border-radius: 4px;
+    width:20em;
+    border: solid 1px #ccc;
+}
+.taskApp ul.taskList{
+    padding-left: 0;
+}
+.taskApp ul.taskList li{
+    list-style:none;
+}
+.taskApp li.closed .title{
+    color: gray;
+    text-decoration: line-through;
+}
+.taskApp .del{
+    color: #ff5577;
+    text-decoration: none;
+    font-weight: bold;
+}
+.taskApp .error{
+    color: red;
+}
+</code></pre>
+
+<h5>html</h5>
+
+<pre><code>&lt;div class="taskApp"&gt;
+    &lt;h1&gt;TODO&lt;/h1&gt;
+    &lt;form class="addTask"&gt;
+        &lt;input type="text" class="title" placeholder="タスクを入力してください"&gt;
+        &lt;span class="error"&gt;&lt;/span&gt;
+    &lt;/form&gt;
+    &lt;ul class="taskList"&gt;&lt;/ul&gt;
+    &lt;button class="clear"&gt;全て削除&lt;/button&gt;
+&lt;/div&gt;
+&lt;script type="text/template" id="temp-taskItem"&gt;
+    &lt;input type="checkbox" class="toggle" &lt;%= closed ? 'checked' : '' %&gt; &gt;
+    &lt;span class="title"&gt;&lt;%-title%&gt;&lt;/span&gt;
+    &lt;a class="del" href="#"&gt;x&lt;/a&gt;
+&lt;/script&gt;
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>//モデル
+var Task = Backbone.Model.extend({
+    defaults: {
+        title: '',
+        closed: false
+    },
+    validate: function(attrs){
+        if(_.isEmpty(attrs.title)){
+            return 'タスク名が指定されてません';
+        }
+    }
+});
+//コレクション
+var Tasks = Backbone.Collection.extend({
+    model: Task,
+    localStorage: new Store('task-app')
+});
+// ビュー（リストアイテム部分）
+var TaskView = Backbone.View.extend({
+    tagName: 'li',
+    events: {
+        'click .toggle': 'toggleTask',
+        'click .del': 'delTask'
+    },
+    initialize: function(){
+        this.model.on('destroy', this.remove, this);
+        this.model.on('change', this.render, this); // (1)
+    },
+    template: _.template($('#temp-taskItem').html()), // (2)
+    render: function(){
+        var html = this.template(this.model.toJSON());
+        this.$el.html(html)[
+            this.model.get('closed') ? 'addClass' : 'removeClass'
+        ]('closed');
+        return this;
+    },
+    toggleTask : function(){
+        this.model.set('closed', !this.model.get('closed')).save();
+    },
+    delTask : function(e){
+        e.preventDefault();
+        if(confirm('削除しますか？')){
+            this.model.destroy();
+        }
+    }
+});
+// ビュー（画面全体）
+var TaskApp = Backbone.View.extend({
+    events: {
+        'submit .addTask': 'addTask',
+        'click .clear': 'clearTask'
+    },
+    initialize: function(){
+        var o = this;
+        o.$title = o.$el.find('input.title')
+        o.$list = o.$el.find('ul.taskList');
+        o.$error = o.$el.find('.error');
+        o.collection.on('add', function(task){
+            var taskView = new TaskView({model: task});
+            o.$list.prepend(taskView.render().el)
+        })
+        o.collection.fetch();
+        o.collection.on("invalid", function(task, error) { // (3)
+            o.$error.text(error);
+        });
+    },
+    addTask : function(e){
+        var o = this;
+        e.preventDefault();
+        var sts = o.collection.create(
+            {title: o.$title.val()},
+            {validate: true}
+        );
+        if(sts){
+            o.$title.val('')
+            o.$error.text('');
+        }
+    },
+    clearTask : function(){
+        var o = this;
+        if(confirm('全て削除してよろしいですか？')){
+            o.collection.each(function(task){
+                o.collection.first().destroy();
+            });
+        }
+    }
+});
+var taskApp = new TaskApp({
+    el: $('div.taskApp'),
+    collection: new Tasks()
+});
+</code></pre>
+
+<ul>
+<li>(1) this.model.on(‘change’, this.render, this)
+
+<ul>
+<li>チェックボックスがオンになった場合、項目に取り消し線を引くため<strong>対象のリスト項目のみ</strong>を再描画しています。</li>
+</ul></li>
+<li>(2) _.template($(‘#temp-taskItem’).html())
+
+<ul>
+<li>html の script タグ内で定義したテンプレートを読み込んでます。</li>
+</ul></li>
+<li>(3) o.collection.on(“invalid”, function(task, error) {
+
+<ul>
+<li>コレクションに invalid トリガーを定義してます。モデルでエラーになった場合、伝播されこのトリガーが起動されます。</li>
+</ul></li>
+</ul>
+
+<h2>所感</h2>
+
+<p>一見すると複雑そうに見えますが順をおって見てくと、内部処理も想像しやすく逃げ道も作りやすいシンプルなフレームワークだと感じます。</p>
+
+<p>クライアントサイドでがっつりロジックを組む場合、MVC を意識した保守性の高いコードをいかにして書くかはプログラマの腕の見せ所であったわけですが、
+こうしたフレームワークの適用により一定のルール下の実装が強要されるので、チーム開発や、運用者と開発者が異なる場合、開発標準規約としての効果は大きいかもしれません。</p>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

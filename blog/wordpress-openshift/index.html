@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>PaaS で動かす WordPress ＋ OpenShift 入門 | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/wordpress-openshift/" title="PaaS で動かす WordPress ＋ OpenShift 入門">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2014-03-05</li>
+<!--
+        <li class="article__info__category"><a href="/category/cloud-service/" rel="category tag">Cloud Service</a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <p><div class="article__eyecatch">
+    <a href="http://www.cyokodog.net/blog/wordpress-openshift/"><img src="http://lh5.googleusercontent.com/-xT-Q8v44aN8/Uxddj3d-_uI/AAAAAAAAGrA/0_aGpQcTU18/s800/logo.png"></a>
+  </div></p>
+<p>このブログは PaaS の AppFog のフリープランで動かしてるのですが、先日、<a href="http://blog.appfog.com/changes-to-appfog-free-plans/">フリープランのサービス縮小の通知</a>がありました。念のため WordPress が動く目ぼしいところが他にないか探したところ、OpenShift が 「無料、広告なし、独自ドメイン対応、Git でアップロード」といった感じで良さげでした。<br>
+そんな訳で OpenShift で WordPress を使用する手順をまとめてみました。<br>
+
+<!--more-->
+
+<p>※OpenShift では簡単にオンライン上で WordPress を作成することもできますが、この方法だとソースをいじれないので自前で WordPress を準備する方法でまとめてます。</p>
+
+<h2>事前準備</h2>
+
+<p>ここでは 32ビット版 Windows 環境で行います。まず以下の準備をしておきます。</p>
+
+<ul>
+<li>Git（1.8.5.2）</li>
+<li>WordPress 日本語版（3.8.1）</li>
+<li>phpMyAdmin（4.1.8）</li>
+</ul>
+
+<h2>Git のインストール</h2>
+
+<p>※既に Git をインストール済みの場合は飛ばしてください</p>
+
+<p><a href="https://code.google.com/p/msysgit/downloads/list">https://code.google.com/p/msysgit/downloads/list</a> にアクセスします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-VgxWiaMm0KU/UxdKEb3CB8I/AAAAAAAAGqE/NUNfYXF1F-0/s640/h01.png" alt="opeshift"></p>
+
+<p>2014/03/05 時点の最新版 Git-1.8.5.2-preview20131230.exe をダウンロードし、インストールします。</p>
+
+<h3>文字化け対応</h3>
+
+<p>日本語が文字化けしないよう設定します。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-lliRNYT1SVY/UxdKEu_5OWI/AAAAAAAAGp8/EF9Tr6p5FAE/s400/h02.png" alt="opeshift"></p>
+
+<p>エクスプローラーを起動し、適当なフォルダを選択した状態で、右クリック→[Git Bash Here] で Git のコンソールを立ち上げます。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-j0WVv9U07cs/UxdKFc6d7SI/AAAAAAAAGqI/sdYvI7SgBa0/s400/h03.png" alt="opeshift"></p>
+
+<p>MINGW32 と表示されたタイトルバーの部分を右クリック、[プロパティ][フォント]タブを選択し、[フォント]をMSゴシック、[サイズ]に適当な値を指定し、[OK] をクリックします。</p>
+
+<p>次にコンソール上で以下のコマンドを入力します。</p>
+
+<pre><code>vi ~/.bashrc
+alias ls='ls --color=auto --show-control-chars'
+:wq
+</code></pre>
+
+<p>Bash の再起動で文字化けが解消されます。</p>
+
+<h3>ssh 認証キーの作成</h3>
+
+<p>ssh 認証キーを作成します。コンソール上で以下のコマンドを入力します。</p>
+
+<pre><code>mkdir ~/.ssh
+cd ~/.ssh
+ssh-keygen -t rsa -C "hogehoge@gmail.com"　←自分のメールアドレス
+</code></pre>
+
+<p>c:Users&lt;Windowsアカウント名&gt;.ssh フォルダに id_rsa.pub が生成されます。</p>
+
+<h2>WordPress のダウンロード</h2>
+
+<p><a href="http://ja.wordpress.org/">http://ja.wordpress.org/</a> にアクセスします。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-VrUJTqDw6bE/UxdOYsnsARI/AAAAAAAAGqk/0VRZL_Ifdss/s640/h04.png" alt="opeshift"></p>
+
+<p>[WordPres 3.8.1をダウンロード] をクリックし、ダウンロードしたら適当なフォルダに解凍しておきます。</p>
+
+<h2>phpMyAdmin のダウンロード</h2>
+
+<p>※phpMyAdmin が不要な場合は飛ばしてください</p>
+
+<p><a href="http://www.phpmyadmin.net/home_page/downloads.php">http://www.phpmyadmin.net/home_page/downloads.php</a> にアクセスします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-05eAHNE98iE/UxdOYtJRZ1I/AAAAAAAAGqo/CodjVDQB0pE/s640/h05.png" alt="opeshift"></p>
+
+<p>[phpMyAdmin-4.1.8-all-languages.zip] をクリックし、ダウンロードしたら適当なフォルダに解凍しておきます。</p>
+
+<h2>OpenShift にサインアップ</h2>
+
+<p>ここから本番です。<a href="https://www.openshift.com/">https://www.openshift.com/</a> にアクセスします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-0eml47Xxq4s/UxXpxuDr_KI/AAAAAAAAGi0/ikLiIfoBVNU/s640/a01.png" alt="opeshift"></p>
+
+<p>[SIGNUP] をクリックします。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-BcinkeW_nSc/UxXpxmjpE-I/AAAAAAAAGjM/GJXn5FDgURU/s640/a02.png" alt="opeshift"></p>
+
+<p>メールアドレス、パスワード、CAPTCHA を入力し、[Sign Up] をクリックします。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-IOi7KFhlsyg/UxXpxsJVYtI/AAAAAAAAGjA/wiUB3g1Wv6o/s640/a03.png" alt="opeshift"></p>
+
+<p>メールを確認しするようにとメッセージが表示されます。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-tSp6xFiMhWo/UxXpyeSOTqI/AAAAAAAAGjI/Ds1iHELgFlk/s640/a04.png" alt="opeshift"></p>
+
+<p>OpenShift からきたメールの [Click here] のリンクをクリックします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-RXFoKb5WBhU/UxXpzNWaf1I/AAAAAAAAGjk/_c0FY4-mGu4/s640/a05.png" alt="opeshift"></p>
+
+<p>上記画面が表示されるので [I Accept] をクリックします。</p>
+
+<h2>PHP / MySQL の動作環境を作成する</h2>
+
+<p>次の画面が表示されます。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-JC4BT3TlIvs/UxXpzIyM2_I/AAAAAAAAGjc/o0N4hWOQQkg/s640/a06.png" alt="opeshift"></p>
+
+<p>[Open the Console and CreateI Accept] をクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-LNrP4vV4njo/UxXtIxKO4sI/AAAAAAAAGlA/Ys8C6xDRAJc/s640/a07.png" alt="opeshift"></p>
+
+<p>[Create your first application now] をクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-rx6-OempPMg/UxXtIt7HyeI/AAAAAAAAGlE/N6H3C5XSrSY/s640/c01.png" alt="opeshift"></p>
+
+<p>[PHP 5.4] をクリックします。（※ WordPress 3.x をクリックするとすぐ作成されますが、ソースのカスタマイズができません。）</p>
+
+<p><img src="http://lh5.googleusercontent.com/-HgtUomCc6SE/UxXrk9vwEqI/AAAAAAAAGkE/2iHdiAm05qs/s640/c02.png" alt="opeshift"></p>
+
+<p>[Public URL] を指定します。「-」の右側の入力フィールドはアカウント毎のネームスペースにあたり、他のアプリを追加する場合にも適用されます（一度指定すると変更できなくなるので要注意）。<br>
+[Create Application] をクリックします。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-eq0uH7UwPF0/UxXrkyLtJTI/AAAAAAAAGkM/i-689ZQG3KA/s640/c03.png" alt="opeshift"></p>
+
+<p>[Yes, help me get started] をクリックすると ssh 認証キーの入力フィールドが表示されます。<br>
+[c:Users&lt;Windowsアカウント名&gt;.sshid_rsa.pub] をテキストエディタで開き、[Paste the contetns of your public key fie(.pub)] にコピペし、[Save] をクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-Qicl7lcI5b8/UxXtIkl3jTI/AAAAAAAAGlI/6uhdj8euUK0/s640/c04.png" alt="opeshift"></p>
+
+<p>[Continue to the application overview page] をクリックします。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-VuA-vjZ7Rf4/UxXu_QdWHYI/AAAAAAAAGmc/CnRVSpRDZ1s/s640/d01.png" alt="opeshift"></p>
+
+<p>[Add MySQL 5.5] をクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-kmFQo1-SCVE/UxXu_V14jpI/AAAAAAAAGmY/aZolIKM96ic/s640/d02.png" alt="opeshift"></p>
+
+<p>[Add Cartridge] をクリックします。</p>
+
+<h2>OpenShift に WordPress と phpMyAdmin を設置する</h2>
+
+<p>データベースの接続に必要な情報が表示されます。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-mHiCXPQC50s/UxXv2R09Z3I/AAAAAAAAGm4/TYM8-U8Uu_M/s640/d03.png" alt="opeshift"></p>
+
+<p>[Source Code] の ssh:// で始まる URI を選択しコピーします。</p>
+
+<p>適当なフォルダで Git を起動し（今回は c:webappopenshift で起動）、コピーしたソースコードの URI を git clone します。</p>
+
+<pre><code>git clone ssh://xxxxxxxxxxxxxx
+</code></pre>
+
+<p><img src="http://lh4.googleusercontent.com/-_WiUauDMPd4/Uxcl492RhKI/AAAAAAAAGn0/CInaD5oF0DM/s640/c06.png" alt="opeshift"></p>
+
+<p><img src="http://lh3.googleusercontent.com/-LRoMSpSl_EY/Uxcl47Xwk_I/AAAAAAAAGn8/O66HrSMFbDg/s400/c07.png" alt="opeshift"></p>
+
+<p>上記のようなフォルダ構成ができあがるので、解凍した WordPress のソースファイル一式をc:webappopenshiftphpphp にコピーします。<br>
+また、同フォルダ内に myadmin という名前でフォルダを作り、phpMyAdmin のソースファイル一式をコピーします。</p>
+
+<p>c:webappopenshiftphpphp 直下にある wp-config-sample.php を wp-config.php にリネームしテキストエディタで開き、define(‘DB_NAME’… と記述のある箇所を以下のように変更します。</p>
+
+<pre><code>// ** MySQL settings - You can get this info from your web host ** //
+/** The name of the database for WordPress */
+define('DB_NAME', getenv('OPENSHIFT_APP_NAME'));
+
+/** MySQL database username */
+define('DB_USER', getenv('OPENSHIFT_MYSQL_DB_USERNAME'));
+
+/** MySQL database password */
+define('DB_PASSWORD', getenv('OPENSHIFT_MYSQL_DB_PASSWORD'));
+
+/** MySQL hostname */
+define('DB_HOST', getenv('OPENSHIFT_MYSQL_DB_HOST') . ':' . getenv('OPENSHIFT_MYSQL_DB_PORT'));
+
+/** Database Charset to use in creating database tables. */
+define('DB_CHARSET', 'utf8');
+
+/** The Database Collate type. Don't change this if in doubt. */
+define('DB_COLLATE', '');
+</code></pre>
+
+<p>以下のようになります。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-BRUIXdKvMsk/Uxcl45OPuCI/AAAAAAAAGn4/X0tS67wtQyk/s640/c08.png" alt="opeshift"></p>
+
+<p>c:webappopenshiftphpphpmyadmin 直下にある config.inc.php をテキストエディタで開き、$cfg[’Servers’][$i][‘host’]… と記述のある箇所を以下のように変更します。</p>
+
+<pre><code>$cfg['Servers'][$i]['host'] = getenv('OPENSHIFT_MYSQL_DB_HOST');
+$cfg['Servers'][$i]['port'] = getenv('OPENSHIFT_MYSQL_DB_PORT');
+</code></pre>
+
+<p>以下のようになります。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-2jxAZtf3jjI/Uxcl5_WBduI/AAAAAAAAGoE/Eclb46sD2kE/s640/c09.png" alt="opeshift"></p>
+
+<p>git で c:webappopenshiftphp に移動後、下記コマンドを入力し、OpenShift にソースをアップロードします。（ソースを変更しアップロードする場合は下記コマンドを入力します。git commit では -m 以降を省略するとテキストエディタが開き、変更コメントを日本語で入力できるようになります。）</p>
+
+<pre><code>git add .
+git commit -m 'add wordpress and phpMyAdmin'
+git push
+</code></pre>
+
+<p><img src="http://lh6.googleusercontent.com/-tkjxh3HuspI/UxZWCA67AzI/AAAAAAAAGnQ/WxNyagFzMd8/s640/c10.png" alt="opeshift"></p>
+
+<h2>独自ドメインを割り当てる</h2>
+
+<p>※不要な場合は飛ばしてください</p>
+
+<p>https://openshift.redhat.com/app/console/applications アクセスすると作成したアプリの一覧が表示されるので、今回作成したアプリを選択します。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-PFECuMqQN9Y/UxcmMr2micI/AAAAAAAAGow/WS2BIpYr6uM/s640/f01.png" alt="opeshift"></p>
+
+<p>[change] をクリックします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-57DAqzkgPAc/UxcmMmKOv3I/AAAAAAAAGpE/qqbO3qydIQo/s640/f02.png" alt="opeshift"></p>
+
+<p>[Domain name] を入力し、[Save] をクリックします。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-EP833sVdYXg/UxcmMu9XUlI/AAAAAAAAGo8/cSU6cGXeNtw/s400/f03.png" alt="opeshift"></p>
+
+<p>契約してるドメイン登録代行サービスで、DNS の設定をし（上記は お名前.com の場合）、しばらく待ちます。</p>
+
+<h2>WordPress をインストールする</h2>
+
+<p>登録した独自ドメインにアクセスします（上記例では http://openshift.cyokodog.net/ 、独自ドメインを設定してない場合は http://php-cyokodog.rhcloud.com/）。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-F6C-LiKUf4E/UxcmJe0N4WI/AAAAAAAAGoc/t5IRgrfCauM/s640/e01.png" alt="opeshift"></p>
+
+<p>WordPress のインストール画面が表示されるので、必要情報を入力し、[WordPress をインストール]　をクリックします。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-_sMt2jdYt9I/UxcmJSrBXdI/AAAAAAAAGog/7F6c868bjNk/s400/e02.png" alt="opeshift"></p>
+
+<p>[ログイン]　をクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-db_FKqiwJ4A/UxcmJZeS_RI/AAAAAAAAGoU/CZF02AAeVig/s400/e03.png" alt="opeshift"></p>
+
+<p>先程指定した [ユーザ名][パスワード] を入力し、[ログイン]　をクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-lcDzdr9LID4/UxcmKDaTJeI/AAAAAAAAGok/KlI69nEiFSg/s640/e04.png" alt="opeshift"></p>
+
+<p>管理画面が表示されます。画面左上のブログ名のリンクをクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-pvQXOk1j0rQ/UxdKEcPqWFI/AAAAAAAAGqA/oBqpkN0VQWs/s640/e05.png" alt="opeshift"></p>
+
+<p>トップ画面が表示されます。<br>
+※.htaccess の設定をしてませんが、スラッグ指定形式での URL でも正しく表示されます。</p>
+
+<h2>phpMyAdmin を実行する</h2>
+
+<p>OpenShift 上のアプリケーション管理画面で、データベースの接続情報を確認します。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-Z8s1q_JjhGk/UxcmNZc2ccI/AAAAAAAAGpA/x3XUr874xCA/s640/g01.png" alt="opeshift"></p>
+
+<p>http://openshift.cyokodog.net/myadmin にアクセスします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-nqkTcblwxgQ/UxcmNQg_shI/AAAAAAAAGpQ/ITE72HRR-yA/s400/g02.png" alt="opeshift"></p>
+
+<p>[ユーザ名][パスワード] を入力し、[実行] をクリックします。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-KQ71nCXfA2Q/UxcmONju5YI/AAAAAAAAGpU/gwqvwFq7oHs/s640/g03.png" alt="opeshift"></p>
+
+<p>管理画面が表示されます。</p>
+
+<p>以上です！</p>
+
+<h2>最後に</h2>
+
+<p>PaaS で WordPress というと Heroku や Google App Engineでもいけるらしいのですが、Heroku の場合、無料でも DB を使用する際にクレジット番号の入力が必要になるらしいです。</p>
+
+<p>Google App Engine の場合は、Cloud SQL を利用する必要があるので課金が発生してしまうようです。</p>
+
+<p>そんなわけで OpenShift ですが WordPress 以外にもいろいろ動くようですし（若干重い気もしますが）なかなか良いのではないでしょうか。</p>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>jQuery 1.9 で $.browser が使えなくなってしまった対策 | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/jquery19-browser/" title="jQuery 1.9 で $.browser が使えなくなってしまった対策">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2013-02-27</li>
+<!--
+        <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/jquery19-browser/"><img src="https://lh5.googleusercontent.com/-vI1tcYWBmwk/UU8O8432nwI/AAAAAAAAERY/xRSHIeSiOkQ/s800/jquery1-9.jpg"></a>
+</div>
+<p>
+jQuery 1.9 になってとうとう $.browser が使えなくなってしまいましたね。
+もともと非推奨ということもあり、個人的にはプラグインを実装する時などは極力使用しないようにしてましたが、実際使えなくなってしまうと、動かなくなってしまうプラグインって結構多いんじゃないかなぁって気がします。</p>
+
+<!--more-->
+
+<h2>スムーススクロールが動かない</h2>
+
+<p>プラグインではありませんが、最近ではいろんなサイトで見かけるようになったスムーススクロールの実装で、影響受けてるというエントリを見かけました。</p>
+
+<blockquote>
+<div>
+IE系だとウィンドウのスクロールを制御するとき「html」を指定する。
+GoogleChrome や Safari などのWEBKIT系は「body」指定しないといけない。
+そこで、「$.browser.safari」をつかって、どっちを指定するかを切り替えていた。
+ところがどっこい、jQuery1.3以降だと「$.browser」がNG※。非推奨になっている。いつのまに！？
+</div>
+<cite><a href="http://stainless-note.tumblr.com/post/43517377857/jquery-browser-safari">「jQuery.browser.safari」が非推奨になっていたので、代替案でスムーススクロール – Stainless Note</a></cite>
+</blockquote>
+
+<p>webkit 系だと html 要素では scrollTop が効かないので body 要素でスクロールさせるというやつです。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="pln">$</span><span class="pun">.</span><span class="pln">browser</span><span class="pun">.</span><span class="pln">safari </span><span class="pun">?</span><span class="pln"> </span><span class="str">'body'</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'html'</span><span class="pun">).</span><span class="pln">animate</span><span class="pun">({</span><span class="pln">scrollTop</span><span class="pun">:</span><span class="lit">100</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p>エントリでは jQuery に頼らず直接 userAgent を参照し解決してるようです。</p>
+
+<h2>$.browser に頼らないブラウザ判別</h2>
+
+<p>jQuery の開発元では $.support による判別を推奨してるようなのですが、このケースの場合 $.support の何を見て判別すれば良いのでしょうか？
+正しい使い方なのかよく分かりませんが、以下のまとめ記事を見る限り $.support.checkOn で webkit か否か判定できるようです。</p>
+
+<blockquote>
+<div>
+if文の条件式の中で!をつけたので、checkOnがfalseであればこの条件文に該当します。該当するのはwebkitだけなので、これでchormeとsafariのみに振り分けたコードを記述できます。なお、Android標準ブラウザ、iPhone / iPad標準ブラウザといったスマートフォンも同じChromeとSafariなので、この条件に合致します。
+</div>
+<cite><a href="http://w3g.jp/blog/tools/jquery_browser_sniffing">jQuery.supportでのブラウザ判別 – World Wide Web Guide</a></cite>
+</blockquote>
+
+<p>ただ（上記エントリのどの部分を指してるのか分かりませんが）現時点では「情報が古くなったために正しく動作しなくなりました」とのことで、以下記事の方法で判別されてるようです。</p>
+
+<blockquote>
+<div>
+jQuery.supportだけで代表的なブラウザの判別を行うことができなくなってしまったので、UA情報には依存しないブラウザがサポートしている機能だけでブラウザ判別を行う試みです。
+</div>
+<cite><a href="http://w3g.jp/blog/tools/js_browser_sniffing">JSでのUA条件分岐便利スニペット – World Wide Web Guide</a></cite>
+</blockquote>
+
+<p>ちなみに $.browser や userAgent で IE7 以下のバージョン判定をする場合は、IE8 以降の機能にある互換表示設定（ツールバーの[ツール]→[互換表示設定]）に注意が必要になります。以下のように document.documentMode や document.compatMode を参照しないと正確な判定ができません。（<a href="http://cyokodog.tumblr.com/post/38835740744/ie-version">IE のレンダリングバージョンの指定と判定方法の自分なりまとめ – CYOKOLOG</a>）</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">engine </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">;</span></li><li class="L1"><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">window</span><span class="pun">.</span><span class="pln">navigator</span><span class="pun">.</span><span class="pln">appName </span><span class="pun">==</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">quot</span><span class="pun">;</span><span class="typ">Microsoft</span><span class="pln"> </span><span class="typ">Internet</span><span class="pln"> </span><span class="typ">Explorer</span><span class="pun">&amp;</span><span class="pln">quot</span><span class="pun">;)</span></li><li class="L2"><span class="pun">{</span></li><li class="L3"><span class="pln">    </span><span class="com">// This is an IE browser. What mode is the engine in?</span></li><li class="L4"><span class="pln">    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">document</span><span class="pun">.</span><span class="pln">documentMode</span><span class="pun">)</span><span class="pln"> </span><span class="com">// IE8 or later</span></li><li class="L5"><span class="pln">        engine </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">documentMode</span><span class="pun">;</span></li><li class="L6"><span class="pln">    </span><span class="kwd">else</span><span class="pln"> </span><span class="com">// IE 5-7</span></li><li class="L7"><span class="pln">    </span><span class="pun">{</span></li><li class="L8"><span class="pln">        engine </span><span class="pun">=</span><span class="pln"> </span><span class="lit">5</span><span class="pun">;</span><span class="pln"> </span><span class="com">// Assume quirks mode unless proven otherwise</span></li><li class="L9"><span class="pln">        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">document</span><span class="pun">.</span><span class="pln">compatMode</span><span class="pun">)</span></li><li class="L0"><span class="pln">        </span><span class="pun">{</span></li><li class="L1"><span class="pln">            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">document</span><span class="pun">.</span><span class="pln">compatMode </span><span class="pun">==</span><span class="pln"> </span><span class="pun">&amp;</span><span class="pln">quot</span><span class="pun">;</span><span class="pln">CSS1Compat</span><span class="pun">&amp;</span><span class="pln">quot</span><span class="pun">;)</span></li><li class="L2"><span class="pln">                engine </span><span class="pun">=</span><span class="pln"> </span><span class="lit">7</span><span class="pun">;</span><span class="pln"> </span><span class="com">// standards mode</span></li><li class="L3"><span class="pln">        </span><span class="pun">}</span></li><li class="L4"><span class="pln">    </span><span class="com">// There is no test for IE6 standards mode because that mode  </span></li><li class="L5"><span class="pln">    </span><span class="com">// was replaced by IE7 standards mode; there is no emulation.</span></li><li class="L6"><span class="pln">    </span><span class="pun">}</span></li><li class="L7"><span class="pln">    </span><span class="com">// the engine variable now contains the document compatibility mode.</span></li><li class="L8"><span class="pun">}</span></li><li class="L9"><span class="pln">alert</span><span class="pun">(</span><span class="pln">engine</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 414px;"></textarea></div></div></div>
+
+<h2>使いたい機能が機能するかで判定</h2>
+
+<p>適用できるケースが限定されるのかもしれませんが、自分の場合、プラグインを実装する時などは「使いたい機能が機能するか」で判定し処理を振り分けるようにしています。</p>
+
+<p>例えばスムーススクロールの実装では、本質的には webkit かどうかを知りたいのではなく、スクロールさせることができる要素が html か body かを知りたいだけなので、実際にスクロールするか否かを試します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">//html 要素でスクロールするか試す</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> isHtmlScroll </span><span class="pun">=</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L2"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> html </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'html'</span><span class="pun">),</span><span class="pln"> top </span><span class="pun">=</span><span class="pln"> html</span><span class="pun">.</span><span class="pln">scrollTop</span><span class="pun">();</span></li><li class="L3"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> el </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'&lt;div/&gt;'</span><span class="pun">).</span><span class="pln">height</span><span class="pun">(</span><span class="lit">10000</span><span class="pun">).</span><span class="pln">prependTo</span><span class="pun">(</span><span class="str">'body'</span><span class="pun">);</span></li><li class="L4"><span class="pln">    html</span><span class="pun">.</span><span class="pln">scrollTop</span><span class="pun">(</span><span class="lit">10000</span><span class="pun">);</span></li><li class="L5"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> rs </span><span class="pun">=</span><span class="pln"> </span><span class="pun">!!</span><span class="pln">html</span><span class="pun">.</span><span class="pln">scrollTop</span><span class="pun">();</span></li><li class="L6"><span class="pln">    html</span><span class="pun">.</span><span class="pln">scrollTop</span><span class="pun">(</span><span class="pln">top</span><span class="pun">);</span></li><li class="L7"><span class="pln">    el</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">();</span></li><li class="L8"><span class="pln">    </span><span class="kwd">return</span><span class="pln"> rs</span><span class="pun">;</span></li><li class="L9"><span class="pun">})();</span></li><li class="L0"><span class="pln">&nbsp;</span></li><li class="L1"><span class="com">//スムーススクロール</span></li><li class="L2"><span class="pln">$</span><span class="pun">(</span><span class="pln">isHtmlScroll </span><span class="pun">?</span><span class="pln"> </span><span class="str">'html'</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'body'</span><span class="pun">).</span><span class="pln">animate</span><span class="pun">({</span><span class="pln">scrollTop</span><span class="pun">:</span><span class="lit">100</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 288px;"></textarea></div></div></div>
+
+<p>毎回書くのが面倒くさかったり、判定項目がたくさん必要で名前空間が気になるよう場合は、以下のようにプラグイン化してもいいかもしれません。</p>
+
+<p>まず、汎用的に使用できるコンストラクタを用意します。念のため body が 非表示の場合は、判定処理の際、一旦表示状態にします。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">.</span><span class="pln">isEnabled </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L1"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> o </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">,</span><span class="pln"> callee </span><span class="pun">=</span><span class="pln"> arguments</span><span class="pun">.</span><span class="pln">callee</span><span class="pun">;</span></li><li class="L2"><span class="pln">    </span><span class="kwd">if</span><span class="pun">(!(</span><span class="pln">o </span><span class="kwd">instanceof</span><span class="pln"> callee</span><span class="pun">))</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> callee</span><span class="pun">(</span><span class="pln">o</span><span class="pun">,</span><span class="pln">arguments</span><span class="pun">);</span></li><li class="L3"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> body  </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'body'</span><span class="pun">),</span><span class="pln">isHide </span><span class="pun">=</span><span class="pln"> body</span><span class="pun">.</span><span class="kwd">is</span><span class="pun">(</span><span class="str">':hidden'</span><span class="pun">);</span></li><li class="L4"><span class="pln">    </span><span class="pun">!</span><span class="pln">isHide </span><span class="pun">||</span><span class="pln"> body</span><span class="pun">.</span><span class="pln">show</span><span class="pun">();</span></li><li class="L5"><span class="pln">    </span><span class="kwd">for</span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> i </span><span class="kwd">in</span><span class="pln"> o</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">if</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pln"> o</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="str">'function'</span><span class="pun">)</span><span class="pln"> callee</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> o</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]();</span></li><li class="L6"><span class="pln">    </span><span class="pun">!</span><span class="pln">isHide </span><span class="pun">||</span><span class="pln"> body</span><span class="pun">.</span><span class="pln">hide</span><span class="pun">();</span></li><li class="L7"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 198px;"></textarea></div></div></div>
+
+<p>必要に応じて判定ロジックを $.isEnabled.prototype に追加していきます。</p>
+
+<p>html 要素でスクロール可能か？</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">.</span><span class="pln">isEnabled</span><span class="pun">.</span><span class="pln">prototype</span><span class="pun">.</span><span class="pln">htmlScroll </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L1"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> html </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'html'</span><span class="pun">),</span><span class="pln"> top </span><span class="pun">=</span><span class="pln"> html</span><span class="pun">.</span><span class="pln">scrollTop</span><span class="pun">();</span></li><li class="L2"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> el </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'&lt;div/&gt;'</span><span class="pun">).</span><span class="pln">height</span><span class="pun">(</span><span class="lit">10000</span><span class="pun">).</span><span class="pln">prependTo</span><span class="pun">(</span><span class="str">'body'</span><span class="pun">);</span></li><li class="L3"><span class="pln">    html</span><span class="pun">.</span><span class="pln">scrollTop</span><span class="pun">(</span><span class="lit">10000</span><span class="pun">);</span></li><li class="L4"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> rs </span><span class="pun">=</span><span class="pln"> </span><span class="pun">!!</span><span class="pln">html</span><span class="pun">.</span><span class="pln">scrollTop</span><span class="pun">();</span></li><li class="L5"><span class="pln">    html</span><span class="pun">.</span><span class="pln">scrollTop</span><span class="pun">(</span><span class="pln">top</span><span class="pun">);</span></li><li class="L6"><span class="pln">    el</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">();</span></li><li class="L7"><span class="pln">    </span><span class="kwd">return</span><span class="pln"> rs</span><span class="pun">;</span></li><li class="L8"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 216px;"></textarea></div></div></div>
+
+<p>position:fixed が有効か？</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">.</span><span class="pln">isEnabled</span><span class="pun">.</span><span class="pln">prototype</span><span class="pun">.</span><span class="pln">positionFixed </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L1"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> el </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'&lt;div/&gt;'</span><span class="pun">).</span><span class="pln">add</span><span class="pun">(</span><span class="str">'&lt;div/&gt;'</span><span class="pun">).</span><span class="pln">css</span><span class="pun">({</span><span class="pln">height</span><span class="pun">:</span><span class="lit">8</span><span class="pun">,</span><span class="pln">position</span><span class="pun">:</span><span class="str">'fixed'</span><span class="pun">,</span><span class="pln">top</span><span class="pun">:</span><span class="lit">0</span><span class="pun">}).</span><span class="pln">prependTo</span><span class="pun">(</span><span class="str">'body'</span><span class="pun">);</span></li><li class="L2"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> rs </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">eq</span><span class="pun">(</span><span class="lit">0</span><span class="pun">).</span><span class="pln">offset</span><span class="pun">().</span><span class="pln">top </span><span class="pun">==</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">eq</span><span class="pun">(</span><span class="lit">1</span><span class="pun">).</span><span class="pln">offset</span><span class="pun">().</span><span class="pln">top</span></li><li class="L3"><span class="pln">    el</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">();</span></li><li class="L4"><span class="pln">    </span><span class="kwd">return</span><span class="pln"> rs</span><span class="pun">;</span></li><li class="L5"><span class="pun">};</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p>display:inline-block が有効か？</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">.</span><span class="pln">isEnabled</span><span class="pun">.</span><span class="pln">prototype</span><span class="pun">.</span><span class="pln">displayInlineBlock </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L1"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> el </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'&lt;div/&gt;'</span><span class="pun">).</span><span class="pln">add</span><span class="pun">(</span><span class="str">'&lt;div/&gt;'</span><span class="pun">).</span><span class="pln">css</span><span class="pun">({</span><span class="pln">height</span><span class="pun">:</span><span class="lit">8</span><span class="pun">,</span><span class="pln">display</span><span class="pun">:</span><span class="str">'inline-block'</span><span class="pun">}).</span><span class="pln">prependTo</span><span class="pun">(</span><span class="str">'body'</span><span class="pun">);</span></li><li class="L2"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> rs </span><span class="pun">=</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">eq</span><span class="pun">(</span><span class="lit">0</span><span class="pun">).</span><span class="pln">offset</span><span class="pun">().</span><span class="pln">top </span><span class="pun">==</span><span class="pln"> el</span><span class="pun">.</span><span class="pln">eq</span><span class="pun">(</span><span class="lit">1</span><span class="pun">).</span><span class="pln">offset</span><span class="pun">().</span><span class="pln">top</span></li><li class="L3"><span class="pln">    el</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">();</span></li><li class="L4"><span class="pln">    </span><span class="kwd">return</span><span class="pln"> rs</span><span class="pun">;</span></li><li class="L5"><span class="pun">};</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p>以下のように使用します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">//判定処理の実行</span></li><li class="L1"><span class="pln">$</span><span class="pun">.</span><span class="pln">isEnabled</span><span class="pun">();</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="kwd">if</span><span class="pun">(</span><span class="pln">$</span><span class="pun">.</span><span class="pln">isEnabled</span><span class="pun">.</span><span class="pln">htmlScroll</span><span class="pun">)</span><span class="pln"> </span><span class="pun">...</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="kwd">if</span><span class="pun">(</span><span class="pln">$</span><span class="pun">.</span><span class="pln">isEnabled</span><span class="pun">.</span><span class="pln">positionFixed</span><span class="pun">)</span><span class="pln"> </span><span class="pun">...</span></li><li class="L6"><span class="pln">&nbsp;</span></li><li class="L7"><span class="kwd">if</span><span class="pun">(</span><span class="pln">$</span><span class="pun">.</span><span class="pln">isEnabled</span><span class="pun">.</span><span class="pln">displayInlineBlock</span><span class="pun">)</span><span class="pln"> </span><span class="pun">...</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 198px;"></textarea></div></div></div>
+
+<ul>
+<li><div class="for-top"><a href="http://dl.dropbox.com/u/1735908/demo/jquery/isenabled/demo.html" class="demo external" target="_blank">Demo</a></div></li>
+<li><a href="https://gist.github.com/cyokodog/5044329">jQuery.isEnabled – Gist</a></li>
+</ul>
+
+<p>スマフォの普及もありデバイスが多様化してるので、極力 userAgent に依存した判定は避けたいなぁと思ってます。</p>
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

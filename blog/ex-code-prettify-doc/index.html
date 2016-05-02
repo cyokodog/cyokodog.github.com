@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>その場で編集／実行できるシンタックスハイライター jQuery プラグイン | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/ex-code-prettify-doc/" title="その場で編集／実行できるシンタックスハイライター jQuery プラグイン">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2013-09-23</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/ex-code-prettify-doc/"><img src="https://lh4.googleusercontent.com/-3exvGUhfP0A/UkBVHV--XgI/AAAAAAAAFZs/iqBAvKfjyLc/s800/logo.png"></a>
+</div>
+<p>Ex Code Prettify は、Google Code Prettify をベースとしたシンタックスハイライトを行う jQuery プラグインです。ソースコードの編集／実行をその場で行う機能や、外部 CSS / JS ファイルの動的インポート機能等を使用して、<a href="http://jsdo.it/">jsdo.it</a> や <a href="http://jsfiddle.net/">jsFiddle</a> のようなライブデモ機能を自サイトに実装することができます。</p>
+
+<!--more-->
+
+<h2>変更履歴</h2>
+
+<ul>
+<li>v0.5.2(2014-11-17) 
+
+<ul>
+<li>外部 css, js ファイルの読み込み指定時、それらファイルが読み込まれた後にコードが実行されるように修正しました。</li>
+</ul></li>
+<li>v0.5 
+
+<ul>
+<li>JavaScript のコード内で 自身のデモエリアを格納した$DEMO、API オブジェクトを格納した API という変数を参照できるようにしました。</li>
+<li>code / demo を横並びレイアウトで表示した際、画面幅に応じたレスポンシブレイアウトになるようにしました。</li>
+</ul></li>
+<li>v0.4 
+
+<ul>
+<li>IE については IE8 以上に限定されますが、編集したソースコードの localStorage への書き込み、読み出し、削除をできるようにしました。</li>
+<li>デモ非表示モードの際、無駄に行っていたソースコードのパースを省きました。</li>
+<li>確定ボタンクリック時のコールバック処理を指定できるようにしました。</li>
+</ul></li>
+<li>v0.3 
+
+<ul>
+<li>ソースコードの編集／実行機能、他を追加。</li>
+</ul></li>
+<li>v0.2 
+
+<ul>
+<li>IE8以下に対応。</li>
+</ul></li>
+</ul>
+
+<h2>使い方</h2>
+
+<p>以下のよう jQuery、Google Code Prettify の JS ファイル、Ex Code Prettify の JS/CSS ファイルを読み込みます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;link</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"jquery.ex-code-prettify.css"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text/css"</span><span class="pln"> </span><span class="atn">rel</span><span class="pun">=</span><span class="atv">"stylesheet"</span><span class="tag">&gt;</span></li><li class="L1"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L2"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"google-code-prettify/prettify.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L3"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"jquery.ex-code-prettify.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 126px;"></textarea></div></div></div>
+
+<p><br></p>
+
+<p>TEXTAREA または PRE 要素内にハイライト表示したいソースコードを記述します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">&lt;!-- TEXTAREA Markup --&gt;</span></li><li class="L1"><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"code"</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'html'}"</span><span class="tag">&gt;</span></li><li class="L2"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"container"</span><span class="tag">&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"page-header"</span><span class="tag">&gt;</span></li><li class="L4"><span class="pln">        </span><span class="tag">&lt;h1&gt;</span><span class="pln">Ex Code Prettify</span><span class="tag">&lt;/h1&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L6"><span class="tag">&lt;/div&gt;</span></li><li class="L7"><span class="tag">&lt;/textarea&gt;</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="com">&lt;!-- PRE Markup --&gt;</span></li><li class="L0"><span class="tag">&lt;pre</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"code"</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'html'}"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">&amp;lt;div class="container"&amp;gt;</span></li><li class="L2"><span class="pln">    &amp;lt;div class="page-header"&amp;gt;</span></li><li class="L3"><span class="pln">        &amp;lt;h1&amp;gt;Ex Code Prettify&amp;lt;/h1&amp;gt;</span></li><li class="L4"><span class="pln">    &amp;lt;/div&amp;gt;</span></li><li class="L5"><span class="pln">&amp;lt;/div&amp;gt;</span></li><li class="L6"><span class="tag">&lt;/pre&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 360px;"></textarea></div></div></div>
+
+<p>data-ex-code-prettify-param 属性にはプラグイン実行時に適用されるパラメータを記述できます。codeType パラメータにはソースコードの種類（css, html, script, cssFile, jsFile）を指定します。</p>
+
+<p><br></p>
+
+<p>TEXTAREA または PRE 要素に対し exCodePrettify() メソッドを実行します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'.code'</span><span class="pun">).</span><span class="pln">exCodePrettify</span><span class="pun">();</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br></p>
+
+<p>通常、ソースコードの記述に Tab を使用しているとスペース８個分と深めのインデントとなってしまいますが、tabToSpace パラメータに true を指定する事でスペース４個分に置換することができます。（スペースの個数は tabToSpaceSize パラメータで変更できます。）</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'.code'</span><span class="pun">).</span><span class="pln">exCodePrettify</span><span class="pun">({</span><span class="pln">tabToSpace</span><span class="pun">:</span><span class="kwd">true</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+Google Code Prettify によりソースコードがハイライト表示されます。</p>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image01.png" alt="image01"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo1" class="demo external" target="_blank">Demo | ソースコードをハイライト表示する</a></div></p>
+
+<p>ハイライト表示されたソースコードをそのままコピー＆ペーストとすると、IE の場合「改行が反映されず行番号もコピーされてしまう」、Firefox の場合「インデントが反映されない」という問題が起きます。（Chrome の場合は問題有りません。詳細は「<a href="http://www.cyokodog.net/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>」をご覧ください。）</p>
+
+<p><br></p>
+
+<p>ソースコードをコピーする場合は、ヘッダ部に表示された「RAW」リンクをクリックしソースコードをプレーンテキスト形式に表示した後コピーします。</p>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image02.png" alt="image02"></p>
+
+<h2>ソースコードを編集／実行する</h2>
+
+<p>ソースコードをその場で編集／実行することができます。まず、ソースコードを囲うコンテナ要素を記述し、クラス名を ex-code-prettify とします。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">&lt;!-- コンテナ要素 --&gt;</span></li><li class="L1"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"ex-code-prettify"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"code"</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'html'}"</span><span class="tag">&gt;</span><span class="pln">.</span></li><li class="L3"><span class="pln">        </span><span class="com">&lt;!-- ソースコード --&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;/textarea&gt;</span></li><li class="L5"><span class="tag">&lt;/div&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><br></p>
+
+<p>この状態で showDemo パラメータに true を指定し実行すると、ソースコードの実行結果が上部に表示されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'.code'</span><span class="pun">).</span><span class="pln">exCodePrettify</span><span class="pun">({</span><span class="pln">showDemo</span><span class="pun">:</span><span class="kwd">true</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image03.png" alt="image03"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo2" class="demo external" target="_blank">Demo | ソースコードとデモを表示する</a></div></p>
+
+<p>showCode パラメータに false を指定すると実行結果のみが表示されます。</p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo3" class="demo external" target="_blank">Demo | デモのみを表示する</a></div></p>
+
+<p><br>
+editCode パラメータに true を指定するとソースコードを編集できるようになります。EDIT リンクで編集状態にし、SAVE リンクをクリックすると変更内容が確定されデモが実行されます。変更内容を取り消す場合は CANCEL リンクをクリックします。</p>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image04.png" alt="image04"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo4" class="demo external" target="_blank">Demo | ソースコードを編集する</a></div></p>
+
+<p><br></p>
+
+<p>TEXTAREA 内でソースコードを編集する際は、Tab キーによるインデントが可能です（IE8以下は未対応）。また、Behave.js を併用することで [範囲選択 + Shift + Tab] でインデント削除、4 Tab インデント置換、簡易的なコード補完機能が有効になります。<br> Behave.js を使用する場合はまず、behave.js を読み込みます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"behave/behave.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br></p>
+
+<p>次に behaveJS パラメータに true を指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'.code'</span><span class="pun">).</span><span class="pln">exCodePrettify</span><span class="pun">({</span></li><li class="L1"><span class="pln">    showDemo </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L2"><span class="pln">    editCode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L3"><span class="pln">    behaveJS </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L4"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 144px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo5" class="demo external" target="_blank">Demo | ソースコードを Behave.js で編集する</a></div></p>
+
+<h2>レイアウトを変更する</h2>
+
+<p>コンテナ要素に特定のクラス名を付与することで、レイアウトを変更することができます。demo-bottom クラスを付与するとデモ領域がソースコードの下に表示されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">&lt;!-- コンテナ要素 --&gt;</span></li><li class="L1"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"ex-code-prettify demo-bottom"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"code"</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'html'}"</span><span class="tag">&gt;</span><span class="pln">.</span></li><li class="L3"><span class="pln">        </span><span class="com">&lt;!-- ソースコード --&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;/textarea&gt;</span></li><li class="L5"><span class="tag">&lt;/div&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image05.png" alt="image05"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo6" class="demo external" target="_blank">Demo | デモを下部に表示する</a></div></p>
+
+<p><br></p>
+
+<p>demo-right で右側に表示されます。（window幅が 768px 以上の場合のみ）</p>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image06.png" alt="image06"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo7" class="demo external" target="_blank">Demo | デモを右側に表示する</a></div></p>
+
+<p><br></p>
+
+<p>demo-left で左側に表示されます。（window幅が 768px 以上の場合のみ）</p>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image07.png" alt="image07"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo8" class="demo external" target="_blank">Demo | デモを左側に表示する</a></div></p>
+
+<h2>複数のソースコードを１つのデモとして実行する</h2>
+
+<p>同一コンテナ内に複数のソースコード記述した場合、それぞれの実行結果は１つのデモ領域に対し適用されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"ex-code-prettify demo-right"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'css'}"</span><span class="tag">&gt;</span><span class="pln">...</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'html'}"</span><span class="tag">&gt;</span><span class="pln">...</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'script'}"</span><span class="tag">&gt;</span><span class="pln">...</span></li><li class="L4"><span class="tag">&lt;/div&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 144px;"></textarea></div></div></div>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image08.png" alt="image08"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo9" class="demo external" target="_blank">Demo | 複数のソースコードを１つのデモとして実行する</a></div></p>
+
+<p>この例の場合、JavaScript によるエフェクト処理がいきなり始まってしまうので、ユーザの任意のタイミングで実行できるようにしてみます。</p>
+
+<p><br></p>
+
+<p>まず JavaScript の autoRun パラメータに false を指定し、デモの自動実行を抑止します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'script', autoRun:false}"</span><span class="tag">&gt;</span><span class="pln">...</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br></p>
+
+<p>次にユーザが任意のタイミングでデモの実行／リセットができるように showRunButton／showResetButton パラメータに true を指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'.code'</span><span class="pun">).</span><span class="pln">exCodePrettify</span><span class="pun">({</span></li><li class="L1"><span class="pln">    showRunButton </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L2"><span class="pln">    showResetButton </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L3"><span class="pln">    showDemo </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L4"><span class="pln">    editCode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L5"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><br></p>
+
+<p>RUN / RESET リンクが表示され、任意のタイミングでデモの実行／リセットができるようになります。</p>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image09.png" alt="image09"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo10" class="demo external" target="_blank">Demo | 実行／リセットリンクを表示する</a></div></p>
+
+<h2>外部ファイルを読み込む</h2>
+
+<p>codeType パラメータに cssFile , jsFile を指定し、対象ファイルの絶対パス又は相対パスを記述すれば *.css , *.js ファイルを動的に読み込むことができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'cssFile'}"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">jquery.ex-inplace-editor/jquery.ex-inplace-editor.css</span></li><li class="L2"><span class="tag">&lt;/textarea&gt;</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'jsFile'}"</span><span class="tag">&gt;</span></li><li class="L5"><span class="pln">jquery.ex-inplace-editor/jquery.ex-inplace-editor.js</span></li><li class="L6"><span class="tag">&lt;/textarea&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 180px;"></textarea></div></div></div>
+
+<p>一つの TEXTAREA に対し改行区切りで複数のファイルを記述することができます。</p>
+
+<p><br></p>
+
+<p>以下例では in-place-editor（値をその場で編集する機能）の jQuery プラグインを動的に読み込み実行しています。</p>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image10.png" alt="image10"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo11" class="demo external" target="_blank">Demo | 外部ファイルを読み込む</a></div></p>
+
+<h2>独自のデザインにする</h2>
+
+<p>デモ領域には demo-area クラス、実行ボタンには run-button クラス、リセットボタンには reset-button クラスを付与しておき、コンテナ要素に ex-code-prettify クラス以外のクラス名を付与しておけば、独自のデザインで表示することができます。</p>
+
+<p>例えば、Bootstrap3 を読み込んでおき以下のよう記述すれば、JavaScript の表示領域のみ広くとったレスポンシブなレイアウトとして表示することができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;style&gt;</span></li><li class="L1"><span class="pln">    div</span><span class="pun">.</span><span class="pln">demo</span><span class="pun">-</span><span class="pln">contents </span><span class="pun">.</span><span class="pln">row </span><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">*{</span></li><li class="L2"><span class="pln">        margin</span><span class="pun">-</span><span class="pln">bottom</span><span class="pun">:</span><span class="lit">8px</span><span class="pun">;</span></li><li class="L3"><span class="pln">    </span><span class="pun">}</span></li><li class="L4"><span class="pln">    div</span><span class="pun">.</span><span class="pln">demo</span><span class="pun">-</span><span class="pln">contents div</span><span class="pun">.</span><span class="pln">demo</span><span class="pun">-</span><span class="pln">area</span><span class="pun">{</span></li><li class="L5"><span class="pln">        padding</span><span class="pun">:</span><span class="lit">8px</span><span class="pun">;</span></li><li class="L6"><span class="pln">        border</span><span class="pun">:</span><span class="pln">solid </span><span class="lit">1px</span><span class="pln"> </span><span class="com">#eee;</span></li><li class="L7"><span class="pln">    </span><span class="pun">}</span></li><li class="L8"><span class="tag">&lt;/style&gt;</span></li><li class="L9"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"demo-contents"</span><span class="tag">&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"row"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-md-12"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">            </span><span class="tag">&lt;button</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"button"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"run-button btn btn-success"</span><span class="tag">&gt;</span><span class="pln">RUN</span><span class="tag">&lt;/button&gt;</span></li><li class="L3"><span class="pln">            </span><span class="tag">&lt;button</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"button"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"reset-button btn btn-default"</span><span class="tag">&gt;</span><span class="pln">RESET</span><span class="tag">&lt;/button&gt;</span></li><li class="L4"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L6"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"row"</span><span class="tag">&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-md-12"</span><span class="tag">&gt;</span></li><li class="L8"><span class="pln">            </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"demo-area"</span><span class="tag">&gt;&lt;/div&gt;</span></li><li class="L9"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"row"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-md-6"</span><span class="tag">&gt;</span></li><li class="L3"><span class="pln">            </span><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"code"</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'css'}"</span><span class="tag">&gt;&lt;/textarea&gt;</span></li><li class="L4"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L5"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-md-6"</span><span class="tag">&gt;</span></li><li class="L6"><span class="pln">            </span><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"code"</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'html'}"</span><span class="tag">&gt;&lt;/textarea&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L8"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"row"</span><span class="tag">&gt;</span></li><li class="L0"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-md-12"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">            </span><span class="tag">&lt;textarea</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"code"</span><span class="pln"> </span><span class="atn">data-ex-code-prettify-param</span><span class="pun">=</span><span class="atv">"{codeType:'script',autoRun:false}"</span><span class="tag">&gt;&lt;/textarea&gt;</span></li><li class="L2"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L4"><span class="tag">&lt;/div&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 684px;"></textarea></div></div></div>
+
+<p><br></p>
+
+<p>container パラメータにはコンテナ要素を指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'textarea.code'</span><span class="pun">).</span><span class="pln">exCodePrettify</span><span class="pun">({</span></li><li class="L1"><span class="pln">    container </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.demo-contents'</span><span class="pun">,</span></li><li class="L2"><span class="pln">    showDemo </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L3"><span class="pln">    editCode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L4"><span class="pln">    behaveJS </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L5"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><img src="http://cyokodog.github.io/jquery.ex-code-prettify/img/image11.png" alt="image11"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo12" class="demo external" target="_blank">Demo | 独自のデザインにする</a></div></p>
+
+<h2>編集したソースコードを localStorage に保存する</h2>
+
+<p>IE については IE8 以上に限定されますが、以下パラメータの指定で編集したソースコードの localStorage への書き込み、読み出し、削除ができます。</p>
+
+<ul>
+<li>autoSaveToStorage 
+
+<ul>
+<li>true を指定すると SAVE リンクをクリックしたタイミングで、ソースコードが localStorage に保存されます。</li>
+</ul></li>
+<li>autoLoadFromStorage 
+
+<ul>
+<li>true を指定するとページ読み込み時、localStorage に保存されたソースコードが自動で読み込まれます。</li>
+</ul></li>
+<li>clearStorage 
+
+<ul>
+<li>true を指定するとページ読み込み時、localStorage に保存されたソースコードを削除します。</li>
+</ul></li>
+<li>savePrefix 
+
+<ul>
+<li>local storage 保存キーのプレフィックスを指定します。</li>
+</ul></li>
+</ul>
+
+<p>また、API オブジェクトを経由し以下メソッドを実行することで、任意のタイミングで上記と同様の処理をすることもできます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">// local storage 保存コードの削除</span></li><li class="L1"><span class="pln">clearStorage</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">prefix</span><span class="pun">){</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="com">// コードの local storage への保存</span></li><li class="L4"><span class="pln">saveCodeToStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">prefix</span><span class="pun">){</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="com">// local storage 保存コードの取得</span></li><li class="L7"><span class="pln">getCodeFromStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">prefix</span><span class="pun">){</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="com">// local storage 保存コードのロード</span></li><li class="L0"><span class="pln">loadCodeFromStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">prefix</span><span class="pun">){</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 252px;"></textarea></div></div></div>
+
+<p>以下例では、localStorage への保存、読み出しを自動で行い、自前で用意したリセットリンクをクリック時に、clearStorage() メソッドを使用し保存したソースコードを削除しています。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> api </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'.code'</span><span class="pun">).</span><span class="pln">exCodePrettify</span><span class="pun">({</span></li><li class="L1"><span class="pln">    api </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L2"><span class="pln">    autoSaveToStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L3"><span class="pln">    autoLoadFromStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L4"><span class="pln">    savePrefix </span><span class="pun">:</span><span class="pln"> </span><span class="str">'demo'</span><span class="pun">,</span></li><li class="L5"><span class="pln">    showDemo </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L6"><span class="pln">    editCode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L7"><span class="pun">});</span></li><li class="L8"><span class="pln">$</span><span class="pun">(</span><span class="str">'a.code-reset'</span><span class="pun">).</span><span class="pln">on</span><span class="pun">(</span><span class="str">'click'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L9"><span class="pln">    api</span><span class="pun">.</span><span class="pln">clearStorage</span><span class="pun">();</span></li><li class="L0"><span class="pln">    location</span><span class="pun">.</span><span class="pln">reload</span><span class="pun">();</span></li><li class="L1"><span class="pln">    </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">;</span></li><li class="L2"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 288px;"></textarea></div></div></div>
+
+<p><img src="http://lh4.googleusercontent.com/-p4QwVwl4STI/Uymr5hi0SNI/AAAAAAAAGuM/O6nDCZnRNlU/s640/demo13.png" alt="demo13"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo13" class="demo external" target="_blank">Demo | 編集したソースコードを localStorage に保存する</a></div></p>
+
+<h2>$DEMO で自身のデモエリアを参照する</h2>
+
+<p>１つのページに複数のデモエリアがある場合、自身のデモエリアの要素を取得するようにする配慮が必要です。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-NEPE1q1Q1TU/VFugx7maUyI/AAAAAAAAITQ/klPFWo6EAhs/s800/demo1.png" alt="demo1"></p>
+
+<p>$DEMO.find( element ) と記述することで自身のデモエリアの要素を参照できるようになります。（グローバル空間は汚染されてません）</p>
+
+<p><img src="https://lh4.googleusercontent.com/-olxGn2Zth5o/VFugx6AlVlI/AAAAAAAAITU/TKpmTOCG6oE/s800/demo2.png" alt="demo2"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo14" class="demo external" target="_blank">Demo | $DEMO で自身のデモエリアを参照する</a></div></p>
+
+<h2>API を参照する</h2>
+
+<p>API という変数名で API オブジェクトを参照することができます。（グローバル空間は汚染されてません）</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">//自身のコードを取得</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> code </span><span class="pun">=</span><span class="pln"> API</span><span class="pun">.</span><span class="pln">getCode</span><span class="pun">();</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="com">//デモエリアに pre を生成</span></li><li class="L4"><span class="kwd">var</span><span class="pln"> pre </span><span class="pun">=</span><span class="pln"> $DEMO</span><span class="pun">.</span><span class="pln">html</span><span class="pun">(</span><span class="str">'&lt;pre/&gt;'</span><span class="pun">).</span><span class="pln">find</span><span class="pun">(</span><span class="str">'pre'</span><span class="pun">);</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="com">//pre にコードをセットし fade で表示</span></li><li class="L7"><span class="pln">pre</span><span class="pun">.</span><span class="pln">text</span><span class="pun">(</span><span class="pln">code</span><span class="pun">).</span><span class="pln">hide</span><span class="pun">().</span><span class="pln">fadeIn</span><span class="pun">(</span><span class="lit">3000</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="pln">    </span><span class="com">// fade が完了したらデモを再実行</span></li><li class="L0"><span class="pln">    API</span><span class="pun">.</span><span class="pln">runDemo</span><span class="pun">();</span></li><li class="L1"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 270px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo15" class="demo external" target="_blank">Demo | API を参照する</a></div></p>
+
+<h2>パラメータ</h2>
+
+<p>プラグイン実行時、下記パラメータを指定できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">defaults </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">    api </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true の場合 api オブジェクトを返す。</span></li><li class="L2"><span class="pln">    prettyClass </span><span class="pun">:</span><span class="pln"> </span><span class="str">'linenums'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// linenums を指定すると行番号が表示される。</span></li><li class="L3"><span class="pln">    title </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span><span class="pln"> </span><span class="com">// コードのヘッダタイトルを指定。</span></li><li class="L4"><span class="pln">    codeTypeTitle </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// title パラメータ未指定時に設定されるコードのヘッｓダタイトル。</span></li><li class="L5"><span class="pln">        css </span><span class="pun">:</span><span class="pln"> </span><span class="str">'CSS'</span><span class="pun">,</span></li><li class="L6"><span class="pln">        html </span><span class="pun">:</span><span class="pln"> </span><span class="str">'HTML'</span><span class="pun">,</span></li><li class="L7"><span class="pln">        script </span><span class="pun">:</span><span class="pln"> </span><span class="str">'JavaScript'</span><span class="pun">,</span></li><li class="L8"><span class="pln">        jsFile </span><span class="pun">:</span><span class="pln"> </span><span class="str">'JS File'</span><span class="pun">,</span></li><li class="L9"><span class="pln">        cssFile </span><span class="pun">:</span><span class="pln"> </span><span class="str">'CSS File'</span></li><li class="L0"><span class="pln">    </span><span class="pun">},</span></li><li class="L1"><span class="pln">    editCode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true でコードの編集が可能になる。</span></li><li class="L2"><span class="pln">    tabIndent </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true でコード編集時 Tab キーによるインデントが可能になる。</span></li><li class="L3"><span class="pln">    tabToSpace </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true で Google Code Prettify によるコード表示時、Tab をスペースに置換する。</span></li><li class="L4"><span class="pln">    tabToSpaceSize</span><span class="pun">:</span><span class="pln"> </span><span class="lit">4</span><span class="pun">,</span><span class="pln"> </span><span class="com">// tabToSpace が true 時に置換するスペースの数を指定。</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="pln">    behaveJS </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true で Behave.js を有効にする。</span></li><li class="L7"><span class="pln">    behaveJSParam </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Behave.js の初期パラメータ。</span></li><li class="L8"><span class="pln">        textarea</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span></li><li class="L9"><span class="pln">        replaceTab</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L0"><span class="pln">        softTabs</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L1"><span class="pln">        tabSize</span><span class="pun">:</span><span class="pln"> </span><span class="lit">4</span><span class="pun">,</span></li><li class="L2"><span class="pln">        autoOpen</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L3"><span class="pln">        overwrite</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L4"><span class="pln">        autoStrip</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L5"><span class="pln">        autoIndent</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L6"><span class="pln">        fence</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span></li><li class="L7"><span class="pln">    </span><span class="pun">},</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="pln">    codeType </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span><span class="pln"> </span><span class="com">// "css","html","script","jsFile","cssFile" のいずれかを指定。</span></li><li class="L0"><span class="pln">    autoRun </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true でデモを自動実行する。</span></li><li class="L1"><span class="pln">    container </span><span class="pun">:</span><span class="pln"> </span><span class="str">'.ex-code-prettify'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// デモ、コードのコンテナ要素のセレクタを指定。</span></li><li class="L2"><span class="pln">    codeArea </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.code-area'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// コードの出力先要素のセレクタを指定。</span></li><li class="L3"><span class="pln">    demoArea </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.demo-area'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// デモの出力先要素のセレクタを指定。</span></li><li class="L4"><span class="pln">    editLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'EDIT'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// 編集ボタンのラベル。</span></li><li class="L5"><span class="pln">    saveLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'SAVE'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// 編集内容の確定ボタンのラベル。</span></li><li class="L6"><span class="pln">    cancelLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'CANCEL'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// 編集内容の取り消しボタンのラベル。</span></li><li class="L7"><span class="pln">    rawLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'RAW'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// プレーン表示モードボタンのラベル。</span></li><li class="L8"><span class="pln">    backLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'BACK'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// プレーン表示モードから戻るボタンのラベル。</span></li><li class="L9"><span class="pln">    demoLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'DEMO'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// デモコンテンツのタイトルラベル。</span></li><li class="L0"><span class="pln">    showRunButton </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true でデモ実行ボタンが表示される。</span></li><li class="L1"><span class="pln">    runButton </span><span class="pun">:</span><span class="pln"> </span><span class="str">'.run-button'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// デモ実行ボタンのセレクタを指定。</span></li><li class="L2"><span class="pln">    runLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'RUN'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// デモ実行ボタンのラベル。</span></li><li class="L3"><span class="pln">    showResetButton </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true でデモリセットボタンが表示される。</span></li><li class="L4"><span class="pln">    resetButton </span><span class="pun">:</span><span class="pln"> </span><span class="str">'.reset-button'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// デモリセットボタンのセレクタを指定。</span></li><li class="L5"><span class="pln">    resetLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'RESET'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// デモリセットボタンのラベル。</span></li><li class="L6"><span class="pln">    adjustEditorHeight </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true で編集モード時のテキストエリアの高さを自動調整する。</span></li><li class="L7"><span class="pln">    showCode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true でコードを表示する。</span></li><li class="L8"><span class="pln">    showDemo </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true でデモを表示する。</span></li><li class="L9"><span class="pln">    autoSaveToStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true でコードを local storage に自動保存する。</span></li><li class="L0"><span class="pln">    autoLoadFromStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true で local storage 保存コードの自動ロードする。</span></li><li class="L1"><span class="pln">    clearStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// true で local storage 保存コードの自動削除する。</span></li><li class="L2"><span class="pln">    savePrefix </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span><span class="pln"> </span><span class="com">// local storage 保存キーのプレフィックスを指定。</span></li><li class="L3"><span class="pln">    onSave </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){}</span><span class="pln"> </span><span class="com">// 確定ボタンクリック時のコールバック処理を指定。</span></li><li class="L4"><span class="pun">},</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 1044px;"></textarea></div></div></div>
+
+<h2>API</h2>
+
+<p>API オブジェクトを使用し、下記メソッドを実行できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">// config の取得</span></li><li class="L1"><span class="pln">getConfig </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="com">// json 形式の独自データ属性 の取得</span></li><li class="L4"><span class="pln">getJsonData </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">target</span><span class="pun">,</span><span class="pln">name</span><span class="pun">){</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="com">// 特定パラメータの取得</span></li><li class="L7"><span class="pln">getParam </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">name</span><span class="pun">){</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="com">// プラグイン適用オブジェクトの取得</span></li><li class="L0"><span class="pln">getTarget </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="com">// 編集モードへの切り替え</span></li><li class="L3"><span class="pln">editMode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="com">// 表示モードへの切り替え</span></li><li class="L6"><span class="pln">viewMode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L7"><span class="pln">&nbsp;</span></li><li class="L8"><span class="com">// デモの実行</span></li><li class="L9"><span class="pln">runDemo </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L0"><span class="pln">&nbsp;</span></li><li class="L1"><span class="com">// デモのリセット</span></li><li class="L2"><span class="pln">resetDemo </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="com">// コード種別の取得</span></li><li class="L5"><span class="pln">getCodeType </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L6"><span class="pln">&nbsp;</span></li><li class="L7"><span class="com">// コードの取得</span></li><li class="L8"><span class="pln">getCode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L9"><span class="pln">&nbsp;</span></li><li class="L0"><span class="com">// 全てのコードの取得（json形式）</span></li><li class="L1"><span class="pln">getAllCode </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="com">// local storage 保存コードの削除</span></li><li class="L4"><span class="pln">clearStorage</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">prefix</span><span class="pun">){</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="com">// コードの local storage への保存</span></li><li class="L7"><span class="pln">saveCodeToStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">prefix</span><span class="pun">){</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="com">// local storage 保存コードの取得</span></li><li class="L0"><span class="pln">getCodeFromStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">prefix</span><span class="pun">){</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="com">// local storage 保存コードのロード</span></li><li class="L3"><span class="pln">loadCodeFromStorage </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">prefix</span><span class="pun">){</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 846px;"></textarea></div></div></div>
+
+<h2>API オブジェクトの取得方法</h2>
+
+<p>API オブジェクトは以下の方法で取得することができます。</p>
+
+<p><br></p>
+
+<p>data() メソッドで取得</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> api </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="pln">target</span><span class="pun">).</span><span class="pln">exCodePrettify</span><span class="pun">().</span><span class="pln">data</span><span class="pun">(</span><span class="pln">$</span><span class="pun">.</span><span class="pln">ex</span><span class="pun">.</span><span class="pln">codePrettify</span><span class="pun">.</span><span class="pln">id</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br></p>
+
+<p>API パラメータを指定して取得</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> api </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="pln">target</span><span class="pun">).</span><span class="pln">exCodePrettify</span><span class="pun">({</span><span class="pln">api</span><span class="pun">:</span><span class="kwd">true</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<h2>ダウンロード</h2>
+
+<p>MIT ライセンスです。こちらからどうぞ。</p>
+
+<ul>
+<li><a href="https://github.com/cyokodog/jquery.ex-code-prettify">jquery.ex-code-prettify – GitHub</a></li>
+</ul>
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

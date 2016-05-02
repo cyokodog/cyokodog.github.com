@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>汎用性重視のテーブルフィルタリング系 jQuery プラグイン | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/extablefilter/" title="汎用性重視のテーブルフィルタリング系 jQuery プラグイン">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2013-03-06</li>
+<!--
+        <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/extablefilter/"><img src="http://lh6.googleusercontent.com/-nDflK8r6694/VGPTmW8pBDI/AAAAAAAAIT8/1Wld1mWJRZU/s144/filter.png"></a>
+</div>
+<p>
+汎用性を重視したテーブルフィルタリング系の jQuery プラグインです。<br>
+実装の基本思想は以前書いた「<a href="http://www.cyokodog.net/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>」に基づいてます。</p>
+
+<!--more-->
+
+
+<h2>変更履歴</h2>
+
+<ul>
+<li>v0.5
+
+<ul>
+<li>フィルタ条件の入力フィールドを自動生成する機能を追加しました。</li>
+<li>Excel のオートフィルタのようなプルダウン、ラジオボタン、チェックボックスによる条件入力フィールドの自動生成機能を追加しました。</li>
+<li>QueryString によるフィルタリング機能を追加しました。</li>
+<li>Bootstrap3 対応。</li>
+<li>使用手順の説明、デモを大幅刷新しました。</li>
+</ul></li>
+<li>v0.4 
+
+<ul>
+<li>１つの条件入力フィールドを複数カラムに対し適用した場合、当該フィールドについては OR 条件でフィルタされるようにした。</li>
+</ul></li>
+<li>v0.3 
+
+<ul>
+<li>プラグインの実行時、パラメータ名を指定ぜずフィルター要素のみを指定できるようにした。
+
+<ul>
+<li>$(‘table’).exTableFilter([ ‘.filter1′, ‘.filter2′, … ])</li>
+</ul></li>
+</ul></li>
+<li>v0.2 
+
+<ul>
+<li>select &gt; option 要素の value 属性でフィルタリング可能にした。（selectValueMatch パラメータの追加）</li>
+</ul></li>
+</ul>
+
+<h2>使い方</h2>
+
+<p>jQuery と Ex Table Filter の js ファイルを読み込みます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L1"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"jquery.extablefilter-latest.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+フィルタリングの対象となるテーブルを書きます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;table</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"data"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;thead&gt;</span></li><li class="L2"><span class="pln">        </span><span class="tag">&lt;tr&gt;</span></li><li class="L3"><span class="pln">            </span><span class="tag">&lt;th&gt;</span><span class="pln">No</span><span class="tag">&lt;/th&gt;</span></li><li class="L4"><span class="pln">            </span><span class="tag">&lt;th&gt;</span><span class="pln">Class</span><span class="tag">&lt;/th&gt;</span></li><li class="L5"><span class="pln">            </span><span class="tag">&lt;th&gt;</span><span class="pln">Category</span><span class="tag">&lt;/th&gt;</span></li><li class="L6"><span class="pln">            </span><span class="tag">&lt;th&gt;</span><span class="pln">Qty</span><span class="tag">&lt;/th&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;/tr&gt;</span></li><li class="L8"><span class="pln">    </span><span class="tag">&lt;/thead&gt;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;tbody&gt;</span></li><li class="L0"><span class="pln">        </span><span class="tag">&lt;tr&gt;</span></li><li class="L1"><span class="pln">            </span><span class="tag">&lt;td&gt;</span><span class="pln">1</span><span class="tag">&lt;/td&gt;</span></li><li class="L2"><span class="pln">            </span><span class="tag">&lt;td&gt;</span><span class="pln">core</span><span class="tag">&lt;/td&gt;</span></li><li class="L3"><span class="pln">            </span><span class="tag">&lt;td&gt;</span><span class="pln">Ajax</span><span class="tag">&lt;/td&gt;</span></li><li class="L4"><span class="pln">            </span><span class="tag">&lt;td&gt;</span><span class="pln">203</span><span class="tag">&lt;/td&gt;</span></li><li class="L5"><span class="pln">        </span><span class="tag">&lt;/tr&gt;</span></li><li class="L6"><span class="pln">        ・・・</span></li><li class="L7"><span class="pln">    </span><span class="tag">&lt;/tbody&gt;</span></li><li class="L8"><span class="tag">&lt;/table&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 396px;"></textarea></div></div></div>
+
+<p><br>
+テーブルに対し exTableFilter() メソッドを実行します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">();</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+フィルタ条件の入力フィールドがテーブルの上部に生成されます。文字を入力すると各列の値と照合しフィルタリングを行います。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-Yuden_vccZU/UyMeQNv6v_I/AAAAAAAAGsk/cKh8CtF_7Lk/s800/a01.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo1" class="demo external" target="_blank">Demo | 条件入力フィールドを自動生成してフィルタリング</a></div></p>
+
+<h2>条件入力フィールドのマークアップを変更する</h2>
+
+<p>自動生成される条件入力フィールドのマークアップは、以下のように filterFieldTemplate パラメータで変更することができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span></li><li class="L1"><span class="pln">    filterFieldTemplate </span><span class="pun">:</span><span class="pln"> </span><span class="str">'&lt;div class="my-filter"&gt;&lt;span&gt;MY FILTER&lt;/span&gt; &lt;input type="text"/&gt;&lt;/div&gt;'</span></li><li class="L2"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><img src="http://lh4.googleusercontent.com/-AgJtzVQ07I4/UyMeQBUIT5I/AAAAAAAAGsE/YYgzqBO2Li8/s800/a01b.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo2" class="demo external" target="_blank">Demo | 条件入力フィールドを自動生成してフィルタリング(マークアップを変更)</a></div></p>
+
+<h2>条件入力フィールドを自前で設置する</h2>
+
+<p>条件入力フィールドを自前で設置するには、任意の箇所に以下のよう入力フィールドを記述しておきます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"form-horizontal"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;label</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-3 control-label"</span><span class="tag">&gt;</span><span class="pln">MY SEARCH FIELD:</span><span class="tag">&lt;/label&gt;</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-9"</span><span class="tag">&gt;</span></li><li class="L3"><span class="pln">        </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"filter form-control"</span><span class="tag">/&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L5"><span class="tag">&lt;/div&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><br>
+exTableFiter() のパラメータで入力フィールドを指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">(</span><span class="str">'input.filter'</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><img src="https://lh4.googleusercontent.com/-Qe7kmfWfEnI/UyMeQOMg8NI/AAAAAAAAGsM/r_lb7xsM0WI/s800/a02.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo3" class="demo external" target="_blank">Demo | 条件入力フィールドを自前で設置してフィルタリング</a></div></p>
+
+<h2>一部の列をフィルタリング対象外にする</h2>
+
+<p>一部の列をフィルタリング対象外にするには、以下のよう ignore パラメータで対象外とする列番号を指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span><span class="pln">ignore</span><span class="pun">:</span><span class="str">'0,3'</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo4" class="demo external" target="_blank">Demo | 一部の列をフィルタリング対象外にする(条件入力フィールド生成時)</a></div></p>
+
+<p><br>
+条件入力フィールドを自前で設置してる場合は、第２パラメータで指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">(</span><span class="str">'input.filter'</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="pln">ignore</span><span class="pun">:</span><span class="str">'0,3'</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo5" class="demo external" target="_blank">Demo | 一部の列をフィルタリング対象外にする(条件入力フィールド設置時)</a></div></p>
+
+<h2>列毎に条件入力フィールドを設置してフィルタリングする</h2>
+
+<p>列毎に条件入力フィールドを設置するには、filters パラメータで各列に割り当てる入力フィールドを指定します。１つの入力フィールドを複数の列に割あてることもできます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span></li><li class="L1"><span class="pln">    filters </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">        </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'input.class-category-filter'</span><span class="pun">,</span></li><li class="L3"><span class="pln">        </span><span class="lit">2</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'input.class-category-filter'</span><span class="pun">,</span></li><li class="L4"><span class="pln">        </span><span class="lit">3</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'input.qty-filter'</span><span class="pun">)</span></li><li class="L5"><span class="pln">    </span><span class="pun">}</span></li><li class="L6"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 180px;"></textarea></div></div></div>
+
+<p><img src="http://lh3.googleusercontent.com/-IhOF2ByOAl8/UyMeQlNFKuI/AAAAAAAAGsU/UtfckGYWK3M/s640/a06.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo6" class="demo external" target="_blank">Demo | 列毎に条件入力フィールドを設置してフィルタリング</a></div></p>
+
+<h2>プルダウン、ラジオボタン、チェックボックスでフィルタリングする</h2>
+
+<p>プルダウン、ラジオボタン、チェックボックスでもフィルタリングできます。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-Jf7hJpAgUGE/UyMeRHtElnI/AAAAAAAAGsY/-vtYwp81j68/s640/a07.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo7" class="demo external" target="_blank">Demo | プルダウン、ラジオボタン、チェックボックスでフィルタリング</a></div></p>
+
+<h2>プルダウン、ラジオボタン、チェックボックス、テキストフィールドを自動生成してフィルタリングする</h2>
+
+<p>プルダウンやラジオボタンの選択値を自前で記述するのが面倒な場合は、以下のよう append パラメータを指定することで自動生成させることができます。to パラメータに挿入先、type パラメータに要素の種類を指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span></li><li class="L1"><span class="pln">    filters </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">        </span><span class="lit">0</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">            append </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L4"><span class="pln">                to </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.no-filter-area'</span><span class="pun">,</span></li><li class="L5"><span class="pln">                type </span><span class="pun">:</span><span class="pln"> </span><span class="str">'checkbox'</span></li><li class="L6"><span class="pln">            </span><span class="pun">}</span></li><li class="L7"><span class="pln">        </span><span class="pun">},</span></li><li class="L8"><span class="pln">        </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L9"><span class="pln">            append </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L0"><span class="pln">                to </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.class-filter-area'</span><span class="pun">,</span></li><li class="L1"><span class="pln">                type </span><span class="pun">:</span><span class="pln"> </span><span class="str">'radio'</span></li><li class="L2"><span class="pln">            </span><span class="pun">}</span></li><li class="L3"><span class="pln">        </span><span class="pun">},</span></li><li class="L4"><span class="pln">        </span><span class="lit">2</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L5"><span class="pln">            append </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L6"><span class="pln">                to </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.category-filter-area'</span><span class="pun">,</span></li><li class="L7"><span class="pln">                type </span><span class="pun">:</span><span class="pln"> </span><span class="str">'select'</span></li><li class="L8"><span class="pln">            </span><span class="pun">}</span></li><li class="L9"><span class="pln">        </span><span class="pun">},</span></li><li class="L0"><span class="pln">        </span><span class="lit">3</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">            append </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">                to </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.qty-filter-area'</span><span class="pun">,</span></li><li class="L3"><span class="pln">                type </span><span class="pun">:</span><span class="pln"> </span><span class="str">'text'</span></li><li class="L4"><span class="pln">            </span><span class="pun">}</span></li><li class="L5"><span class="pln">        </span><span class="pun">}</span></li><li class="L6"><span class="pln">    </span><span class="pun">}</span></li><li class="L7"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 558px;"></textarea></div></div></div>
+
+<p><img src="http://lh3.googleusercontent.com/-CWO0j966oBA/UyMeRWAej3I/AAAAAAAAGsw/7y4l9KnkD8o/s640/a08.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo8" class="demo external" target="_blank">Demo | プルダウン、ラジオボタン、チェックボックス、テキストフィールドを自動生成してフィルタリング</a></div></p>
+
+<h2>自動生成される条件入力フィールドと空白条件をカスタマイズする</h2>
+
+<p>自動生成される条件入力フィールドのマークアップ、プルダウンやラジオボタンの未指定時の条件等を指定することができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span></li><li class="L1"><span class="pln">    filters </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">        </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">            append </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L4"><span class="pln">                </span><span class="kwd">template</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'&lt;div class="my-radio"&gt;&lt;label&gt;&lt;input type="radio"/&gt; {label}&lt;/label&gt;&lt;/div&gt;'</span><span class="pun">,</span></li><li class="L5"><span class="pln">                addBlank </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span></li><li class="L6"><span class="pln">                to </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.class-filter-area'</span><span class="pun">,</span></li><li class="L7"><span class="pln">                type </span><span class="pun">:</span><span class="pln"> </span><span class="str">'radio'</span></li><li class="L8"><span class="pln">            </span><span class="pun">}</span></li><li class="L9"><span class="pln">        </span><span class="pun">},</span></li><li class="L0"><span class="pln">        </span><span class="lit">2</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">            append </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">                blankLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'全て'</span><span class="pun">,</span></li><li class="L3"><span class="pln">                to </span><span class="pun">:</span><span class="pln"> </span><span class="str">'div.category-filter-area'</span><span class="pun">,</span></li><li class="L4"><span class="pln">                type </span><span class="pun">:</span><span class="pln"> </span><span class="str">'select'</span></li><li class="L5"><span class="pln">            </span><span class="pun">},</span></li><li class="L6"><span class="pln">            selectValueMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L7"><span class="pln">        </span><span class="pun">}</span></li><li class="L8"><span class="pln">    </span><span class="pun">}</span></li><li class="L9"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 414px;"></textarea></div></div></div>
+
+<ul>
+<li>template パラメータでマークアップを変更できます。</li>
+<li>プルダウンやラジオボタンで addBlank パラメータを false にすると未指定条件が生成されません。</li>
+<li>blankLabel パラメータでは未指定条件のラベルが指定できます。</li>
+<li>selectValueMatch を true にすると option 要素の value 属性でフィルタリングします。</li>
+</ul>
+
+<p><img src="http://lh3.googleusercontent.com/-lNTuD_MaJb4/UyMeRnp1L6I/AAAAAAAAGs4/z15z6oB8oW0/s800/a09.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo9" class="demo external" target="_blank">Demo | 自動生成される条件入力フィールドと空白条件をカスタマイズ</a></div></p>
+
+<h2>独自ロジックでフィルタリングする</h2>
+
+<p>独自のフィルタリングを行いたい場合は、onFiltering パラメータにフィルタリングロジックを記述します。例えば指定カラムの数値が一定の範囲の場合のみ表示するには以下のよう記述します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"radio"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"qty-filter"</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"qty-filter"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"100"</span><span class="tag">/&gt;</span><span class="pln">≧100</span></li><li class="L1"><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"radio"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"qty-filter"</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"qty-filter"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"200"</span><span class="tag">/&gt;</span><span class="pln">≧200</span></li><li class="L2"><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"radio"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"qty-filter"</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"qty-filter"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"300"</span><span class="tag">/&gt;</span><span class="pln">≧300</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><span></span></p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span></li><li class="L1"><span class="pln">    filters </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">        </span><span class="lit">3</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">            element </span><span class="pun">:</span><span class="pln"> </span><span class="str">'input.qty-filter'</span><span class="pun">,</span></li><li class="L4"><span class="pln">            onFiltering </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){</span></li><li class="L5"><span class="pln">                </span><span class="kwd">return</span><span class="pln"> api</span><span class="pun">.</span><span class="pln">getCurrentCellNum</span><span class="pun">()</span><span class="pln"> </span><span class="pun">&gt;=</span><span class="pln"> api</span><span class="pun">.</span><span class="pln">getCurrentFilterNum</span><span class="pun">();</span></li><li class="L6"><span class="pln">            </span><span class="pun">}</span></li><li class="L7"><span class="pln">        </span><span class="pun">}</span></li><li class="L8"><span class="pln">    </span><span class="pun">}</span></li><li class="L9"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 234px;"></textarea></div></div></div>
+
+<p>API オブジェクトの getCurrentCellNum() メソッドにてフィルタリング中の数値変換したセル値、getCurrentFilterNum()にて数値変換したフィルタ条件値を求め値を比較しています。返却値に true を返すと表示対象となります。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-yMTuHUWTNig/UyMeR5e9xqI/AAAAAAAAGss/cAL22pGjz1o/s640/a10.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo10" class="demo external" target="_blank">Demo | 独自ロジックでフィルタリング</a></div></p>
+
+<h2>フィルタリング後の集計処理を記述してする</h2>
+
+<p>フィルタリング中もしくはフィルタイリングの開始終了時に、処理を割り込ませることができます。例えば表のフッターに集計行を設け、フィルタリングの都度、再集計した結果を表示するには、以下のように記述することができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> sum</span><span class="pun">;</span></li><li class="L1"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">(</span><span class="str">'input.filter'</span><span class="pun">,{</span></li><li class="L2"><span class="pln">    onFilteringStart </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){</span></li><li class="L3"><span class="pln">        sum </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span></li><li class="L4"><span class="pln">    </span><span class="pun">},</span></li><li class="L5"><span class="pln">    onFiltering </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){</span></li><li class="L6"><span class="pln">        </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">api</span><span class="pun">.</span><span class="pln">isShowCurrentRow</span><span class="pun">())</span><span class="pln"> sum </span><span class="pun">=</span><span class="pln"> sum </span><span class="pun">+</span><span class="pln"> api</span><span class="pun">.</span><span class="pln">getCurrentCellNum</span><span class="pun">(</span><span class="lit">3</span><span class="pun">);</span></li><li class="L7"><span class="pln">    </span><span class="pun">},</span></li><li class="L8"><span class="pln">    onFilteringEnd </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){</span></li><li class="L9"><span class="pln">        $</span><span class="pun">(</span><span class="str">'#sum'</span><span class="pun">).</span><span class="pln">html</span><span class="pun">(</span><span class="pln">sum</span><span class="pun">);</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 270px;"></textarea></div></div></div>
+
+<p>以下のコールバック関数を使用し、フィルタリング処理に集計処理を割り込ませています。</p>
+
+<ul>
+<li>onFilteringStart 
+
+<ul>
+<li>フィルタリング開始前に実行されます。集計変数の初期化をしています。</li>
+</ul></li>
+<li>onFiltering 
+
+<ul>
+<li>１行フィルタリング判定する毎に実行されます。isShowCurrentRow() メソッドでカレント行が表示状態であるかを判定し、表示されてる場合のみ集計処理を行っています。getCurrentCellNum() メソッドでは参照したい列番号（例では3）を指定することで特定列の値を参照することができます。</li>
+</ul></li>
+<li>onFilteringEnd 
+
+<ul>
+<li>フィルタリング終了時に実行されます。集計結果を表示してます。</li>
+</ul></li>
+</ul>
+
+<p><img src="http://lh6.googleusercontent.com/-UMR2bs--Abg/UyMeSoy8ZbI/AAAAAAAAGtU/LckYsTQHUFE/s640/a11.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo11" class="demo external" target="_blank">Demo | 集計ロジックを記述してフィルタリング</a></div></p>
+
+<h2>前方／後方／完全／ワイルドカード一致でフィルタリングする</h2>
+
+<p>前方一致、後方一致、完全一致、ワイルドカード一致等のフィルタリングの一致条件を指定することができます。<br>
+各一致条件を適用するには以下のパラメータに true を指定します。</p>
+
+<ul>
+<li>firstMatch 
+
+<ul>
+<li>前方一致フィルタ。先頭の文字列が一致するデータのみが表示対象となります。</li>
+</ul></li>
+<li>lastMatch 
+
+<ul>
+<li>後方一致フィルタ。最後の文字列が一致するデータのみが表示対象となります。</li>
+</ul></li>
+<li>fullMatch 
+
+<ul>
+<li>完全一致フィルタ。全ての文字列が一致するデータのみが表示対象となります。</li>
+</ul></li>
+<li>wildcardMatch 
+
+<ul>
+<li>ワイルドカード一致フィルタ。フィルタ条件指定外の部分に * を指定する必要があります。例えば jquery.js というデータを表示さるには jquery.* のように指定します。（jquery. では表示されません)</li>
+</ul></li>
+</ul>
+
+<p><span></span></p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span></li><li class="L1"><span class="pln">    filters </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">        </span><span class="lit">0</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">            element </span><span class="pun">:</span><span class="pln"> </span><span class="str">'input.no-filter'</span><span class="pun">,</span></li><li class="L4"><span class="pln">            firstMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L5"><span class="pln">        </span><span class="pun">},</span></li><li class="L6"><span class="pln">        </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L7"><span class="pln">            element </span><span class="pun">:</span><span class="pln"> </span><span class="str">'input.class-filter'</span><span class="pun">,</span></li><li class="L8"><span class="pln">            fullMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L9"><span class="pln">        </span><span class="pun">},</span></li><li class="L0"><span class="pln">        </span><span class="lit">2</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">            element </span><span class="pun">:</span><span class="pln"> </span><span class="str">'input.category-filter'</span><span class="pun">,</span></li><li class="L2"><span class="pln">            wildcardMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L3"><span class="pln">        </span><span class="pun">},</span></li><li class="L4"><span class="pln">        </span><span class="lit">3</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L5"><span class="pln">            element </span><span class="pun">:</span><span class="pln"> </span><span class="str">'input.qty-filter'</span><span class="pun">,</span></li><li class="L6"><span class="pln">            lastMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L7"><span class="pln">        </span><span class="pun">}</span></li><li class="L8"><span class="pln">    </span><span class="pun">}</span></li><li class="L9"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 414px;"></textarea></div></div></div>
+
+<p><img src="http://lh4.googleusercontent.com/-XkStKrn5gVM/UyMeShQidsI/AAAAAAAAGs8/HS-nRWZQYWU/s640/a12.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo12" class="demo external" target="_blank">Demo | 前方／後方／完全／ワイルドカード一致でフィルタリング</a></div></p>
+
+<h2>正規表現や関数でフィルタリングする</h2>
+
+<p>filters パラメータに条件入力フィールドを指定せず、正規表現や関数を指定する事ができます。例えば「No」列が一桁の数字で、「CATEGORY」列が 5 文字以上の行を抽出するには以下のように記述します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span></li><li class="L1"><span class="pln">    filters </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">        </span><span class="lit">0</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">/^\d$/</span><span class="pun">,</span></li><li class="L3"><span class="pln">        </span><span class="lit">2</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln"> api </span><span class="pun">){</span></li><li class="L4"><span class="pln">            </span><span class="kwd">return</span><span class="pln"> api</span><span class="pun">.</span><span class="pln">getCurrentCellVal</span><span class="pun">().</span><span class="pln">length </span><span class="pun">&gt;=</span><span class="pln"> </span><span class="lit">5</span><span class="pun">;</span></li><li class="L5"><span class="pln">        </span><span class="pun">}</span></li><li class="L6"><span class="pln">    </span><span class="pun">}</span></li><li class="L7"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 198px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo13" class="demo external" target="_blank">Demo | 正規表現や関数でフィルタリング</a></div></p>
+
+<h2>QueryString でフィルタリングする</h2>
+
+<p>以下のように記述することで QueryString の値でフィルタリングすることができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span></li><li class="L1"><span class="pln">    filters </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">        </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">            element </span><span class="pun">:</span><span class="pln"> </span><span class="str">'a.class-filter'</span><span class="pun">,</span></li><li class="L4"><span class="pln">            queryStringMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L5"><span class="pln">            queryStringName </span><span class="pun">:</span><span class="pln"> </span><span class="str">'class'</span></li><li class="L6"><span class="pln">        </span><span class="pun">}</span></li><li class="L7"><span class="pln">    </span><span class="pun">}</span></li><li class="L8"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 216px;"></textarea></div></div></div>
+
+<p>queryStringMatch に true、queryStringName には適用する QueryString のパラメータ名を指定します。element パラメータは画面上に QeeryString 付きの内部リンクがある場合に指定すると、当該リンクに遷移した際、クラス名に “active” が割り振られるようになります。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-Oej2KsUtehQ/UyMeTRo0pWI/AAAAAAAAGtM/f94eGlDpFVE/s800/a14.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo14" class="demo external" target="_blank">Demo | QueryString でフィルタリング</a></div></p>
+
+<h2>１つのフィルター条件で複数テーブルをフィルタリングする</h2>
+
+<p>複数テーブルを選択した状態でプラグインを実行することで、１つのフィルター条件で複数テーブルをフィルタリングすることができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'table.data1,table.data2'</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">();</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><img src="http://lh6.googleusercontent.com/-ZKKPftYV7uk/UyMeUJK6zjI/AAAAAAAAGtc/oYC8k0kPD_I/s640/a15.png" alt="ex-table-filter"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-table-filter/demo.html#!Demo15" class="demo external" target="_blank">Demo | １つのフィルター条件で複数テーブルをフィルタリング</a></div></p>
+
+<h2>パラメータ</h2>
+
+<p>プラグイン実行時、下記パラメータを指定できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">defaults </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">    api </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">    </span><span class="com">// true の場合 api オブジェクトを返す</span></li><li class="L2"><span class="pln">    filters </span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">   </span><span class="com">// 各カラムのフィルタ条件を配列又は JSON 形式でまとめて指定</span></li><li class="L3"><span class="pln">    autoFilter </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln">  </span><span class="com">//  プラグイン適用後のフィルタリングの自動実行の適用</span></li><li class="L4"><span class="pln">    autoBindFilter </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln">  </span><span class="com">//  トリガーの自動割り当ての適用</span></li><li class="L5"><span class="pln">    elementAutoBindTrigger </span><span class="pun">:</span><span class="pln"> </span><span class="str">'keydown change'</span><span class="pun">,</span><span class="pln">    </span><span class="com">//  自動割り当てするトリガーの指定</span></li><li class="L6"><span class="pln">    elementAutoBindFilterDelay </span><span class="pun">:</span><span class="pln"> </span><span class="lit">300</span><span class="pun">,</span><span class="pln">   </span><span class="com">//  フィルタトリガー起動時のフィルタリング実行間隔の指定</span></li><li class="L7"><span class="pln">    startDataRowNo </span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln"> </span><span class="com">//  フィルタリング開始行の指定</span></li><li class="L8"><span class="pln">    callback </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){},</span><span class="pln"> </span><span class="com">//  プラグイン適用後のコールバック処理の指定</span></li><li class="L9"><span class="pln">    onFilteringStart </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){},</span><span class="pln"> </span><span class="com">//  フィルタリング開始時のコールバック処理の指定</span></li><li class="L0"><span class="pln">    onFiltering </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){},</span><span class="pln">  </span><span class="com">//  各行のフィルタリング後のコールバック処理の指定</span></li><li class="L1"><span class="pln">    onFilteringEnd </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){},</span><span class="pln">   </span><span class="com">//  フィルタリング終了時のコールバック処理の指定</span></li><li class="L2"><span class="pln">    elementFilter </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">   </span><span class="com">//  input:text 要素でフィルタする場合のデフォルト設定</span></li><li class="L3"><span class="pln">        element </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span><span class="pln"> </span><span class="com">//  フィルタ条件の入力フィールドを指定</span></li><li class="L4"><span class="pln">        firstMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">//  前方一致フィルタの適用</span></li><li class="L5"><span class="pln">        lastMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">  </span><span class="com">//  後方一致フィルタの適用</span></li><li class="L6"><span class="pln">        fullMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">  </span><span class="com">//  完全一致フィルタの適用</span></li><li class="L7"><span class="pln">        wildcardMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">  </span><span class="com">//  ワイルドカードフィルタの適用</span></li><li class="L8"><span class="pln">        matchSwitch </span><span class="pun">:</span><span class="pln"> </span><span class="str">'ig'</span><span class="pun">,</span><span class="pln">   </span><span class="com">// 正規表現フィルタのスイッチを指定</span></li><li class="L9"><span class="pln">        queryStringMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">// QueryString の値でフィルタリング</span></li><li class="L0"><span class="pln">        queryStringName </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span><span class="pln"> </span><span class="com">// queryStringMatch が true 時に照合するパラメータ名を指定</span></li><li class="L1"><span class="pln">        onFiltering </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){}</span></li><li class="L2"><span class="pln">    </span><span class="pun">},</span></li><li class="L3"><span class="pln">    selectElementFilter </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">//  select,radio,checkbox 要素でフィルタする場合のデフォルト設定</span></li><li class="L4"><span class="pln">        selectValueMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">   </span><span class="com">//  select 要素でフィルタする場合の value 属性で一致判定する</span></li><li class="L5"><span class="pln">        element </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span><span class="pln"> </span><span class="com">//  elementFilterと同様</span></li><li class="L6"><span class="pln">        firstMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> </span><span class="com">//  elementFilterと同様</span></li><li class="L7"><span class="pln">        lastMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">  </span><span class="com">//  elementFilterと同様</span></li><li class="L8"><span class="pln">        fullMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln">   </span><span class="com">//  完全一致フィルタの適用</span></li><li class="L9"><span class="pln">        wildcardMatch </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">  </span><span class="com">//  elementFilterと同様</span></li><li class="L0"><span class="pln">        matchSwitch </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span><span class="pln"> </span><span class="com">//  elementFilterと同様</span></li><li class="L1"><span class="pln">        onFiltering </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){}</span></li><li class="L2"><span class="pln">    </span><span class="pun">},</span></li><li class="L3"><span class="pln">    appendFilter </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L4"><span class="pln">        to </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span></li><li class="L5"><span class="pln">        type </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span></li><li class="L6"><span class="pln">        </span><span class="str">'text'</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L7"><span class="pln">            </span><span class="kwd">template</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'&lt;input class="form-control" type="text"/&gt;'</span></li><li class="L8"><span class="pln">        </span><span class="pun">},</span></li><li class="L9"><span class="pln">        </span><span class="str">'checkbox'</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L0"><span class="pln">            </span><span class="kwd">template</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'&lt;div class="checkbox"&gt;&lt;label&gt;&lt;input type="checkbox"/&gt;{label}&lt;/label&gt;&lt;/div&gt;'</span></li><li class="L1"><span class="pln">        </span><span class="pun">},</span></li><li class="L2"><span class="pln">        </span><span class="str">'radio'</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">            addBlank </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L4"><span class="pln">            blankLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">'all'</span><span class="pun">,</span></li><li class="L5"><span class="pln">            blankValue </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span></li><li class="L6"><span class="pln">            </span><span class="kwd">template</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'&lt;div class="radio"&gt;&lt;label&gt;&lt;input type="radio""/&gt;{label}&lt;/label&gt;&lt;/div&gt;'</span></li><li class="L7"><span class="pln">        </span><span class="pun">},</span></li><li class="L8"><span class="pln">        </span><span class="str">'select'</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L9"><span class="pln">            addBlank </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L0"><span class="pln">            blankLabel </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span></li><li class="L1"><span class="pln">            blankValue </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span></li><li class="L2"><span class="pln">            </span><span class="kwd">template</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">'&lt;select class="form-control"/&gt;'</span></li><li class="L3"><span class="pln">        </span><span class="pun">}</span></li><li class="L4"><span class="pln">    </span><span class="pun">},</span></li><li class="L5"><span class="pln">    filterFieldTemplate </span><span class="pun">:</span><span class="pln"> </span><span class="str">'&lt;div&gt;&lt;label&gt;FILTER:&lt;/label&gt;&lt;input type="text" class="form-control"/&gt;&lt;/div&gt;'</span></li><li class="L6"><span class="pun">},</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 1080px;"></textarea></div></div></div>
+
+<h2>API</h2>
+
+<p>API オブジェクトを使用し、下記メソッドを実行できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">// プラグイン適用要素の独自データ属性(data-ex-table-filter)を取得する</span></li><li class="L1"><span class="pln">getDataParam </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="com">// プラグイン適用要素を取得する</span></li><li class="L4"><span class="pln">getTarget </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="com">// フィルタリング中のフィルタを取得する</span></li><li class="L7"><span class="pln">getCurrentFilter </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="com">// フィルタリング中のフィルタの値を取得する</span></li><li class="L0"><span class="pln">getCurrentFilterVal </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="com">// フィルタリング中のフィルタの値を数値変換して取得する</span></li><li class="L3"><span class="pln">getCurrentFilterNum </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="com">// フィルタリング中の TR 要素を取得する</span></li><li class="L6"><span class="pln">getCurrentRow </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L7"><span class="pln">&nbsp;</span></li><li class="L8"><span class="com">// フィルタリング中の TH/TD 要素を取得する</span></li><li class="L9"><span class="pln">getCurrentCell </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">index</span><span class="pun">){</span></li><li class="L0"><span class="pln">&nbsp;</span></li><li class="L1"><span class="com">// フィルタリング中の TH/TD 要素の値を取得する</span></li><li class="L2"><span class="pln">getCurrentCellVal </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">index</span><span class="pun">){</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="com">// フィルタリング中の TH/TD 要素の値を数値変換して取得する</span></li><li class="L5"><span class="pln">getCurrentCellNum </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">index</span><span class="pun">){</span></li><li class="L6"><span class="pln">&nbsp;</span></li><li class="L7"><span class="com">// フィルタリング中の行の表示状態を取得する</span></li><li class="L8"><span class="pln">isShowCurrentRow </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L9"><span class="pln">&nbsp;</span></li><li class="L0"><span class="com">// 各カラムのフィルタ条件を配列又は JSON 形式でまとめて設定する</span></li><li class="L1"><span class="pln">setFilters </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">filters</span><span class="pun">,</span><span class="pln"> config</span><span class="pun">){</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="com">// 特定のカラムのフィルタ条件を設定する</span></li><li class="L4"><span class="pln">setFilter </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">index</span><span class="pun">,</span><span class="pln"> filter</span><span class="pun">,</span><span class="pln"> config</span><span class="pun">){</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="com">// フィルタリングを実行する</span></li><li class="L7"><span class="pln">filtering </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 738px;"></textarea></div></div></div>
+
+<h2>API オブジェクトの取得方法</h2>
+
+<p>API オブジェクトは以下の方法で取得することができます。</p>
+
+<h3>コールバック関数内で取得</h3>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="pln">target</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span></li><li class="L1"><span class="pln">    callback </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){</span></li><li class="L2"><span class="pln">        api</span></li><li class="L3"><span class="pln">    </span><span class="pun">}</span></li><li class="L4"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 144px;"></textarea></div></div></div>
+
+<h3>data() メソッドで取得</h3>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> api </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="pln">target</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">().</span><span class="pln">data</span><span class="pun">(</span><span class="pln">$</span><span class="pun">.</span><span class="pln">plugin</span><span class="pun">.</span><span class="pln">id</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<h3>API パラメータを指定して取得</h3>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> api </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="pln">target</span><span class="pun">).</span><span class="pln">exTableFilter</span><span class="pun">({</span><span class="pln">api</span><span class="pun">:</span><span class="kwd">true</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<h2>ダウンロード</h2>
+
+<p>こちらからどうぞ。</p>
+
+<ul>
+<li><a href="http://github.com/cyokodog/jquery.ex-table-filter">jquery.ex-table-filter – GitHub</a></li>
+</ul>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

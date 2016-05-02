@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>Pull Request ではじめてみる！GitHub ソーシャルコーディング | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/pull-request-github/" title="Pull Request ではじめてみる！GitHub ソーシャルコーディング">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2014-12-23</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/pull-request-github/"><img src="https://lh6.googleusercontent.com/-DsqqmKvb_vg/VJhJ8sF3s5I/AAAAAAAAIsA/l8Sk2SD5wKI/s800/github.png"></a>
+</div>
+<p>こんにちわ、就活の面接がいつの間にか雑談ぽくなりがちな cyokodog です。
+普段できないプログラムの話とか、異業種の現場の話とか聞いたりできるのってすごい楽しいものですね！(お時間とらせてしまってすいません^^;)<br>
+今回はそんなコミニケーションを取りながら、皆でわいわい開発するのが当たり前の時代がきたらいいなぁ…
+そんな思いを込めて、ソーシャルコーディングを可能にする WEB サービス GitHub の利用方法についてまとめてみました。</p>
+
+<!--more-->
+
+<h2>GitHub アカウントの作成</h2>
+
+<p>GitHub を利用するにあたり、まずは <a href="https://github.com/">https://github.com/</a> でアカウントを作成します。
+ユーザ名、メールアドレス、パスワードを指定し [Sign up for GitHub] をクリックします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-PJ2OXQQPzKA/VJcHyY_ruPI/AAAAAAAAIpQ/ftSGVzWV_RU/s800/gh01.png" alt="github"></p>
+
+<p><br>
+[Finish sign up] をクリックします。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-63UJYAgx74I/VJRW4GbByQI/AAAAAAAAIkM/g3znKh16fUw/s640/gh02.png" alt="github"></p>
+
+<p><br>
+以下の画面になります。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-BQehSeW9E3Q/VJRW4DfzlJI/AAAAAAAAIjs/0STJhDjDwV4/s640/gh03.png" alt="github"></p>
+
+<p><br>
+“[GitHub] Please verify your email” というタイトルでメールがくるので、本文内のリンクをクリックします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-Z4gAVLWfl9U/VJRW4z7AhXI/AAAAAAAAIj8/ZjLJc3Ul-a4/s640/gh04.png" alt="mail"></p>
+
+<p><br>
+[Confirm] をクリックすると GitHub を利用できるようになります。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-qK7CWfz2OhA/VJRW5tnua5I/AAAAAAAAIlo/QAW4myTTjZc/s640/gh05.png" alt="github"></p>
+
+<h2>Git のインストール</h2>
+
+<p>Git をインストールします。
+<a href="https://code.google.com/p/msysgit/downloads/list">https://code.google.com/p/msysgit/downloads/list</a> にアクセス、
+最新版 の Git-x.x.x.x-previewYYYYMMDD.exe をダウンロードし、インストールします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-VgxWiaMm0KU/UxdKEb3CB8I/AAAAAAAAGqE/NUNfYXF1F-0/s640/h01.png" alt="git"></p>
+
+<h2>Git コンソールの日本語文字化け対応</h2>
+
+<p>Git のコンソールにて ls コマンドでファイル一覧を表示した際、日本語ファイル名が文字化けしないよう設定します。
+エクスプローラーを起動し、適当なフォルダを選択した状態で、右クリック→[Git Bash Here] で Git のコンソールを立ち上げます。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-lliRNYT1SVY/UxdKEu_5OWI/AAAAAAAAGp8/EF9Tr6p5FAE/s400/h02.png" alt="git"></p>
+
+<p><br>
+MINGW32 と表示されたタイトルバーの部分を右クリック、[プロパティ][フォント]タブを選択し、[フォント]をMSゴシック、[サイズ]に適当な値を指定し、[OK] をクリックします。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-j0WVv9U07cs/UxdKFc6d7SI/AAAAAAAAGqI/sdYvI7SgBa0/s400/h03.png" alt="git"></p>
+
+<p><br>
+次にコンソール上で以下のコマンドを入力します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">vi </span><span class="pun">~/.</span><span class="pln">bashrc</span></li><li class="L1"><span class="kwd">alias</span><span class="pln"> ls</span><span class="pun">=</span><span class="str">'ls --color=auto --show-control-chars'</span></li><li class="L2"><span class="pun">:</span><span class="pln">wq</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p>Bash の再起動で文字化けが解消されます。</p>
+
+<h2>commit コメントの日本語対応</h2>
+
+<p>git ではソースコードの変更を commit コマンドで確定しますが、その際入力する変更コメントは、初期設定のままでは日本語が入力できません。
+core.editor に任意のテキストエディタを指定することで日本語コメントを入力できるようになります。
+例えば秀丸エディタを割り当てる場合は以下のように設定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git config </span><span class="pun">--</span><span class="kwd">global</span><span class="pln"> core</span><span class="pun">.</span><span class="pln">editor </span><span class="str">"\"C:/soft/Hidemaru/Hidemaru.exe\""</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<h2>SSH 認証キーの作成と登録</h2>
+
+<p>SSH 認証キーを作成します。コンソール上で以下のコマンドを入力します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">mkdir </span><span class="pun">~/.</span><span class="pln">ssh</span></li><li class="L1"><span class="pln">cd </span><span class="pun">~/.</span><span class="pln">ssh</span></li><li class="L2"><span class="pln">ssh</span><span class="pun">-</span><span class="pln">keygen </span><span class="pun">-</span><span class="pln">t rsa </span><span class="pun">-</span><span class="pln">C </span><span class="str">"username@gmail.com"</span><span class="pun">　←自分のメールアドレス</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p>c:Users&lt;Windowsアカウント名&gt;.ssh フォルダに id_rsa.pub が生成されます。</p>
+
+<p><a href="https://github.com/settings/ssh">https://github.com/settings/ssh</a> で [Add SSH key] をクリックし SSH Key のタイトルとSSH Key の値を登録します。
+SSH key の値は id_rsa.pub をテキストエディタで開き、その中身をそのままコピペします。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-R_IvEdflqRs/VJb1aU2ZxTI/AAAAAAAAImY/Vi9CQzluUlU/s640/gh31.png" alt="git"></p>
+
+<h2>GitHub でソースコードを管理する</h2>
+
+<p>それでは GitHub でソースコードを管理してみます。
+<a href="https://github.com/">https://github.com/</a> で [New repository] をクリックします。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-S3oS1Hddo60/VJb1aa5iLtI/AAAAAAAAImU/q-fLK4Zqaig/s800/gh32.png" alt="github"></p>
+
+<p><br>
+Repository name、Description それぞれにリポジトリ名(ソース置き場の名前、
+ここでは “hello-pull-request” と入力します)と概要説明を入力、
+[Initialize this repository with a README] をチェックし、[Create repository] をクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-gZP52BYx4I8/VJb1bWDDCcI/AAAAAAAAIm0/HPxWchvNrmM/s640/gh33.png" alt="github"></p>
+
+<p><br>
+作成したリポジトリが表示されます。
+次にこのリポジトリをローカルにコピーするため [HTTPS clone URL] のアイコンをクリックし、
+クリップボードに URL をコピーします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-NWRtC9rKuTc/VJb1brXvjRI/AAAAAAAAIog/jmz5cROxwbQ/s640/gh34.png" alt="github"></p>
+
+<p><br>
+Git のコンソールでリポジトリをコピーしたいフォルダ(今回はc:\github)に移動し、
+git clone と入力したらクリップボードの URL をペーストし以下のように入力します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">cd </span><span class="pun">/</span><span class="pln">c</span><span class="pun">/</span><span class="pln">github</span></li><li class="L1"><span class="pln">git clone https</span><span class="pun">:</span><span class="com">//github.com/cyokodog-lab/hello-pull-request.git</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p>リポジトリがコピーされ C:\github\hello-pull-request フォルダができあがります。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-MoPQy_DCm-o/VJb1bhOrh5I/AAAAAAAAImw/uUKJN_puZtg/s800/gh35.png" alt="github"></p>
+
+<p>試しに hello-pull-request フォルダに以下 index.html を作成し、Git, GitHub に登録してみます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="dec">&lt;!DOCTYPE&gt;</span></li><li class="L1"><span class="tag">&lt;html&gt;</span></li><li class="L2"><span class="tag">&lt;head&gt;</span></li><li class="L3"><span class="tag">&lt;/head&gt;</span></li><li class="L4"><span class="tag">&lt;body&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;h1&gt;</span><span class="pln">Hello GitHub</span><span class="tag">&lt;/h1&gt;</span></li><li class="L6"><span class="tag">&lt;/body&gt;</span></li><li class="L7"><span class="tag">&lt;/html&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 198px;"></textarea></div></div></div>
+
+<p><br>
+C:\github\hello-pull-request フォルダに移動し、以下コマンドを入力します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">cd </span><span class="pun">/</span><span class="pln">c</span><span class="pun">/</span><span class="pln">github</span><span class="pun">/</span><span class="pln">hello</span><span class="pun">-</span><span class="pln">pull</span><span class="pun">-</span><span class="pln">request</span></li><li class="L1"><span class="pln">git add </span><span class="pun">.</span></li><li class="L2"><span class="pln">git commit</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><br>
+テキストエディタが表示されるので、commit コメントを入力したらエディタを閉じます。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-zoCVCSEgt7A/VJb1cWzPUrI/AAAAAAAAIoc/W7zMDU3OlvI/s640/gh36.png" alt="github"></p>
+
+<p><br>
+これでローカルの Git にファイルが追加されます。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-K4_0igQo0UY/VJb10I3tplI/AAAAAAAAIow/Ls_Hr15CDGU/s800/gh37.png" alt="github"></p>
+
+<p><br>
+次に push コマンドで GitHub にこの変更を反映させてみます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git push</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><img src="http://lh3.googleusercontent.com/-fiUa_Q-BPVA/VJb1c5oZp6I/AAAAAAAAIoY/gOQJawMtwr4/s800/gh38.png" alt="github"></p>
+
+<p>GitHub のアカウント、パスワードをお求められます。入力すると GitHub にファイルが追加されます。</p>
+
+<p><br>
+GitHub のリポジトリに index.html が登録されてることが確認できます。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-41DFGSDzdf4/VJb1dEXep9I/AAAAAAAAIoU/_xJtYvIq1Lo/s800/gh39.png" alt="github"></p>
+
+<h2>GitHub から変更差分を取り込む</h2>
+
+<p>例えば職場ＰＣにてソースを修正し GitHub に push したり、
+直接 GitHub の web ページ上でソースを修正した場合、
+ローカルの Git で管理してるソースと変更差分が生じます。
+この変更差分を取り込むには pull コマンドを使います。</p>
+
+<p>実際に web 上で修正した内容を取り込んでみます。
+先ほど登録した index.html を GitHub 上で選択し、鉛筆のアイコンをクリックします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-1ZGtYbxGhGA/VJb1depY81I/AAAAAAAAIoQ/4Zxw1NPcGvo/s640/gh40.png" alt="github"></p>
+
+<p><br>
+編集可能状態になるので以下一行を追加し保存します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;p</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"lead"</span><span class="tag">&gt;</span><span class="pln">Study Pull Request Programming</span><span class="tag">&lt;/p&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><img src="http://lh4.googleusercontent.com/-IXD10WZ5R0Y/VJb1dykefmI/AAAAAAAAIoM/LPPKgRgW4eE/s800/gh41.png" alt="github"></p>
+
+<p><br>
+ローカルの Git で pull します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git pull</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><img src="http://lh6.googleusercontent.com/-12HvFDdZmLU/VJb10DtL1nI/AAAAAAAAIo0/djxL5cDfiu8/s800/gh42.png" alt="github"></p>
+
+<p><br>
+テキストエディタで開くと web 上で行った変更が取り込まれてることが確認できます。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-bY_84QdO5Fo/VJb1ek3LaHI/AAAAAAAAIoE/aW_lDn0UCAI/s800/gh43.png" alt="github"></p>
+
+<h2>Pull Request ベースのソースコード変更</h2>
+
+<p>前置きが長くなりましたがここからが本番です。
+Git で管理されるファイルはブランチと呼ばれる領域に保存されます。
+初期状態では master という名前のブランチが１つあるのみです。</p>
+
+<p>コードを修正する場合は、修正用のブランチを作成しその領域でコードの修正／テストを実施した後、
+オリジナルのブランチに変更内容を反映します。</p>
+
+<p>まず checkout コマンドで修正用のブランチを作成します。
+今回は style タグの追記を行うので、ブランチ名を “add-style” とします。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git checkout </span><span class="pun">-</span><span class="pln">b add</span><span class="pun">-</span><span class="pln">style</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p>“Switched to a new branch ‘add-style'” と表示され、
+新しいブランチが作成されファイルがコピーされます。</p>
+
+<p>branch コマンドで存在するブランチとカレントのブランチが確認できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git branch</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><img src="http://lh3.googleusercontent.com/-s61i0ZrOmVs/VJb1eiVOgkI/AAAAAAAAInU/UXvMierW4yg/s800/gh44.png" alt="github"></p>
+
+<p>add-style と master という名前のブランチがあり、* のついてる add-style がカレントブランチだということが分かります。</p>
+
+<p>では index.html を以下のように修正します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="dec">&lt;!DOCTYPE&gt;</span></li><li class="L1"><span class="tag">&lt;html&gt;</span></li><li class="L2"><span class="tag">&lt;head&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;style&gt;</span></li><li class="L4"><span class="pln">        h1</span><span class="pun">{</span></li><li class="L5"><span class="pln">            font</span><span class="pun">-</span><span class="pln">size</span><span class="pun">:</span><span class="pln"> </span><span class="lit">20px</span><span class="pun">;</span></li><li class="L6"><span class="pln">        </span><span class="pun">}</span></li><li class="L7"><span class="pln">    </span><span class="tag">&lt;/style&gt;</span></li><li class="L8"><span class="tag">&lt;/head&gt;</span></li><li class="L9"><span class="tag">&lt;body&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;h1&gt;</span><span class="pln">Hello GitHub</span><span class="tag">&lt;/h1&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;p</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"lead"</span><span class="tag">&gt;</span><span class="pln">Study Pull Request Programming</span><span class="tag">&lt;/p&gt;</span></li><li class="L2"><span class="tag">&lt;/body&gt;</span></li><li class="L3"><span class="tag">&lt;/html&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 306px;"></textarea></div></div></div>
+
+<p><br>
+add, commit をします。commit は -m でコメントを指定できます（日本語は不可）。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git add </span><span class="pun">.</span></li><li class="L1"><span class="pln">git commit </span><span class="pun">-</span><span class="pln">m </span><span class="str">'add style'</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+以下 push コマンドにて GitHub 上に add-style ブランチを作成しつつ push を行います。
+origin は GitHub のリモートリポジトリ名です。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git push origin add</span><span class="pun">-</span><span class="pln">style</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+GitHub 上に add-style ブランチが生成されます。
+[Compare &amp; pull request] ボタンをクリックすることで、「add-style ブランチの変更差分を master ブランチへ取り込んでください」というリクエスト（Pull Request）の作成が行えます。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-TliFtNcNq4w/VJb1fBFFZFI/AAAAAAAAInc/f2hjrf9CGnk/s640/gh45.png" alt="github"></p>
+
+<p><br>
+タイトルと概要を入力し、[Create pull request] をクリックし、pull request を作成します。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-1g9-QSBkpPs/VJb1fueFcsI/AAAAAAAAIoA/p_QZCgF8t8s/s640/gh46.png" alt="github"></p>
+
+<p><br>
+コミットログ、diffなどが表示され、コメントの入力が可能な状態になります。
+この変更リクエストを master ブランチに取り込む場合は [Merge pull request] をクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-3Zd_po2Odc0/VJb1f-ghPpI/AAAAAAAAIn8/8OkSqKlXsIM/s640/gh47.png" alt="github"></p>
+
+<p><br>
+GitHub 上で master ブランチに変更内容を取り込んだとしても、
+ローカルの Git は add-style ブランチがカレントで且つ、master ブランチのソースコードは古いままです。</p>
+
+<p>checkout コマンドで master ブランチに切り替え、pull することで最新の状態にすることができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git checkout master</span></li><li class="L1"><span class="pln">git pull</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<h2>WIP Pull Request</h2>
+
+<p>自分一人で開発してる場合、ソースコードを修正し push する時点でテストが終わっているのであれば、
+前述の Pull Request ベースの変更フローは変更を取り込むことが前提のアクションとなるので、無駄に冗長な作業をしているという印象を受けます。</p>
+
+<p>そこで開発を着手した時点で Pull Request を送る WIP Pull Request（Work In Progress Pull Request）という手法を使用し、
+効果的に Pull Request を利用してみます。</p>
+
+<p>これは開発に着手した時点での作業内容や TODO リストを記載する形で Pull Request を送り、
+進捗にあわせこれら記載事項のアップデートと　push を繰り返すことで、
+Pull Request 自体を進捗管理や情報共有の場にしてしまおうという手法です。</p>
+
+<p>では、新たにブランチを作って pull request してみたいと思います。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git checkout master</span></li><li class="L1"><span class="pln">git checkout </span><span class="pun">-</span><span class="pln">b wip</span><span class="pun">-</span><span class="pln">re</span><span class="pun">-</span><span class="pln">design</span></li><li class="L2"><span class="pln">git commit </span><span class="pun">--</span><span class="pln">allow</span><span class="pun">-</span><span class="pln">empty </span><span class="pun">-</span><span class="pln">m </span><span class="str">'wip'</span></li><li class="L3"><span class="pln">git push origin wip</span><span class="pun">-</span><span class="pln">re</span><span class="pun">-</span><span class="pln">design</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 126px;"></textarea></div></div></div>
+
+<p>ここではソースコードの変更がないので空コミットをするために –allow-empty を指定してます。</p>
+
+<p><br>
+前述同様 GitHub にて pull request を作成します。
+概要欄ではマークダウンが使用でき、以下のように記述するとチェックボックス付きの TODO リストを作ることができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">## TODO</span></li><li class="L1"><span class="pun">-</span><span class="pln"> </span><span class="pun">[</span><span class="pln"> </span><span class="pun">]</span><span class="pln"> header</span><span class="pun">,</span><span class="pln"> footer </span><span class="pun">の追加</span></li><li class="L2"><span class="pun">-</span><span class="pln"> </span><span class="pun">[</span><span class="pln"> </span><span class="pun">]</span><span class="pln"> web font </span><span class="pun">の適用</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><img src="http://lh3.googleusercontent.com/-nAJqwOJRu9A/VJb1gHHok_I/AAAAAAAAInw/lWZadp72EsI/s640/gh48.png" alt="github"></p>
+
+<p><br>
+まず１つ目の TODO に従い [header, footer の追加] を行い Pull Request します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="dec">&lt;!DOCTYPE&gt;</span></li><li class="L1"><span class="tag">&lt;html&gt;</span></li><li class="L2"><span class="tag">&lt;head&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;style&gt;</span></li><li class="L4"><span class="pln">        h1</span><span class="pun">{</span></li><li class="L5"><span class="pln">            font</span><span class="pun">-</span><span class="pln">size</span><span class="pun">:</span><span class="pln"> </span><span class="lit">20px</span><span class="pun">;</span></li><li class="L6"><span class="pln">        </span><span class="pun">}</span></li><li class="L7"><span class="pln">    </span><span class="tag">&lt;/style&gt;</span></li><li class="L8"><span class="tag">&lt;/head&gt;</span></li><li class="L9"><span class="tag">&lt;body&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"header"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">        </span><span class="tag">&lt;h1&gt;</span><span class="pln">Hello GitHub</span><span class="tag">&lt;/h1&gt;</span></li><li class="L2"><span class="pln">        </span><span class="tag">&lt;p</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"lead"</span><span class="tag">&gt;</span><span class="pln">Study Pull Request Programming</span><span class="tag">&lt;/p&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"main"</span><span class="tag">&gt;</span></li><li class="L5"><span class="pln">        What's WIP Pull Request !?</span></li><li class="L6"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L7"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"footer"</span><span class="tag">&gt;</span></li><li class="L8"><span class="pln">        @cyokodog</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L0"><span class="tag">&lt;/body&gt;</span></li><li class="L1"><span class="tag">&lt;/html&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 450px;"></textarea></div></div></div>
+
+<p><br>
+add, commit, push して、TODO のチェックボックスをチェックＯＮにします。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-qgJ9SAUR5H0/VJb1gozc_jI/AAAAAAAAIn0/AxqHTBsG3hM/s640/gh49.png" alt="github"></p>
+
+<p><br>
+差分も確認できます。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-K0vNLWc63MU/VJb1hN58JkI/AAAAAAAAIok/bluXilGj6oE/s800/gh50.png" alt="github"></p>
+
+<p><br>
+続いて2つ目の TODO である web font の適用を行います。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="dec">&lt;!DOCTYPE&gt;</span></li><li class="L1"><span class="tag">&lt;html&gt;</span></li><li class="L2"><span class="tag">&lt;head&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;link</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">'http://fonts.googleapis.com/css?family=Raleway:300'</span><span class="pln"> </span><span class="atn">rel</span><span class="pun">=</span><span class="atv">'stylesheet'</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">'text/css'</span><span class="tag">&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;style&gt;</span></li><li class="L5"><span class="pln">        h1</span><span class="pun">{</span></li><li class="L6"><span class="pln">            font</span><span class="pun">-</span><span class="pln">family</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Raleway</span><span class="pun">;</span></li><li class="L7"><span class="pln">            font</span><span class="pun">-</span><span class="pln">size</span><span class="pun">:</span><span class="pln"> </span><span class="lit">20px</span><span class="pun">;</span></li><li class="L8"><span class="pln">        </span><span class="pun">}</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;/style&gt;</span></li><li class="L0"><span class="tag">&lt;/head&gt;</span></li><li class="L1"><span class="tag">&lt;body&gt;</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"header"</span><span class="tag">&gt;</span></li><li class="L3"><span class="pln">        </span><span class="tag">&lt;h1&gt;</span><span class="pln">Hello GitHub</span><span class="tag">&lt;/h1&gt;</span></li><li class="L4"><span class="pln">        </span><span class="tag">&lt;p</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"lead"</span><span class="tag">&gt;</span><span class="pln">Study Pull Request Programming</span><span class="tag">&lt;/p&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L6"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"main"</span><span class="tag">&gt;</span></li><li class="L7"><span class="pln">        What's WIP Pull Request !?</span></li><li class="L8"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"footer"</span><span class="tag">&gt;</span></li><li class="L0"><span class="pln">        @cyokodog</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L2"><span class="tag">&lt;/body&gt;</span></li><li class="L3"><span class="tag">&lt;/html&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 486px;"></textarea></div></div></div>
+
+<p><br>
+add, commit, push して、TODO をチェック、TODO が全て完了したのでマージします。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-Lg4tvS-2u9A/VJb1hSViAyI/AAAAAAAAIoI/O7ce4W7wJDY/s640/gh51.png" alt="github"></p>
+
+<p><br>
+実際の運用では、全ての修正が済んだのでリリースという流れになるかと思います。
+GitHub では gh-pages というブランチに index.html 等のファイルを置くと
+web サイトとして公開してくれる機能があるので、これをリリース先と見立ててみます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git checkout master</span></li><li class="L1"><span class="pln">git pull</span></li><li class="L2"><span class="pln">git checkout </span><span class="pun">-</span><span class="pln">b gh</span><span class="pun">-</span><span class="pln">pages</span></li><li class="L3"><span class="pln">git push origin gh</span><span class="pun">-</span><span class="pln">pages</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 126px;"></textarea></div></div></div>
+
+<p>10～20 分程度待って http://＜ユーザ名＞.github.io/＜リポジトリ名＞ にアクセスすると登録した index.html が表示されます。</p>
+
+<h2>ブランチモデルと GitHub Flow</h2>
+
+<p>前述のようにブランチを作成し Pull Request で開発していくという手法は、
+複数人で開発する場合、手軽にブランチを作成できる一方、ブランチが乱立し混乱をまねくという懸念があります。
+そこで開発チーム内でブランチモデルという一定のルールを設け運用するのが良いとされています。</p>
+
+<p>GitHub 社内でも採用されてるブランチモデルである GitHub Flow は以下のルールで運用します。</p>
+
+<ul>
+<li>ブランチは master ブランチとトピックブランチのみを使用する</li>
+<li>トピックブランチは開発用に使用し、ブランチ名は追加しようとしてる機能等を読み取りやすい名前にする</li>
+<li>Pull Request は他の開発者にレビューしてもらいたいタイミングや、master ブランチに取り込んでもらう時に送る</li>
+<li>master ブランチにマージされたらリリースする</li>
+</ul>
+
+<p>GitHub Flow をベースに各プロジェクトに合わせたブランチモデルを定義するのが良いかと思います。</p>
+
+<h2>他の開発者から Pull Request を受信した場合</h2>
+
+<p>この記事を書いていたら、たまたま他の開発者の方から Pull Request を受け付けましたので、Pull Request を受けた時の対応手順についても書いておきます。</p>
+
+<p>他の GitHub ユーザに Pull Request されると以下のようなメールが飛んでくるので、本文中のリンクをクリックします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-ugJllPcauWc/VJg1C2zc3YI/AAAAAAAAIps/rnW2kCVlbD0/s640/github01.png" alt="github"></p>
+
+<p><br>
+送信者のコメントが表示されるので内容を確認します。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-VATErrpep94/VJg1DM_dLYI/AAAAAAAAIpw/rgud1WY25rA/s640/github02.png" alt="github"></p>
+
+<p>送信者のコメント</p>
+
+<blockquote>
+  <p>wrapper の指定が曖昧だったため、親を遡って明示するようにした。
+  CMS など自動生成される HTML 中で複数のノードを対象にする場合、メソッド実行を可能な限り簡潔にして冗長さを省きたいため、実行側で親が自動的に明示的にならないといけない。</p>
+</blockquote>
+
+<p><br>
+[File changed] タブをクリックし変更されたファイル名、コードの変更箇所を確認します。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-Ct7nbawTeyY/VJg1CzIJ3fI/AAAAAAAAIqQ/8wXmBybcVTs/s400/github03.png" alt="github"></p>
+
+<p>jquery.fit-sidebar.js（<a href="http://www.cyokodog.net/blog/fit-sidebar-doc/">[Fit Sidebar] レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>）に対する変更だということが分かります。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">c</span><span class="pun">.</span><span class="pln">wrapper </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="pln">c</span><span class="pun">.</span><span class="pln">wrapper</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p>という記述を</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">c</span><span class="pun">.</span><span class="pln">wrapper </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="pln">c</span><span class="pun">.</span><span class="pln">target</span><span class="pun">).</span><span class="pln">parents</span><span class="pun">(</span><span class="pln">c</span><span class="pun">.</span><span class="pln">wrapper</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p>としてるようです。</p>
+
+<p>jquery.fit-sidebar.js の処理仕様において c.wrapper は c.target の親もしくは先祖要素である必要があるので、
+この変更は妥当であると判断できますが、変更されたソースコードのテストは必要ですので、このリポジトリをローカルに clone しテストします。</p>
+
+<p>[command line] のリンクをクリックし、clone するためのコマンドを表示させます。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-zZo7t7-Akdo/VJg1ESJ3sZI/AAAAAAAAIqA/z8j-1phfP7I/s640/github04.png" alt="github"></p>
+
+<p>コピペしてリポジトリを clone します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git clone https</span><span class="pun">:</span><span class="com">//github.com/ginlime/jquery.sitekit.git</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+画面の Step 1 に当たる部分のコマンドラインをコピペし、修正の加えられているブランチを取得します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git checkout </span><span class="pun">-</span><span class="pln">b ginlime</span><span class="pun">-</span><span class="pln">glm</span><span class="pun">-</span><span class="pln">mod gh</span><span class="pun">-</span><span class="pln">pages</span></li><li class="L1"><span class="pln">git pull https</span><span class="pun">:</span><span class="com">//github.com/ginlime/jquery.sitekit.git glm-mod</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p>テキストエディタでソースファイルを開き、修正されたソースコードを取得できてることを確認した後、テストを開始します。</p>
+
+<p>テストした結果、問題がないようなら、必要に応じ GitHub 上でコメント等を登録し、[Merge pull request] をクリックしマージします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-OqfzuJQdxS8/VJg1FMLPvlI/AAAAAAAAIrI/y1XZUvng398/s640/github05.png" alt="github"></p>
+
+<p><br>
+リポジトリを見ると変更が反映されてることが確認できます。</p>
+
+<p><img src="http://lh5.googleusercontent.com/-9AxT2MUXw3c/VJg1Fcq3III/AAAAAAAAIqM/7t7zZKZlx_4/s640/github06.png" alt="github"></p>
+
+<h2>他の開発者に Pull Request を送信する場合</h2>
+
+<p>次は Pull Request を他の開発者に送ってみます。
+といってもよそ様のソースコードを修正しマージ依頼をするというのもなかなかの敷居の高さを感じます。</p>
+
+<p>そこで２４時間耐久マラソンも完走しちゃう尊敬する新人ＳＥさんに Pull Request を送ってみたいと思います。
+目ぼしいソースコードはないかなぁ、とリポジトリをながめていると・・ありました！</p>
+
+<p><img src="http://lh6.googleusercontent.com/-lwP_zFiAI6U/VJg1GSasakI/AAAAAAAAIqk/4fnSe6G-ZxQ/s800/github07.png" alt="github"></p>
+
+<p>body タグが２つあります（ガーン）</p>
+
+<p>ではまず該当リポジトリを Fork してみたいと思います。
+Fork とは GitHub の機能で他の開発者のリポジトリを GitHub 上で clone することをいいます。
+該当するリポジトリに移動し [Fork] をクリックします。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-1ngQQP9sId4/VJg1HI1WmEI/AAAAAAAAIqY/vWexZjGnRq8/s640/github08.png" alt="github"></p>
+
+<p><br>
+clone されて自分のリポジトリになりました。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-lLvFKVp_yQ4/VJg1IDBZrDI/AAAAAAAAIqg/2U6ef5w9F6Q/s800/github09.png" alt="github"></p>
+
+<p><br>
+ローカルの Git に clone し、ソースコードを修正します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git clone https</span><span class="pun">:</span><span class="com">//github.com/cyokodog/ohha-tommy.github.io.git</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+修正したら push します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">cd ohha</span><span class="pun">-</span><span class="pln">tommy</span><span class="pun">.</span><span class="pln">github</span><span class="pun">.</span><span class="pln">io</span></li><li class="L1"><span class="pln">git add </span><span class="pun">.</span></li><li class="L2"><span class="pln">git commit</span></li><li class="L3"><span class="pln">git push</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 126px;"></textarea></div></div></div>
+
+<p><br>
+GitHub に変更が反映されてることを確認し、[Pull Requests] をクリックします。</p>
+
+<p><img src="http://lh6.googleusercontent.com/-XfAPXK0eLro/VJg1I5siiFI/AAAAAAAAIqs/sFr7zntupRQ/s640/github10.png" alt="github"></p>
+
+<p><br>
+[New pull request] → [Create pull request] の順でクリックします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-0ciUn3iWWRg/VJg1JQaqxvI/AAAAAAAAIq4/MK3mb6E8y5Q/s640/github11.png" alt="github"></p>
+
+<p><br>
+タイトルと変更概要を入力して [Create pull request] をクリックします。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-GpNrKqVK6iY/VJg1J9hE4xI/AAAAAAAAIq8/qLIhdWzcMYA/s640/github12.png" alt="github"></p>
+
+<p><br>
+Pull Request を送信できました。
+後はマージしてもらうのをわくわくしながら待つのみ！</p>
+
+<p><img src="http://lh6.googleusercontent.com/-wsfj8mGp2iA/VJg1KginMkI/AAAAAAAAIrE/80cMgFu_W3Q/s640/github13.png" alt="github"></p>
+
+<p>・・・が、なかなかマージしてくれないので Facebook のメッセで催促してみました。</p>
+
+<p><img src="http://lh6.googleusercontent.com/--Ac5NgcOHbY/VJhCXGOlVQI/AAAAAAAAIrk/vinQX4QS33c/s800/github14.png" alt="github"></p>
+
+<p>おお！返信きたっ スクショとるぞーとリポジトリを見てみると・・・マージされてません（笑）<br>
+やはり GitHub の敷居は低くはないようですね ^^;</p>
+
+<p>翌日マージしたようで GitHub からメールが飛んできました。</p>
+
+<p><img src="http://lh4.googleusercontent.com/-nTNdm_tWGqA/VJmE7f19rSI/AAAAAAAAIsg/NGcxkMiD8nE/s800/github15.png" alt="github"></p>
+
+<p>リンクをクリック！</p>
+
+<p><img src="http://lh6.googleusercontent.com/-LWeMPgom3MY/VJmE7mGavLI/AAAAAAAAIsk/x0AdZ-dEPUM/s640/github16.png" alt="github"></p>
+
+<p>無事マージされてます！めでたしめでたし ^^)</p>
+
+<h2>最後に</h2>
+
+<p>自分の経験不足もありまだまだ敷居が高いという印象は否めませんが、
+ソースコードを中心とした活発なコミュニケーションの姿を想像すると、なんかわくわくしてしまいますね。</p>
+
+<p>jQuery の最大の功績は、非プログラマの人々を巻き込むかたちでプログラミングの楽しさを世に広めたことだと思っていて、
+そこには作者のジョン・レッシグさんの「玄人好みの厳格さより、不慣れな人へ分かりやすさを優先した優しさ」のようなものがあったからこそ、と勝手に感じている今日この頃です。</p>
+
+<p>GitHub でもそうした優しさに満ちたコミュニケーションが行われ、
+プログラミングの楽しさがもっと世の中に伝わればいいなぁ、と思う次第です。</p>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

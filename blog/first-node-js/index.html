@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>Windows ではじめてみる Node.js | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/first-node-js/" title="Windows ではじめてみる Node.js">Windows ではじめてみる Node.js</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2015-01-28</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/first-node-js/"><img src="http://lh3.googleusercontent.com/-949FT7PVcXE/VMhwhHPmYcI/AAAAAAAAI0Q/MsnZKQyHtho/s144/node03.png"></a>
+</div>
+<p>Node.js といえば発表された当初、イベント駆動、ノンブロッキングI/O、スケーラブルネットワークブログラミング、といった部分が注目され非常に話題になりました。
+フロントエンド技術の興隆目覚しい昨今においては、Sass や CoffeeScript のコンパイルを自動化する Grunt や Gulp といったタスクランナーを動かすための開発環境インフラとして大きな役割をはたしています。<br>
+今回はそんな node.js の基本的な利用方法についてまとめてみました。</p>
+
+<!--more-->
+
+<h2>Node.js のインストールとバージョン管理</h2>
+
+<p>発表当初、試すのにも敷居の高さがあった Node.js ですが、今では Windows でも容易に利用できるようになってます。
+Windows で Node.js をインストールする一番簡単な方法は、以下公式サイトにあるインストーラーを使用する方法です。
+ダウンロードして実行するのみでインストールは完了します。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-amLjTpauyqE/VMhtlREFQBI/AAAAAAAAIzw/rhF8Z_3JsYk/s400/node01.png" alt="node">
+<br><a href="http://nodejs.org/download/">http://nodejs.org/download/</a></p>
+
+<p>しかし、Node.js はバージョンアップのサイクルが非常に早く、バージョンによっては動作しないモジュールがあった場合、バージョン変更するのが非常に面倒です。
+そこで Node.js のインストールとバージョン変更を簡単に行うことができるバージョン管理ツールを使用してみます。
+バージョン管理ツールには以下のものがあります。</p>
+
+<ul>
+<li>nodist
+
+<ul>
+<li>Windows 専用のバージョン管理ツール</li>
+</ul></li>
+<li>nvm
+
+<ul>
+<li>Mac OSX/Linux 用のバージョン管理ツール</li>
+</ul></li>
+<li>nvmw
+
+<ul>
+<li>Windows 向けの nvm、Python のインストールが必要</li>
+</ul></li>
+<li>nodebrew
+
+<ul>
+<li>Perl製のバージョン管理ツール、Mac OSX/Linux 用</li>
+</ul></li>
+</ul>
+
+<p>ちなみにマイナーバージョンが、v0.2, v0.4 のように偶数値のものが安定板、v0.3, v0.5 のように奇数値のものが開発版という位置づけになります。</p>
+
+<h2>nodist によるインストールとバージョン管理</h2>
+
+<p>今回は Windows 専用のバージョン管理ツール「nodist」を使用してみます。
+GitHub よりソースコードを取得します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">git clone https</span><span class="pun">:</span><span class="com">//github.com/marcelklehr/nodist.git</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+Git がインストールされてない場合は <a href="https://github.com/marcelklehr/nodist">https://github.com/marcelklehr/nodist</a> より “Donwload ZIP” をクリックし、ソースコード一式を取得し解凍します。</p>
+
+<p>次に環境変数の設定を行います。ソースコードの展開先を c:\ide\nodist とした場合、コマンドプロンプト（もしくは Git の Bash）より以下のように入力します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">setx </span><span class="pun">/</span><span class="pln">M NODIST_PREFIX </span><span class="str">"c:\ide\nodist"</span></li><li class="L1"><span class="pln">setx </span><span class="pun">/</span><span class="pln">M PATH </span><span class="str">"%NODIST_PREFIX%\bin;%PATH%"</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+コマンドプロンプトを一旦閉じ再起動すると環境変数が適用されますので、その状態でNode.js のインストールを行います。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ nodist update</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+インストールされた node.js のバージョンを確認します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node </span><span class="pun">-</span><span class="pln">v</span></li><li class="L1"><span class="pln">v0</span><span class="pun">.</span><span class="lit">10.35</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+最新の安定版がインストールされてるいることを確認できます。試しに旧バージョン(v0.10.2)をインストールしてみます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ nodist </span><span class="pun">+</span><span class="pln"> v0</span><span class="pun">.</span><span class="lit">10.2</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+nodist と入力するとインストールされてるバージョンの一覧と適用されてるバージョンの確認ができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ nodist</span></li><li class="L1"><span class="pln">  </span><span class="lit">0.10</span><span class="pun">.</span><span class="lit">2</span></li><li class="L2"><span class="pun">&gt;</span><span class="pln"> </span><span class="lit">0.10</span><span class="pun">.</span><span class="lit">35</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">global</span><span class="pun">)</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><br>
+v0.10.35 が適用されてることが分かります。バージョンを切り替えるには以下のように入力します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ nodist v0</span><span class="pun">.</span><span class="lit">10.2</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+バージョン番号を指定せず、最新の安定版を適用するには stable と指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ nodist stable</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+特定のバージョンをアンインストールするにはバージョン番号の前に – を指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ nodist </span><span class="pun">-</span><span class="pln"> v0</span><span class="pun">.</span><span class="lit">10.2</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<h2>Node.js を対話モードで使用してみる</h2>
+
+<p>Node.js を対話モードのREPL（Read eval print loop：対話的実行環境）で動かしてみます。
+node と入力します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node</span></li><li class="L1"><span class="pun">&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+キー入力待ち状態になります。計算式を入力すると計算結果が表示されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&gt;</span><span class="pln"> </span><span class="lit">523</span><span class="pun">*</span><span class="lit">3</span></li><li class="L1"><span class="lit">1569</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+JavaScript の命令も使用できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&gt;</span><span class="pln"> </span><span class="str">'node.js'</span><span class="pun">.</span><span class="pln">toUpperCase</span><span class="pun">()</span></li><li class="L1"><span class="pln">NODE</span><span class="pun">.</span><span class="pln">JS</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+プログラムを実行してみます。以下コードを hello.js という名前で作業フォルダに保存します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> msg </span><span class="pun">=</span><span class="pln"> </span><span class="str">'Hello Node.js !'</span><span class="pun">;</span></li><li class="L1"><span class="pln">console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="pln">msg</span><span class="pun">)</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+コマンドプロンプトに戻り（Ctrl+Cを２回もしくは .exit と入力すると戻れます）以下のよう入力すると実行できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node hello</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="typ">Hello</span><span class="pln"> </span><span class="typ">Node</span><span class="pun">.</span><span class="pln">js </span><span class="pun">!</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+対話モードで .help と入力すると使用できるコマンド一覧が表示されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&gt;</span><span class="pln"> </span><span class="pun">.</span><span class="pln">help</span></li><li class="L1"><span class="pun">.</span><span class="kwd">break</span><span class="pln">  </span><span class="typ">Sometimes</span><span class="pln"> you </span><span class="kwd">get</span><span class="pln"> stuck</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">this</span><span class="pln"> gets you </span><span class="kwd">out</span></li><li class="L2"><span class="pun">.</span><span class="pln">clear  </span><span class="typ">Alias</span><span class="pln"> </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">.</span><span class="kwd">break</span></li><li class="L3"><span class="pun">.</span><span class="kwd">exit</span><span class="pln">   </span><span class="typ">Exit</span><span class="pln"> the repl</span></li><li class="L4"><span class="pun">.</span><span class="pln">help   </span><span class="typ">Show</span><span class="pln"> repl options</span></li><li class="L5"><span class="pun">.</span><span class="pln">load   </span><span class="typ">Load</span><span class="pln"> JS </span><span class="kwd">from</span><span class="pln"> a file </span><span class="kwd">into</span><span class="pln"> the REPL session</span></li><li class="L6"><span class="pun">.</span><span class="pln">save   </span><span class="typ">Save</span><span class="pln"> all evaluated commands </span><span class="kwd">in</span><span class="pln"> </span><span class="kwd">this</span><span class="pln"> REPL session to a file</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 180px;"></textarea></div></div></div>
+
+<h2>モジュールの読み込み</h2>
+
+<p>require 関数を使用するとプログラム内で他の js ファイル（モジュール）を読み込むことができます。
+また、モジュールは exports オブジェクトを通じ値やメソッドを定義することができます。</p>
+
+<p>指定した名前に挨拶する hello_name モジュール（hello_name.js）を作成してみます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">exports</span><span class="pun">.</span><span class="pln">setName </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">name</span><span class="pun">){</span></li><li class="L1"><span class="pln">    </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> name</span><span class="pun">;</span></li><li class="L2"><span class="pun">}</span></li><li class="L3"><span class="pln">exports</span><span class="pun">.</span><span class="pln">hello </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L4"><span class="pln">    console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'Hello,'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">name</span><span class="pun">,</span><span class="pln"> </span><span class="str">'!'</span><span class="pun">);</span></li><li class="L5"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><br>
+hello_name モジュールを呼び込み、’Taro’ に挨拶する hello_taro モジュール（hello_taro.js）を作成します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> helloName </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">require</span><span class="pun">(</span><span class="str">'./hello_name'</span><span class="pun">);</span><span class="pln"> </span><span class="com">// 自作モジュールの場合は path の指定は必須</span></li><li class="L1"><span class="pln">helloName</span><span class="pun">.</span><span class="pln">setName</span><span class="pun">(</span><span class="str">'Taro'</span><span class="pun">);</span></li><li class="L2"><span class="pln">helloName</span><span class="pun">.</span><span class="pln">hello</span><span class="pun">();</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><br>
+hello_taro.js を実行すると Hello, Taro ! と表示されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node hello_taro</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="typ">Hello</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Taro</span><span class="pln"> </span><span class="pun">!</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<h2>標準モジュールを使用してみる</h2>
+
+<p>node.js に最初から組み込まれている標準モジュールをいくつか使用してみます。</p>
+
+<ul>
+<li>http
+
+<ul>
+<li>HTTP サーバやクライアント機能を提供します</li>
+</ul></li>
+<li>fs
+
+<ul>
+<li>ファイルシステムへのアクセス機能を提供します</li>
+</ul></li>
+<li>net
+
+<ul>
+<li>TCP 通信によるネットワークサーバやクライアント機能を提供します</li>
+</ul></li>
+</ul>
+
+<h2>HTTP サーバを動かす</h2>
+
+<p>http モジュールは、HTTP サーバやクライアント機能を提供します。
+下記コードを http.js というファイル名で保存します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> http </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">require</span><span class="pun">(</span><span class="str">'http'</span><span class="pun">);</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> server </span><span class="pun">=</span><span class="pln"> http</span><span class="pun">.</span><span class="pln">createServer</span><span class="pun">();</span></li><li class="L2"><span class="pln">server</span><span class="pun">.</span><span class="pln">on</span><span class="pun">(</span><span class="str">'request'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">req</span><span class="pun">,</span><span class="pln"> res</span><span class="pun">){</span></li><li class="L3"><span class="pln">    res</span><span class="pun">.</span><span class="pln">writeHead</span><span class="pun">(</span><span class="lit">200</span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span><span class="str">'Content-Type'</span><span class="pun">:</span><span class="str">'text/html'</span><span class="pun">});</span></li><li class="L4"><span class="pln">    res</span><span class="pun">.</span><span class="pln">write</span><span class="pun">(</span><span class="str">'&lt;h1&gt;Hello Node !&lt;/h1&gt;'</span><span class="pun">);</span></li><li class="L5"><span class="pln">    res</span><span class="pun">.</span><span class="kwd">end</span><span class="pun">();</span></li><li class="L6"><span class="pun">});</span></li><li class="L7"><span class="pln">server</span><span class="pun">.</span><span class="pln">listen</span><span class="pun">(</span><span class="lit">8080</span><span class="pun">);</span></li><li class="L8"><span class="pln">console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'Server running on 8080'</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 216px;"></textarea></div></div></div>
+
+<p><br>
+http.js を実行します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node http</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="pln">server started on </span><span class="lit">8080</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p>ブラウザより http://localhost:8080 にアクセスすると Hello Node ! と表示されます。</p>
+
+<h2>Web API を利用する</h2>
+
+<p>http モジュールを使用し Web API を利用してみます。
+http://nodejs.org/ のはてブ数を取得してみます。
+下記コードを webapi.js というファイル名で保存します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> http </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">require</span><span class="pun">(</span><span class="str">'http'</span><span class="pun">);</span></li><li class="L1"><span class="pln">http</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span></li><li class="L2"><span class="pln">    </span><span class="str">'http://api.b.st-hatena.com/entry.count?url=http://nodejs.org/'</span><span class="pun">,</span></li><li class="L3"><span class="pln">    </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">res</span><span class="pun">){</span></li><li class="L4"><span class="pln">        res</span><span class="pun">.</span><span class="pln">setEncoding</span><span class="pun">(</span><span class="str">'utf-8'</span><span class="pun">);</span></li><li class="L5"><span class="pln">        res</span><span class="pun">.</span><span class="pln">on</span><span class="pun">(</span><span class="str">'data'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">chunk</span><span class="pun">){</span></li><li class="L6"><span class="pln">            console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'nodejs.org のはてブ数 : '</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> chunk</span><span class="pun">);</span></li><li class="L7"><span class="pln">        </span><span class="pun">});</span></li><li class="L8"><span class="pln">    </span><span class="pun">}</span></li><li class="L9"><span class="pun">).</span></li><li class="L0"><span class="pln">on</span><span class="pun">(</span><span class="str">'error'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">e</span><span class="pun">){</span></li><li class="L1"><span class="pln">    console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'ERROR'</span><span class="pun">,</span><span class="pln"> e</span><span class="pun">.</span><span class="pln">message</span><span class="pun">);</span></li><li class="L2"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 288px;"></textarea></div></div></div>
+
+<p><br>
+webapi.js を実行すると http://nodejs.org/ のはてブ数が表示されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node webapi</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="pln">nodejs</span><span class="pun">.</span><span class="pln">org </span><span class="pun">のはてブ数</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="lit">600</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<h2>ファイルシステム にアクセスする</h2>
+
+<p>fs モジュールは、ファイルシステムへのアクセス機能を提供します。
+下記コードを fs.js というファイル名で保存します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> fs </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">require</span><span class="pun">(</span><span class="str">'fs'</span><span class="pun">);</span></li><li class="L1"><span class="pln">fs</span><span class="pun">.</span><span class="pln">readFile</span><span class="pun">(</span><span class="str">'fs.txt'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'utf-8'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">,</span><span class="pln"> data</span><span class="pun">){</span></li><li class="L2"><span class="pln">    </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">err</span><span class="pun">){</span></li><li class="L3"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="pln">err</span><span class="pun">);</span></li><li class="L4"><span class="pln">    </span><span class="pun">}</span></li><li class="L5"><span class="pln">    </span><span class="kwd">else</span><span class="pun">{</span></li><li class="L6"><span class="pln">        console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="pln">data</span><span class="pun">);</span></li><li class="L7"><span class="pln">    </span><span class="pun">}</span></li><li class="L8"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 216px;"></textarea></div></div></div>
+
+<p><br>
+fs.js を実行すると fs.txt が無いためエラーが表示されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node fs</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="pun">エラーだよ</span></li><li class="L2"><span class="pun">{</span><span class="pln"> </span><span class="pun">[</span><span class="typ">Error</span><span class="pun">:</span><span class="pln"> ENOENT</span><span class="pun">,</span><span class="pln"> open </span><span class="str">'･･･fs.txt'</span><span class="pun">]</span></li><li class="L3"><span class="pln">  errno</span><span class="pun">:</span><span class="pln"> </span><span class="lit">34</span><span class="pun">,</span></li><li class="L4"><span class="pln">  code</span><span class="pun">:</span><span class="pln"> </span><span class="str">'ENOENT'</span><span class="pun">,</span></li><li class="L5"><span class="pln">  path</span><span class="pun">:</span><span class="pln"> </span><span class="str">'･･･fs.txt'</span><span class="pln"> </span><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><br>
+fs.txt を以下のように作成します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">ファイルの読み取り成功！</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+fs.js を再度実行すると、fs.txtの中身が表示されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node fs</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="pun">ファイルの読み取り成功！</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<h2>TCP サーバを動かす</h2>
+
+<p>net モジュールは TCP 通信によるネットワークサーバやクライアント機能を提供します。
+下記コードを net.js というファイル名で保存します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> net </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">require</span><span class="pun">(</span><span class="str">'net'</span><span class="pun">);</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> server </span><span class="pun">=</span><span class="pln"> net</span><span class="pun">.</span><span class="pln">createServer</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln">socket</span><span class="pun">){</span></li><li class="L2"><span class="pln">    console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'connected！'</span><span class="pun">);</span></li><li class="L3"><span class="pln">    socket</span><span class="pun">.</span><span class="pln">on</span><span class="pun">(</span><span class="str">'data'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">data</span><span class="pun">){</span></li><li class="L4"><span class="pln">        socket</span><span class="pun">.</span><span class="pln">write</span><span class="pun">(</span><span class="str">'you said '</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> data </span><span class="pun">+</span><span class="pln"> </span><span class="str">'\n'</span><span class="pun">);</span></li><li class="L5"><span class="pln">    </span><span class="pun">});</span></li><li class="L6"><span class="pln">    socket</span><span class="pun">.</span><span class="pln">on</span><span class="pun">(</span><span class="str">'end'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L7"><span class="pln">        console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'disconnected'</span><span class="pun">);</span></li><li class="L8"><span class="pln">    </span><span class="pun">});</span></li><li class="L9"><span class="pun">});</span></li><li class="L0"><span class="pln">server</span><span class="pun">.</span><span class="pln">listen</span><span class="pun">(</span><span class="lit">8111</span><span class="pun">);</span></li><li class="L1"><span class="pln">console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'server start listening on 8111'</span><span class="pun">)</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 270px;"></textarea></div></div></div>
+
+<p><br>
+net.js を実行します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node net</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="pln">server start listening on </span><span class="lit">8111</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p>telnet で localhost に接続後、適当にキー入力しエンターすると入力した文字が表示されます。</p>
+
+<p><img src="http://lh3.googleusercontent.com/-2LyjTM-IUEk/VMhtle09TcI/AAAAAAAAIzs/fBqkyOjYzuM/s400/node02.png" alt="node"></p>
+
+<h2>npm でサードパーティ製モジュールをインストールする</h2>
+
+<p>npm(Node Package Manager)を使用することで、サードパーティ製のモジュールをインストールすることができます。
+以下のモジュールをインストールして使用してみます。</p>
+
+<ul>
+<li>request
+
+<ul>
+<li>HTTP リクエスト処理の簡潔な記述を可能にする</li>
+</ul></li>
+<li>async
+
+<ul>
+<li>非同期処理の簡潔な記述を可能にする</li>
+</ul></li>
+</ul>
+
+<p>request モジュールをインストールしてみます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node install request</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p>作業フォルダに node_modules フォルダが生成され request モジュールが配置されます。</p>
+
+<p>-g オプションを付けてインストールするとグローバル環境に配置され、異なる作業フォルダからもモジュールを利用できるようになります。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node install </span><span class="pun">-</span><span class="pln">g request</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<h2>パッケージ定義ファイルを利用しインストールする</h2>
+
+<p>パッケージ定義ファイル package.json に利用するモジュールを定義しインストールすることもできます。
+プロジェクトフォルダを作成し、その中に package.json を定義してみます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">mkdir sample_proj</span></li><li class="L1"><span class="pln">cd sample_proj</span></li><li class="L2"><span class="pln">npm init</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><br>
+npm init と入力すると対話形式で、package.json を作成することができます。
+ここではとりあえず何も入力せず全てエンターします。
+対話入力が終わると以下内容の package.json が生成されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">{</span></li><li class="L1"><span class="pln">  </span><span class="str">"name"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"sample_proj"</span><span class="pun">,</span></li><li class="L2"><span class="pln">  </span><span class="str">"version"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"0.0.0"</span><span class="pun">,</span></li><li class="L3"><span class="pln">  </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span></li><li class="L4"><span class="pln">  </span><span class="str">"main"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"index.js"</span><span class="pun">,</span></li><li class="L5"><span class="pln">  </span><span class="str">"scripts"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L6"><span class="pln">    </span><span class="str">"test"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"echo \"Error: no test specified\" &amp;&amp; exit 1"</span></li><li class="L7"><span class="pln">  </span><span class="pun">},</span></li><li class="L8"><span class="pln">  </span><span class="str">"author"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span></li><li class="L9"><span class="pln">  </span><span class="str">"license"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"ISC"</span></li><li class="L0"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 252px;"></textarea></div></div></div>
+
+<p><br>
+この package.json に dependencies 属性を追記し、インストールしたいモジュール名とバージョンを指定します。
+ここでは request と async を指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="str">"dependencies"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">    </span><span class="str">"request"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"&gt;=1.0.0"</span><span class="pun">,</span><span class="pln"> </span><span class="com">// 1.0.0以上</span></li><li class="L2"><span class="pln">    </span><span class="str">"async"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"*"</span><span class="pun">,</span></li><li class="L3"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 126px;"></textarea></div></div></div>
+
+<p><br>
+npm install と入力すると package.json に定義されたモジュールがインストールされます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ npm install</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<h2>指定 URL の HTML を読み込む</h2>
+
+<p>request モジュールを使用し、指定した URL の HTML を読み込み表示してみます。
+下記コードを request.js というファイル名で保存します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> req </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">require</span><span class="pun">(</span><span class="str">'request'</span><span class="pun">);</span></li><li class="L1"><span class="pln">req</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">'http://www.yahoo.co.jp'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">,</span><span class="pln"> res </span><span class="pun">,</span><span class="pln">body</span><span class="pun">){</span></li><li class="L2"><span class="pln">    console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="pln">body</span><span class="pun">);</span></li><li class="L3"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 126px;"></textarea></div></div></div>
+
+<p><br>
+request.js を実行すると、指定した URL の HTML が表示されます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node request</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="pun">・・・</span></li><li class="L2"><span class="pun">&lt;/</span><span class="pln">center</span><span class="pun">&gt;</span></li><li class="L3"><span class="pun">&lt;/</span><span class="pln">body</span><span class="pun">&gt;</span></li><li class="L4"><span class="pun">&lt;/</span><span class="pln">html</span><span class="pun">&gt;</span></li><li class="L5"><span class="pun">&lt;!--</span><span class="pln"> p05</span><span class="pun">.</span><span class="pln">f12</span><span class="pun">.</span><span class="pln">top</span><span class="pun">.</span><span class="pln">ssk</span><span class="pun">.</span><span class="pln">yahoo</span><span class="pun">.</span><span class="pln">co</span><span class="pun">.</span><span class="pln">jp </span><span class="typ">Wed</span><span class="pln"> </span><span class="typ">Jan</span><span class="pln"> </span><span class="lit">28</span><span class="pln"> </span><span class="lit">02</span><span class="pun">:</span><span class="lit">02</span><span class="pun">:</span><span class="lit">08</span><span class="pln"> JST </span><span class="lit">2015</span><span class="pln"> </span><span class="pun">--&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<h2>非同期処理を分かりやすく書く</h2>
+
+<p>非同期処理をコールバックで定義するとネストが深くなり、可読性が悪くなりがちです。
+async モジュールを使用し非同期処理の記述をすっきりさせる事ができます。</p>
+
+<p>まずは順次処理から。下記コードを series.js というファイル名で保存します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> async </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">require</span><span class="pun">(</span><span class="str">'async'</span><span class="pun">);</span></li><li class="L1"><span class="pln">async</span><span class="pun">.</span><span class="pln">series</span><span class="pun">(</span></li><li class="L2"><span class="pln">    </span><span class="pun">[</span></li><li class="L3"><span class="pln">        </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">callback</span><span class="pun">){</span></li><li class="L4"><span class="pln">            console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'start-a'</span><span class="pun">);</span></li><li class="L5"><span class="pln">            setTimeout</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L6"><span class="pln">                console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'done-a'</span><span class="pun">);</span></li><li class="L7"><span class="pln">                callback</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="str">'result-a'</span><span class="pun">)</span></li><li class="L8"><span class="pln">            </span><span class="pun">},</span><span class="pln"> </span><span class="lit">1000</span><span class="pun">);</span></li><li class="L9"><span class="pln">        </span><span class="pun">},</span></li><li class="L0"><span class="pln">        </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">callback</span><span class="pun">){</span></li><li class="L1"><span class="pln">            console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'start-b'</span><span class="pun">);</span></li><li class="L2"><span class="pln">            setTimeout</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L3"><span class="pln">                console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'done-b'</span><span class="pun">);</span></li><li class="L4"><span class="pln">                callback</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="str">'result-b'</span><span class="pun">)</span></li><li class="L5"><span class="pln">            </span><span class="pun">},</span><span class="pln"> </span><span class="lit">500</span><span class="pun">);</span></li><li class="L6"><span class="pln">        </span><span class="pun">}</span></li><li class="L7"><span class="pln">    </span><span class="pun">],</span></li><li class="L8"><span class="pln">    </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">error</span><span class="pun">,</span><span class="pln"> result</span><span class="pun">){</span></li><li class="L9"><span class="pln">        console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="pln">result</span><span class="pun">);</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 450px;"></textarea></div></div></div>
+
+<p><br>
+series.js を実行すると、定義した順番に処理が実行されてることが確認できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node series</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="pln">start</span><span class="pun">-</span><span class="pln">a</span></li><li class="L2"><span class="kwd">done</span><span class="pun">-</span><span class="pln">a</span></li><li class="L3"><span class="pln">start</span><span class="pun">-</span><span class="pln">b</span></li><li class="L4"><span class="kwd">done</span><span class="pun">-</span><span class="pln">b</span></li><li class="L5"><span class="pun">[</span><span class="pln"> </span><span class="str">'result-a'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'result-b'</span><span class="pln"> </span><span class="pun">]</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><br>
+次に並列処理を書いてみます。series の記述箇所を parallel に置き換えた下記コードを parallel.js というファイル名で保存します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> async </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">require</span><span class="pun">(</span><span class="str">'async'</span><span class="pun">);</span></li><li class="L1"><span class="pln">async</span><span class="pun">.</span><span class="pln">parallel</span><span class="pun">(</span></li><li class="L2"><span class="pln">    </span><span class="pun">[</span></li><li class="L3"><span class="pln">        </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">callback</span><span class="pun">){</span></li><li class="L4"><span class="pln">            console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'start-a'</span><span class="pun">);</span></li><li class="L5"><span class="pln">            setTimeout</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L6"><span class="pln">                console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'done-a'</span><span class="pun">);</span></li><li class="L7"><span class="pln">                callback</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="str">'result-a'</span><span class="pun">)</span></li><li class="L8"><span class="pln">            </span><span class="pun">},</span><span class="pln"> </span><span class="lit">1000</span><span class="pun">);</span></li><li class="L9"><span class="pln">        </span><span class="pun">},</span></li><li class="L0"><span class="pln">        </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">callback</span><span class="pun">){</span></li><li class="L1"><span class="pln">            console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'start-b'</span><span class="pun">);</span></li><li class="L2"><span class="pln">            setTimeout</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L3"><span class="pln">                console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'done-b'</span><span class="pun">);</span></li><li class="L4"><span class="pln">                callback</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="str">'result-b'</span><span class="pun">)</span></li><li class="L5"><span class="pln">            </span><span class="pun">},</span><span class="pln"> </span><span class="lit">500</span><span class="pun">);</span></li><li class="L6"><span class="pln">        </span><span class="pun">}</span></li><li class="L7"><span class="pln">    </span><span class="pun">],</span></li><li class="L8"><span class="pln">    </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">error</span><span class="pun">,</span><span class="pln"> result</span><span class="pun">){</span></li><li class="L9"><span class="pln">        console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="pln">result</span><span class="pun">);</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 450px;"></textarea></div></div></div>
+
+<p><br>
+parallel.js を実行すると、処理の呼び出しが先行して行われ、処理が終了した順にコールバックが実行されてることが確認できます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node parallel</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="pln">start</span><span class="pun">-</span><span class="pln">a</span></li><li class="L2"><span class="pln">start</span><span class="pun">-</span><span class="pln">b</span></li><li class="L3"><span class="kwd">done</span><span class="pun">-</span><span class="pln">b</span></li><li class="L4"><span class="kwd">done</span><span class="pun">-</span><span class="pln">a</span></li><li class="L5"><span class="pun">[</span><span class="pln"> </span><span class="str">'result-a'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'result-b'</span><span class="pln"> </span><span class="pun">]</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><br>
+async.series や async.parallel の引数には配列を指定しましたが JSON を指定することもできます.</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> async </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">require</span><span class="pun">(</span><span class="str">'async'</span><span class="pun">);</span></li><li class="L1"><span class="pln">async</span><span class="pun">.</span><span class="pln">parallel</span><span class="pun">(</span></li><li class="L2"><span class="pln">    </span><span class="pun">{</span></li><li class="L3"><span class="pln">        a</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">callback</span><span class="pun">){</span></li><li class="L4"><span class="pln">            console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'start-a'</span><span class="pun">);</span></li><li class="L5"><span class="pln">            setTimeout</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L6"><span class="pln">                console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'done-a'</span><span class="pun">);</span></li><li class="L7"><span class="pln">                callback</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="str">'result-a'</span><span class="pun">)</span></li><li class="L8"><span class="pln">            </span><span class="pun">},</span><span class="pln"> </span><span class="lit">1000</span><span class="pun">);</span></li><li class="L9"><span class="pln">        </span><span class="pun">},</span></li><li class="L0"><span class="pln">        b</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">callback</span><span class="pun">){</span></li><li class="L1"><span class="pln">            console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'start-b'</span><span class="pun">);</span></li><li class="L2"><span class="pln">            setTimeout</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L3"><span class="pln">                console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="str">'done-b'</span><span class="pun">);</span></li><li class="L4"><span class="pln">                callback</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="str">'result-b'</span><span class="pun">)</span></li><li class="L5"><span class="pln">            </span><span class="pun">},</span><span class="pln"> </span><span class="lit">500</span><span class="pun">);</span></li><li class="L6"><span class="pln">        </span><span class="pun">}</span></li><li class="L7"><span class="pln">    </span><span class="pun">},</span></li><li class="L8"><span class="pln">    </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">error</span><span class="pun">,</span><span class="pln"> result</span><span class="pun">){</span></li><li class="L9"><span class="pln">        console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="pln">result</span><span class="pun">);</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 450px;"></textarea></div></div></div>
+
+<p><br>
+この場合、JSON 形式で処理結果を受け取ることができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$ node parallel</span><span class="pun">.</span><span class="pln">js</span></li><li class="L1"><span class="pln">start</span><span class="pun">-</span><span class="pln">a</span></li><li class="L2"><span class="pln">start</span><span class="pun">-</span><span class="pln">b</span></li><li class="L3"><span class="kwd">done</span><span class="pun">-</span><span class="pln">b</span></li><li class="L4"><span class="kwd">done</span><span class="pun">-</span><span class="pln">a</span></li><li class="L5"><span class="pun">{</span><span class="pln"> b</span><span class="pun">:</span><span class="pln"> </span><span class="str">'result-b'</span><span class="pun">,</span><span class="pln"> a</span><span class="pun">:</span><span class="pln"> </span><span class="str">'result-a'</span><span class="pln"> </span><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<h2>最後に</h2>
+
+<p>以上、基本的な利用方法のまとめでした。
+node.js 対応の PaaS もめずらしくない世の中ですので、機会があったら利用していきたいと思います。</p>
+
+<p>サンプルプログラム一式は以下にあります。<br>
+<a href="https://github.com/cyokodog/JS_STUDY">https://github.com/cyokodog/JS_STUDY</a></p>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

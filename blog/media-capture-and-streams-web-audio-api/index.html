@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成 | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/media-capture-and-streams-web-audio-api/" title="Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2015-04-08</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/media-capture-and-streams-web-audio-api/"><img src="http://lh5.googleusercontent.com/-jdxrmNzSfRY/VSVJoOgrExI/AAAAAAAAI7o/afEKypy4JdU/s288/capture.jpg"></a>
+</div>
+
+<p><a href="http://www.cyokodog.net/blog/web-speechi-api/">前回のエントリ</a>ではマイク経由の音声認識を行う Speech Recognition API を試しましたが、今回はカメラ・マイクからの動画・音声キャプチャを行う Media Capture and Streams を試してみます。
+また、キャプチャした音声の録音については MediaStream Recording を使用することで可能ですが、現時点（2015年4月）では Firefox にしか実装されていません。
+そこで Web Audio API を使用することで他のブラウザでも音声録音を可能にし、それらの音声データを wav 形式で保存する方法についても試してみました。</p>
+
+
+
+<!--more-->
+<h2>はじめに</h2>
+
+<p>ベンダープレフィックス対策として以下処理を行います。</p>
+
+<h4 id="code-demo">code demo</h4>
+<h5 id="script">script</h5>
+<pre><code>navigator.getUserMedia = 
+    navigator.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia;
+window.URL = 
+    window.URL || 
+    window.webkitURL || 
+    window.mozURL || 
+    window.msURL;
+window.AudioContext = 
+    window.AudioContext||
+    window.webkitAudioContext;
+</code></pre><h2>動画をキャプチャする</h2>
+
+<p>カメラ経由の動画をキャプチャするには navigator.getUserMedia を使用します。下記コードを実行するとカメラへのアクセス許可を求められるので、許可すると動画のキャプチャが始まります。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">navigator</span><span class="pun">.</span><span class="pln">getUserMedia</span><span class="pun">(</span></li><li class="L1"><span class="pln">    </span><span class="pun">{</span><span class="pln">video</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln"> audio</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">},</span></li><li class="L2"><span class="pln">    </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">stream</span><span class="pun">){</span></li><li class="L3"><span class="pln">        </span><span class="pun">・・・</span></li><li class="L4"><span class="pln">    </span><span class="pun">},</span></li><li class="L5"><span class="pln">    </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">err</span><span class="pun">){</span></li><li class="L6"><span class="pln">        console</span><span class="pun">.</span><span class="pln">log</span><span class="pun">(</span><span class="pln">err</span><span class="pun">.</span><span class="pln">name </span><span class="pun">?</span><span class="pln"> err</span><span class="pun">.</span><span class="pln">name </span><span class="pun">:</span><span class="pln"> err</span><span class="pun">);</span></li><li class="L7"><span class="pln">    </span><span class="pun">}</span></li><li class="L8"><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 216px;"></textarea></div></div></div>
+
+<p><br>
+コールバック関数で得られる stream を URL.createObjectURL によりオブジェクト URL 化した後、video 要素に割り当てることでリアルタイムに動画を再生させることができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">function</span><span class="pun">(</span><span class="pln">stream</span><span class="pun">){</span></li><li class="L1"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> video </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">querySelector</span><span class="pun">(</span><span class="str">'.video'</span><span class="pun">);</span></li><li class="L2"><span class="pln">    video</span><span class="pun">.</span><span class="pln">src </span><span class="pun">=　</span><span class="pln">URL</span><span class="pun">.</span><span class="pln">createObjectURL</span><span class="pun">(</span><span class="pln">stream</span><span class="pun">);</span></li><li class="L3"><span class="pln">    video</span><span class="pun">.</span><span class="pln">play</span><span class="pun">();</span></li><li class="L4"><span class="pun">},</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 144px;"></textarea></div></div></div>
+
+<p><br>
+実際に試してみます。<br>
+以下デモの REC ボタンをクリックしてみてください。
+カメラへのアクセス許可をするとカメラのキャプチャが行われ、動画がリアルタイム再生されます。</p>
+
+<p>Chrome の場合、カメラがキャプチャ中である事を示す録画マークがタブ脇に表示されます。
+キャプチャを停止するにはストリームの stop() メソッドを実行します。
+REC ボタンをクリックするとラベルが STOP に切り替わるので、再クリックしキャプチャ状態を停止してください。</p>
+
+
+<h4 id="code-demo">code demo</h4>
+<h5 id="html">html</h5>
+<pre><code>&lt;button class=&quot;rec&quot;&gt;REC&lt;/button&gt;&lt;br/&gt;
+&lt;video class=&quot;video&quot; width=&quot;320&quot; height=&quot;200&quot;&gt;&lt;/video&gt;&lt;br/&gt;
+</code></pre><h5 id="script">script</h5>
+<pre><code>var stream;
+var recControl = function(){
+    if(!stream){
+        el.rec.textContent = &#39;STOP&#39;;
+        navigator.getUserMedia(
+            {
+                video: true,
+                audio: false
+            },
+            function(s){
+                stream = s;
+                el.video.src =　URL.createObjectURL(stream);
+                el.video.play();
+            },
+            function(err){
+                console.log(err.name ? err.name : err);
+            }
+        );
+    }
+    else{
+        el.rec.textContent = &#39;REC&#39;;
+        stream.stop();
+        stream = undefined;
+    }
+}
+var el = {
+    video : $DEMO[0].querySelector(&#39;.video&#39;),
+    rec : $DEMO[0].querySelector(&#39;.rec&#39;)
+}
+el.rec.addEventListener(&#39;click&#39;, recControl, false);
+</code></pre><p>audio パラメータに false を指定してるのは、リアルタイムでキャプチャ音声を再生してしまうとハウリングを起こしてしまうためです。
+音声のストリームデータが必要な場合は、audio パラメータに true を指定し、video 要素側でミュートします。</p>
+
+<h2>動画のスクリーンショットを行う</h2>
+
+<p>以下のように canvas に対し video 要素を割り当てることで、再生中の動画のスクリーショットをとることができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> video </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">querySelector</span><span class="pun">(</span><span class="str">'.video'</span><span class="pun">);</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> canvas </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">querySelector</span><span class="pun">(</span><span class="str">'.canvas'</span><span class="pun">);</span></li><li class="L2"><span class="pln">canvas</span><span class="pun">.</span><span class="pln">getContext</span><span class="pun">(</span><span class="str">"2d"</span><span class="pun">).</span><span class="pln">drawImage</span><span class="pun">(</span><span class="pln">video</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln"> </span><span class="lit">320</span><span class="pun">,</span><span class="pln"> </span><span class="lit">240</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><br>
+以下デモでは動画の再生中に SCREEN SHOT ボタンを押すと、その瞬間の画像が canvas に表示されます。
+表示された画像は画像ファイルとして保存することができます。</p>
+
+<h4 id="code-demo">code demo</h4>
+<h5 id="html">html</h5>
+<pre><code>&lt;button class=&quot;rec&quot;&gt;REC&lt;/button&gt;&lt;br/&gt;
+&lt;video class=&quot;video&quot; width=&quot;320&quot; height=&quot;200&quot;&gt;&lt;/video&gt;&lt;br/&gt;
+&lt;button class=&quot;shot&quot;&gt;SCREEN SHOT&lt;/button&gt;&lt;br/&gt;
+&lt;canvas class=&quot;canvas&quot; width=&quot;320&quot; height=&quot;240&quot;&gt;&lt;/canvas&gt;
+</code></pre><h5 id="script">script</h5>
+<pre><code>var stream;
+var recControl = function(){
+    if(!stream){
+        el.rec.textContent = &#39;STOP&#39;;
+        navigator.getUserMedia(
+            {
+                video: true,
+                audio: false
+            },
+            function(s){
+                stream = s;
+                el.video.src = URL.createObjectURL(stream);
+                el.video.play();
+            },
+            function(err){
+                console.log(err.name ? err.name : err);
+            }
+        );
+    }
+    else{
+        el.rec.textContent = &#39;REC&#39;;
+        stream.stop();
+        stream = undefined;
+    }
+}
+var shotControl = function(){
+    el.canvas.getContext(&quot;2d&quot;).drawImage(el.video, 0, 0, 320, 240);
+}
+var el = {
+    video : $DEMO[0].querySelector(&#39;.video&#39;),
+    rec : $DEMO[0].querySelector(&#39;.rec&#39;),
+    canvas : $DEMO[0].querySelector(&#39;.canvas&#39;),
+    shot : $DEMO[0].querySelector(&#39;.shot&#39;)
+}
+el.rec.addEventListener(&#39;click&#39;, recControl, false);
+el.shot.addEventListener(&#39;click&#39;, shotControl, false);
+</code></pre><h2>Firefox で録音・再生・保存を行う</h2>
+
+<p>前述のデモではリアルタイム再生するとハウリングを起こすという理由で音声データのキャプチャは行いませんでしたが、音声データを録音（バッファリング）し、キャプチャ終了後に再生させることでハウリングを回避できます。
+現時点（2015年4月）では Firefox にしか実装されてない MediaStream Recording という機能を使用します。</p>
+
+<p>以下ロジックでは 5 秒間の音声録音後、録音した音声を再生させています。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> audio </span><span class="pun">=</span><span class="pln"> document</span><span class="pun">.</span><span class="pln">querySelector</span><span class="pun">(</span><span class="str">'.audio'</span><span class="pun">);</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> recorder</span><span class="pun">;</span></li><li class="L2"><span class="pln">navigator</span><span class="pun">.</span><span class="pln">getUserMedia</span><span class="pun">({</span><span class="pln">video</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> audio</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">},</span></li><li class="L3"><span class="pln">    </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">stream</span><span class="pun">){</span></li><li class="L4"><span class="pln">        recorder </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">MediaRecorder</span><span class="pun">(</span><span class="pln">stream</span><span class="pun">);</span></li><li class="L5"><span class="pln">        recorder</span><span class="pun">.</span><span class="pln">start</span><span class="pun">();</span></li><li class="L6"><span class="pln">        </span><span class="com">// 録音が停止されると呼び出される</span></li><li class="L7"><span class="pln">        recorder</span><span class="pun">.</span><span class="pln">ondataavailable </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L8"><span class="pln">            </span><span class="kwd">var</span><span class="pln"> blob </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">data</span><span class="pun">;</span></li><li class="L9"><span class="pln">            audio</span><span class="pun">.</span><span class="pln">src </span><span class="pun">=</span><span class="pln"> URL</span><span class="pun">.</span><span class="pln">createObjectURL</span><span class="pun">(</span><span class="pln">blob</span><span class="pun">);</span></li><li class="L0"><span class="pln">            audio</span><span class="pun">.</span><span class="pln">play</span><span class="pun">();</span></li><li class="L1"><span class="pln">        </span><span class="pun">}</span></li><li class="L2"><span class="pln">    </span><span class="pun">},</span></li><li class="L3"><span class="pln">    </span><span class="pun">・・・</span></li><li class="L4"><span class="pun">});</span><span class="pln">             </span></li><li class="L5"><span class="com">// 5秒後に録音を停止</span></li><li class="L6"><span class="pln">setTimeout</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L7"><span class="pln">    recorder</span><span class="pun">.</span><span class="pln">stop</span><span class="pun">();</span></li><li class="L8"><span class="pun">},</span><span class="pln"> </span><span class="lit">5000</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 396px;"></textarea></div></div></div>
+
+<p>recorder.stop() メソッドが実行されると ondataavailable(event) が呼び出され、その中で blob 形式の音声データを取得しています。</p>
+
+<p><br>
+以下デモでは REC ボタンで録音の開始・終了を行い、録音の終了時に録音した音声の再生と、音声ファイルのダウンロードリンクを表示します。<br>
+Firefox でお試しください。</p>
+
+
+<h4 id="code-demo">code demo</h4>
+<h5 id="html">html</h5>
+<pre><code>&lt;button class=&quot;rec&quot;&gt;REC&lt;/button&gt;
+&lt;a class=&quot;download&quot;&gt;&lt;/a&gt;
+&lt;audio class=&quot;audio&quot;&gt;&lt;/audio&gt;
+</code></pre><h5 id="script">script</h5>
+<pre><code>var stream;
+var recorder;
+var recControl = function(){
+    if(typeof MediaRecorder == &#39;undefined&#39;) return;
+    if(!stream){
+        el.rec.textContent = &#39;STOP&#39;;
+        navigator.getUserMedia(
+            {
+                video: false,
+                audio: true
+            },
+            function(s){
+                stream = s;
+                recorder = new MediaRecorder(stream);
+                recorder.start();
+                recorder.ondataavailable = function(event) {
+                    var blob = event.data;
+                    var url = el.audio.src = URL.createObjectURL(blob);
+                    el.audio.play();
+                    //download link
+                    el.download.href = url;
+                    el.download.textContent = &#39;download&#39;
+                    el.download.download = &#39;output.wav&#39;;
+                };
+            },
+            function(err){
+                console.log(err.name ? err.name : err);
+            }
+        );
+    }
+    else{
+        el.rec.textContent = &#39;REC&#39;;
+        recorder.stop();
+        stream.stop();
+        stream = undefined;
+    }
+}
+var el = {
+    audio : $DEMO[0].querySelector(&#39;.audio&#39;),
+    rec : $DEMO[0].querySelector(&#39;.rec&#39;),
+    download: $DEMO[0].querySelector(&#39;.download&#39;)
+}
+el.rec.addEventListener(&#39;click&#39;, recControl, false);
+</code></pre><h2>ライブラリで録音・再生・保存を行う</h2>
+
+<p><a href="https://github.com/streamproc/MediaStreamRecorder">MediaStreamRecorder.js</a> というライブラリを使用すると、Firefox 以外のブラウザでも前述の MediaStream Recording に近いロジックで録音処理を行えます。</p>
+
+<p>但し、MediaStream Recording とは異なり recorder.stop() に相当するメソッドがなく、
+録音開始時に recorder.start( time ) といった具合に録音時間を指定する仕様になっています。
+また、Firefox の場合は問題ないのですが、一度でも stream.stop() でキャプチャを停止してしまうと、再度 getUserMedia を実行しキャプチャを行おうとしても、stream からの音声データが取得できなくなってしまうようです。</p>
+
+<p>以下デモでは 5 秒間の録音状態後、録音した音声の再生と音声ファイルのダウンロードリンクを表示します。</p>
+
+<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"></script>
+
+<h4 id="code-demo">code demo</h4>
+<h5 id="html">html</h5>
+<pre><code>&lt;button class=&quot;rec&quot;&gt;REC&lt;/button&gt;
+&lt;a class=&quot;download&quot;&gt;&lt;/a&gt;
+</code></pre><h5 id="script">script</h5>
+<pre><code>var recControl = function(){
+    navigator.getUserMedia(
+        {
+            video: false,
+            audio: true
+        },
+        function(stream){
+            el.rec.textContent = &#39;now Recording...&#39;;
+            el.rec.disabled = true;
+            var recorder = new MediaStreamRecorder(stream);
+            recorder.mimeType = &#39;audio/ogg&#39;;
+            recorder.ondataavailable = function (blob) {
+                var audio_el = document.createElement(&quot;audio&quot;);
+                var url = audio_el.src = URL.createObjectURL(blob);
+                audio_el.play();
+                recorder.stop();
+                stream.stop();
+                el.rec.textContent = &#39;REC&#39;;
+                el.rec.disabled = false;
+
+                //download link
+                el.download.href = url;
+                el.download.textContent = &#39;download&#39;;
+                el.download.download = &#39;output.wav&#39;;
+                $DEMO[0].appendChild(el.download);
+            };
+            recorder.start(5000);
+        },
+        function(err){
+            console.log(err.name ? err.name : err);
+        }
+    );
+}
+var el = {
+    rec : $DEMO[0].querySelector(&#39;.rec&#39;),
+    download: $DEMO[0].querySelector(&#39;.download&#39;)
+}
+el.rec.addEventListener(&#39;click&#39;, recControl, false);
+</code></pre><h2>Web Audio API で録音・再生・保存を行う</h2>
+
+<p>Web Audio API を使用した音声データの録音・再生する方法を考えてみます。<br>
+Web Audio API で音声を再生させるには音源ノードを音声出力ノードに接続する必要があります。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> audioContext </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">AudioContext</span><span class="pun">();</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> audioBufferSourceNode </span><span class="pun">=</span><span class="pln"> audioContext</span><span class="pun">.</span><span class="pln">createBufferSource</span><span class="pun">();</span><span class="pln"> </span><span class="com">// 音源</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="pln">audioBufferSourceNode</span><span class="pun">.</span><span class="pln">buffer </span><span class="pun">=</span><span class="pln"> </span><span class="pun">音源データ</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="com">//接続</span></li><li class="L6"><span class="pln">audioBufferSourceNode</span><span class="pun">.</span><span class="pln">connect</span><span class="pun">(</span></li><li class="L7"><span class="pln">    audioContext</span><span class="pun">.</span><span class="pln">destination </span><span class="com">// 音声出力</span></li><li class="L8"><span class="pun">);</span></li><li class="L9"><span class="pln">audioBufferSourceNode</span><span class="pun">.</span><span class="pln">start</span><span class="pun">();</span><span class="pln"> </span><span class="com">//再生</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 234px;"></textarea></div></div></div>
+
+<p>上記処理では音源ノードとして AudaioBufferSourceNode を使用し、音声出力ノードである AudioContext.destination に接続してます。
+この状態で AudaioBufferSourceNode に音源データを割り当てることで音声データを再生させることができます。</p>
+
+<p>例えば wav ファイルを音源とする場合は以下のように記述します。（詳細は「<a href="http://www.cyokodog.net/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる
+</a>」を参照ください。）</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">audioContext</span><span class="pun">.</span><span class="pln">decodeAudioData</span><span class="pun">(</span></li><li class="L1"><span class="pln">    </span><span class="str">'xhr で取得した wav データ'</span><span class="pun">,</span></li><li class="L2"><span class="pln">    </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">wavBuffer</span><span class="pun">){</span></li><li class="L3"><span class="pln">        audioBufferSourceNode</span><span class="pun">.</span><span class="pln">buffer </span><span class="pun">=</span><span class="pln"> wavBuffer</span><span class="pun">;</span></li><li class="L4"><span class="pln">    </span><span class="pun">}</span></li><li class="L5"><span class="pun">)</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p>今回のケースでは Media Capture で取得した Stream を変換し、上記の audioBufferSourceNode.buffer に割り当てる必要があります。</p>
+
+<p>まず取得した音声データをバッファリング用の配列変数(audioBufferArray)に保存していきます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> bufferSize </span><span class="pun">=</span><span class="pln"> </span><span class="lit">4096</span><span class="pun">;</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> mediaStreamSource </span><span class="pun">=</span><span class="pln"> audioContext</span><span class="pun">.</span><span class="pln">createMediaStreamSource</span><span class="pun">(</span><span class="pln">stream</span><span class="pun">);</span></li><li class="L2"><span class="kwd">var</span><span class="pln"> scriptProcessor </span><span class="pun">=</span><span class="pln"> audioContext</span><span class="pun">.</span><span class="pln">createScriptProcessor</span><span class="pun">(</span><span class="pln">bufferSize</span><span class="pun">,</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln"> </span><span class="lit">1</span><span class="pun">);</span></li><li class="L3"><span class="pln">mediaStreamSource</span><span class="pun">.</span><span class="pln">connect</span><span class="pun">(</span><span class="pln">scriptProcessor</span><span class="pun">);</span></li><li class="L4"><span class="pln">audioBufferArray </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[];</span></li><li class="L5"><span class="pln">scriptProcessor</span><span class="pun">.</span><span class="pln">onaudioprocess </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">){</span></li><li class="L6"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> channel </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">event</span><span class="pun">.</span><span class="pln">inputBuffer</span><span class="pun">.</span><span class="pln">getChannelData</span><span class="pun">(</span><span class="lit">0</span><span class="pun">);</span></li><li class="L7"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> buffer </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Float32Array</span><span class="pun">(</span><span class="pln">bufferSize</span><span class="pun">);</span></li><li class="L8"><span class="pln">    </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;</span><span class="pln"> bufferSize</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L9"><span class="pln">        buffer</span><span class="pun">[</span><span class="pln">i</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> channel</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pln">    audioBufferArray</span><span class="pun">.</span><span class="pln">push</span><span class="pun">(</span><span class="pln">buffer</span><span class="pun">);</span></li><li class="L2"><span class="pun">}</span></li><li class="L3"><span class="pln">scriptProcessor</span><span class="pun">.</span><span class="pln">connect</span><span class="pun">(</span><span class="pln">audioContext</span><span class="pun">.</span><span class="pln">destination</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 306px;"></textarea></div></div></div>
+
+<p>mediaStreamSource に stream を割り当て、以下接続をすると scriptProcessor の onaudioprocess イベントよりFloat32Array 型の音声データを取得することができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">mediaStreamSource</span><span class="pun">(</span><span class="pln">stream</span><span class="pun">)</span><span class="pln"> </span><span class="pun">---&gt;</span><span class="pln"> scriptProcessor </span><span class="pun">---&gt;</span><span class="pln"> audioContext</span><span class="pun">.</span><span class="pln">destination</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+次に  audioBufferSourceNode.buffer に割り当てるための AudioBuffer を生成し、これに上記処理で音声データを記録した audioBufferArray を割り当てます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> audioBuffer </span><span class="pun">=</span><span class="pln"> audioContext</span><span class="pun">.</span><span class="pln">createBuffer</span><span class="pun">(</span></li><li class="L1"><span class="pln">    </span><span class="lit">1</span><span class="pun">,</span></li><li class="L2"><span class="pln">    audioBufferArray</span><span class="pun">.</span><span class="pln">length </span><span class="pun">*</span><span class="pln"> bufferSize</span><span class="pun">,</span></li><li class="L3"><span class="pln">    audioContext</span><span class="pun">.</span><span class="pln">sampleRate</span></li><li class="L4"><span class="pun">);</span></li><li class="L5"><span class="kwd">var</span><span class="pln"> channel </span><span class="pun">=</span><span class="pln"> audioBuffer</span><span class="pun">.</span><span class="pln">getChannelData</span><span class="pun">(</span><span class="lit">0</span><span class="pun">);</span></li><li class="L6"><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;</span><span class="pln"> audioBufferArray</span><span class="pun">.</span><span class="pln">length</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L7"><span class="pln">    </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> j </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> j </span><span class="pun">&lt;</span><span class="pln"> bufferSize</span><span class="pun">;</span><span class="pln"> j</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L8"><span class="pln">        channel</span><span class="pun">[</span><span class="pln">i </span><span class="pun">*</span><span class="pln"> bufferSize </span><span class="pun">+</span><span class="pln"> j</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> audioBufferArray</span><span class="pun">[</span><span class="pln">i</span><span class="pun">][</span><span class="pln">j</span><span class="pun">];</span></li><li class="L9"><span class="pln">    </span><span class="pun">}</span></li><li class="L0"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 252px;"></textarea></div></div></div>
+
+<p><br>
+最後に AudioBuffer を audioBufferSourceNode.buffer に割り当てることで再生可能な状態になります。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">audioBufferSourceNode</span><span class="pun">.</span><span class="pln">buffer </span><span class="pun">=</span><span class="pln"> audioBuffer</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><br>
+以下に録音処理部分のみを汎用化してみました。</p>
+
+
+<h4 id="demo-code">demo code</h4>
+<h5 id="script">script</h5>
+<pre><code>window.Recorder = function(audioContext, bufferSize){
+    var o = this;
+    o.audioContext = audioContext;
+    o.bufferSize = bufferSize || 4096;
+}
+Recorder.prototype = {
+    audioContext : &#39;&#39;,
+    bufferSize : &#39;&#39;,
+    audioBufferArray : [],
+    stream : &#39;&#39;,
+    recording : function(stream){
+        var o = this;
+        o.stream = stream;
+        var mediaStreamSource =
+            o.audioContext.createMediaStreamSource(stream);
+        var scriptProcessor =
+            o.audioContext.createScriptProcessor(o.bufferSize, 1, 1);
+        mediaStreamSource.connect(scriptProcessor);
+        o.audioBufferArray = [];
+        scriptProcessor.onaudioprocess = function(event){
+            var channel = event.inputBuffer.getChannelData(0);
+            var buffer = new Float32Array(o.bufferSize);
+            for (var i = 0; i &lt; o.bufferSize; i++) {
+                buffer[i] = channel[i];
+            }
+            o.audioBufferArray.push(buffer);
+        }
+        //この接続でonaudioprocessが起動
+        scriptProcessor.connect(o.audioContext.destination);
+        o.scriptProcessor = scriptProcessor;
+    },
+    recStart : function(){
+        var o = this;
+        if(o.stream){
+            o.recording(o.stream);
+        }
+        else{
+            navigator.getUserMedia(
+                {video: false, audio: true},
+                function(stream){o.recording(stream)},
+                function(err){
+                    console.log(err.name ? err.name : err);
+                }
+            );
+        }
+    },
+    recStop : function(){
+        var o = this;
+        o.scriptProcessor.disconnect();
+        if(o.stream){
+            o.stream.stop();
+            o.stream = null;
+        }
+    },
+    getAudioBufferArray : function(){
+        var o = this;
+        return o.audioBufferArray
+    },
+    getAudioBuffer : function(){
+        var o = this;
+        var buffer = o.audioContext.createBuffer(
+            1,
+            o.audioBufferArray.length * o.bufferSize,
+            o.audioContext.sampleRate
+        );
+        var channel = buffer.getChannelData(0);
+        for (var i = 0; i &lt; o.audioBufferArray.length; i++) {
+            for (var j = 0; j &lt; o.bufferSize; j++) {
+                channel[i * o.bufferSize + j] = o.audioBufferArray[i][j];
+            }
+        }
+        return buffer;
+    }
+}
+</code></pre><p><br>
+以下のように使用します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> audioContext </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">AudioContext</span><span class="pun">();</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> recorder </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Recorder</span><span class="pun">(</span><span class="pln">audioContext</span><span class="pun">);</span></li><li class="L2"><span class="pln">recorder</span><span class="pun">.</span><span class="pln">recStart</span><span class="pun">();</span><span class="pln"> </span><span class="com">// 録音開始</span></li><li class="L3"><span class="pln">recorder</span><span class="pun">.</span><span class="pln">recStop</span><span class="pun">();</span><span class="pln"> </span><span class="com">// 録音停止</span></li><li class="L4"><span class="pln">recorder</span><span class="pun">.</span><span class="pln">getAudioBufferArray</span><span class="pun">();</span><span class="pln"> </span><span class="com">//音声配列データの取得</span></li><li class="L5"><span class="pln">recorder</span><span class="pun">.</span><span class="pln">getAudioBuffer</span><span class="pun">();</span><span class="pln"> </span><span class="com">//AudioBuffer の取得</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 162px;"></textarea></div></div></div>
+
+<p><br>
+音声を再生する場合は以下のようにします。
+今回は単純な音声再生しかしませんが、Web Audio API ベースなのでいろいろな音声加工が可能になります。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> src </span><span class="pun">=</span><span class="pln"> audioContext</span><span class="pun">.</span><span class="pln">createBufferSource</span><span class="pun">();</span></li><li class="L1"><span class="pln">src</span><span class="pun">.</span><span class="pln">buffer </span><span class="pun">=</span><span class="pln"> recorder</span><span class="pun">.</span><span class="pln">getAudioBuffer</span><span class="pun">();</span></li><li class="L2"><span class="pln">src</span><span class="pun">.</span><span class="pln">connect</span><span class="pun">(</span><span class="pln">audioContext</span><span class="pun">.</span><span class="pln">destination</span><span class="pun">);</span></li><li class="L3"><span class="pln">src</span><span class="pun">.</span><span class="pln">start</span><span class="pun">()</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 126px;"></textarea></div></div></div>
+
+<p><br>
+次に音声ファイルの保存ですが、これはこちらの記事のロジックを若干改変したものを拝借させて頂きました。</p>
+
+<ul>
+<li><a href="http://qiita.com/HirokiTanaka/items/56f80844f9a32020ee3b">JavaScript – getUserMediaで録音したデータをWAVファイルとして保存する – Qiita</a></li>
+</ul>
+
+
+<h4 id="code-demo">code demo</h4>
+<h5 id="script">script</h5>
+<pre><code>window.exportWAV = function(audioData, sampleRate) {
+    var encodeWAV = function(samples, sampleRate) {
+        var buffer = new ArrayBuffer(44 + samples.length * 2);
+        var view = new DataView(buffer);
+        var writeString = function(view, offset, string) {
+            for (var i = 0; i &lt; string.length; i++){
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        };
+        var floatTo16BitPCM = function(output, offset, input) {
+            for (var i = 0; i &lt; input.length; i++, offset += 2){
+                var s = Math.max(-1, Math.min(1, input[i]));
+                output.setInt16(offset, s &lt; 0 ? s * 0x8000 : s * 0x7FFF, true);
+            }
+        };
+        writeString(view, 0, &#39;RIFF&#39;);  // RIFFヘッダ
+        view.setUint32(4, 32 + samples.length * 2, true); // これ以降のファイルサイズ
+        writeString(view, 8, &#39;WAVE&#39;); // WAVEヘッダ
+        writeString(view, 12, &#39;fmt &#39;); // fmtチャンク
+        view.setUint32(16, 16, true); // fmtチャンクのバイト数
+        view.setUint16(20, 1, true); // フォーマットID
+        view.setUint16(22, 1, true); // チャンネル数
+        view.setUint32(24, sampleRate, true); // サンプリングレート
+        view.setUint32(28, sampleRate * 2, true); // データ速度
+        view.setUint16(32, 2, true); // ブロックサイズ
+        view.setUint16(34, 16, true); // サンプルあたりのビット数
+        writeString(view, 36, &#39;data&#39;); // dataチャンク
+        view.setUint32(40, samples.length * 2, true); // 波形データのバイト数
+        floatTo16BitPCM(view, 44, samples); // 波形データ
+        return view;
+    };
+    var mergeBuffers = function(audioData) {
+        var sampleLength = 0;
+        for (var i = 0; i &lt; audioData.length; i++) {
+          sampleLength += audioData[i].length;
+        }
+        var samples = new Float32Array(sampleLength);
+        var sampleIdx = 0;
+        for (var i = 0; i &lt; audioData.length; i++) {
+          for (var j = 0; j &lt; audioData[i].length; j++) {
+            samples[sampleIdx] = audioData[i][j];
+            sampleIdx++;
+          }
+        }
+        return samples;
+    };
+    var dataview = encodeWAV(mergeBuffers(audioData), sampleRate);
+    var audioBlob = new Blob([dataview], { type: &#39;audio/wav&#39; });
+    return audioBlob;
+};
+</code></pre><p>exportWav 関数に音声配列データを渡すと blob 形式で返してくれます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> blob </span><span class="pun">=</span><span class="pln"> exportWAV</span><span class="pun">(</span><span class="pln">recorder</span><span class="pun">.</span><span class="pln">getAudioBufferArray</span><span class="pun">())</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> url </span><span class="pun">=</span><span class="pln"> URL</span><span class="pun">.</span><span class="pln">createObjectURL</span><span class="pun">(</span><span class="pln">blob</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p><br>
+以下デモになります。REC で録音を開始し、STOP で停止と wav ファイルのダウンロードリンクを表示し、PLAY で再生します。</p>
+
+
+<h4 id="code-demo">code demo</h4>
+<h5 id="css">css</h5>
+<pre><code>.disabled,
+[disabled=true]{
+    color: #aaa;
+}
+</code></pre><h5 id="html">html</h5>
+<pre><code>&lt;button class=&quot;rec&quot;&gt;REC&lt;/button&gt;
+&lt;button class=&quot;stop&quot; disabled=&quot;true&quot;&gt;STOP&lt;/button&gt;
+&lt;button class=&quot;play&quot; disabled=&quot;true&quot;&gt;PLAY&lt;/button&gt;
+&lt;a class=&quot;download&quot;&gt;&lt;/a&gt;
+</code></pre><h5 id="script">script</h5>
+<pre><code>var audioContext = new AudioContext();
+var recorder = new Recorder(audioContext);
+var el = {
+    rec : $DEMO[0].querySelector(&#39;.rec&#39;),
+    stop : $DEMO[0].querySelector(&#39;.stop&#39;),
+    play : $DEMO[0].querySelector(&#39;.play&#39;),
+    download : $DEMO[0].querySelector(&#39;.download&#39;)
+}
+var disabled = function(el, bool){
+    el.classList[bool ? &#39;add&#39; : &#39;remove&#39;](&#39;disabled&#39;);
+    el.disabled = bool;
+}
+el.rec.addEventListener(&#39;click&#39;, function(){
+    recorder.recStart();
+    disabled(el.rec, true);
+    disabled(el.stop, false);
+    disabled(el.play, true);
+});
+el.stop.addEventListener(&#39;click&#39;, function(){
+    recorder.recStop();
+    disabled(el.rec, false);
+    disabled(el.stop, true);
+    disabled(el.play, false);
+
+    //download link
+    var blob = exportWAV(recorder.getAudioBufferArray(), audioContext.sampleRate)
+    var url = URL.createObjectURL(blob);
+    el.download.href = url;
+    el.download.textContent = &#39;download&#39;
+    el.download.download = &#39;output.wav&#39;;
+});
+el.play.addEventListener(&#39;click&#39;, function(){
+    //play
+    var src = audioContext.createBufferSource();
+    src.buffer = recorder.getAudioBuffer();
+    src.connect(audioContext.destination);
+    src.start()
+});
+</code></pre><h2>最後に</h2>
+
+<p>「<a href="http://www.cyokodog.net/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>」で紹介した作曲向けライブラリを改変して、キャプチャ音声をボイスパーカッションとして使用できるようにしてみたら面白いかもしれません。時間があったらいろいろ試してみたいと思います。</p>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

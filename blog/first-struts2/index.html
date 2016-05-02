@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門 | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/first-struts2/" title="2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2014-02-25</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/first-struts2/"><img src="https://lh4.googleusercontent.com/-BnnEKWjX7fs/Uwy2kZ5u0bI/AAAAAAAAGbA/qolL5I6b9cs/s800/logo.png"></a>
+</div>
+<p>オラクル管理下になって以降めっきり話題が減った感のある Java ですが、最近、隣の席の新人 SE さんが研修で Struts2 ベースの Web アプリを構築をしてるようで、時々質問を受けたりします。Java と言えば Struts に次ぐ定番フレームワークが長らく待望されてましたが、結局どうなったのでしょう？<br>
+Struts の冠のある Struts2 がネーミング的には有利な気もするので便乗して勉強してみることにしました。</p>
+
+<!--more-->
+
+<div class="info">Google App Engine に Struts2 のデモをデプロイしました！（GAE めんどい・・・）<br>
+<a href="http://hello-gae-struts2.appspot.com/HelloStruts2/login.action">http://hello-gae-struts2.appspot.com/HelloStruts2/login.action</a></div>
+
+<h2>開発環境の準備</h2>
+
+<p>32ビット版 Windows 環境に開発環境を構築します。次のものを準備します。</p>
+
+<ul>
+<li>Eclipse Kepler（4.3）</li>
+<li>Pleiades（Eclipse の日本語化プラグイン）</li>
+<li>JDK（Java SE 7u51）</li>
+<li>Tomcat（7.0.50）</li>
+<li>Struts2（2.3.16）</li>
+</ul>
+
+<h2>Eclipse 4.3（Kepler）の導入</h2>
+
+<p><a href="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</a> にアクセスします。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-9VVMKYzOfHQ/Uwy38ePT94I/AAAAAAAAGcc/Txk5GmvYp2c/s400/ec01.png" alt="www.eclipse.org"></p>
+
+<p class="for-top">[Eclipse IDE for Java EE Developers」を選択します。</p>
+
+<p><img src="https://lh3.googleusercontent.com/--lbi24akhqI/Uwy2P3jviXI/AAAAAAAAGXU/buOVOxUeH2w/s400/ec02.png" alt="www.eclipse.org"></p>
+
+<p class="for-top">矢印のアイコンをクリックしダウンロードします。</p>
+
+<p>ダウンロードした eclipse-jee-kepler-SR1-win32.zip を解凍します。（今回は c:\IDE\eclipse\keplerに解凍）</p>
+
+<h2>Pleiades（Eclipse の日本語化プラグイン）の導入</h2>
+
+<p><a href="http://mergedoc.sourceforge.jp/">http://mergedoc.sourceforge.jp/</a> にアクセスします。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-I53bfEimpOM/Uwy2g84SfXI/AAAAAAAAGZ4/uN-Sn_PAoGE/s400/ecj01.png" alt="http://mergedoc.sourceforge.jp/"></p>
+
+<p class="for-top">最新版の 1.4.x をダウンロードします。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-pw3VS5QhB-8/Uwy2hFI47eI/AAAAAAAAGZ0/amkwcN5ebvo/s288/ecj02.png" alt="http://mergedoc.sourceforge.jp/"></p>
+
+<p class="for-top">pleiades.zip を解凍し、features フォルダ、plugins フォルダ、[eclipse.exe -clean.cmd]ファイルを、Eclipse のフォルダ（c:\IDE\eclipse\kepler）に上書きコピーします。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-YFyZ0MT7p_k/Uwy2hSEjI7I/AAAAAAAAGZw/hskVvQdyd_8/s400/ecj03.png" alt="http://mergedoc.sourceforge.jp/"></p>
+
+<p class="for-top">Eclipse のフォルダ（c:\IDE\eclipse\kepler）にある[eclipse.ini]をテキストエディタで開き、最後の１行に以下を追記します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">-</span><span class="pln">javaagent</span><span class="pun">:</span><span class="pln">plugins</span><span class="pun">/</span><span class="pln">jp</span><span class="pun">.</span><span class="pln">sourceforge</span><span class="pun">.</span><span class="pln">mergedoc</span><span class="pun">.</span><span class="pln">pleiades</span><span class="pun">/</span><span class="pln">pleiades</span><span class="pun">.</span><span class="pln">jar</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<h2>JDK（Java SE 7u51）の導入</h2>
+
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">http://www.oracle.com/technetwork/java/javase/downloads/index.html</a> にアクセスします。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-10n1Jl73784/Uwy2jo9PFeI/AAAAAAAAGas/x_Gwr8U7a0E/s400/jd01.png" alt="JDK"></p>
+
+<p class="for-top">最新版の Java Platform (JDK) 7u51を選択します。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-gu1SRpXZV7Y/Uwy2kMjJrvI/AAAAAAAAGbE/sLlReDIdHsQ/s400/jd02.png" alt="JDK"></p>
+
+<p class="for-top">[Accept License Agreement]を選択し、[jdk-7u51-windows-i586.exe]をダウンロードします。</p>
+
+<p>jdk-7u51-windows-i586.exe を実行し、JDK をインストールします。（今回は C:\IDE\jdk1.7.0_51 にインストール）</p>
+
+<h2>Tomcat（7.0.50）の導入</h2>
+
+<p><a href="http://tomcat.apache.org/">http://tomcat.apache.org/</a> にアクセスします。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-XmpHJzH2nso/Uwy2yskaENI/AAAAAAAAGcI/Nl-OF7Huxck/s400/tm01.png" alt="Tomcat"></p>
+
+<p class="for-top">Tomcat7.0 を選択します。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-PmftWOIxMHo/Uwy2xdMCqmI/AAAAAAAAGcA/0MzP9byzHkI/s400/tm02.png" alt="Tomcat"></p>
+
+<p class="for-top">最新 7.0.50 の zip をダウンロードします。</p>
+
+<p>ダウンロードした apache-tomcat-7.0.50.zip を解凍します。（今回は C:\IDE\tomcat\apache-tomcat-7.0.50 に解凍）</p>
+
+<h2>Eclipse の環境設定</h2>
+
+<p>Eclipse を起動します。初回起動時のみ[eclipse.exe -clean.cmd]を実行します。（初回以降は eclipse.exe）</p>
+
+<p><img src="https://lh4.googleusercontent.com/-QCfy1BtJf4g/Uwy2h-ws9PI/AAAAAAAAGaI/IwGfM0yaZ5k/s400/ecs01.png" alt="eclipse"></p>
+
+<p class="for-top">[Workbench]をクリックします。</p>
+
+<p><img src="https://lh6.googleusercontent.com/--5RN8dZBDrM/Uwy2iCq13VI/AAAAAAAAGaM/SZB6UTJDQBg/s400/ecs02.png" alt="eclipse"></p>
+
+<p class="for-top">作業フォルダを指定します。（今回は C:\IDE\eclipse_workspace）</p>
+
+<p><img src="https://lh6.googleusercontent.com/-1e26O2k4bgg/Uwy2iNeBEiI/AAAAAAAAGaQ/l0mT7K3G58I/s400/ecs03.png" alt="eclipse"></p>
+
+<p class="for-top">ツールバーの[ウィンドウ][設定]を選択し、[一般][ワークスペース]の[テキスト・ファイルのエンコード]に[UTF8]を指定します。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-zCiOEToMbnc/Uwy2iyS938I/AAAAAAAAGaw/HNN8oVXdYGg/s400/ecs04.png" alt="eclipse"></p>
+
+<p class="for-top">同様に設定画面において、[Java][インストール済のJRE]で[追加]ボタンをクリックします。ダイアログが表示されるので[標準VM]を選択した状態で[次へ]ボタンをクリックします。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-tmCIEad2n-w/Uwy2i1LynpI/AAAAAAAAGaY/6kZDaFFn7t0/s400/ecs05.png" alt="eclipse"></p>
+
+<p class="for-top">[JREホーム]に JDK をインストールしたフォルダのパスを入力すると、[JRE名][JREシステムライブラリー]が表示されます。[完了]ボタンをクリックします。</p>
+
+<p><img src="https://lh6.googleusercontent.com/--GYj-5iKiqY/Uwy2jAetlMI/AAAAAAAAGao/5YtGn0FzmO4/s400/ecs06.png" alt="eclipse"></p>
+
+<p class="for-top">[インストール済みのJRE]に指定した JDK が表示されてるので、チェックボックスをチェックし、[OK]をクリックします。</p>
+
+<h2>サーブレットを動かしてみる</h2>
+
+<p>最新の開発環境では Tomcat プラグインの導入や web.xml のサーブレットの記述も不要です。</p>
+
+<p>ツールバーの[ファイル][新規][プロジェクト]を選択。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-6dKa3lANFwI/Uwy2WLlS1eI/AAAAAAAAGYI/s0zMyzNKceY/s400/ecd01.png" alt="eclipse"></p>
+
+<p>[動的 Web プロジェクト]を選択し、[次へ]をクリック。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-Sdsv97rQ3cY/Uwy2XQ0ElFI/AAAAAAAAGYY/SvH1NXzbEvA/s400/ecd02.png" alt="eclipse"></p>
+
+<p>[プロジェクト名]に[HelloServlet]と入力し、[新規ランタイム]をクリック。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-V1gIN_t_n04/Uwy2XeJFmCI/AAAAAAAAGYU/i_UsEHIyyWg/s400/ecd03.png" alt="eclipse"></p>
+
+<p>[Apache Tomcat v7.0]を選択し、[次へ]をクリック。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-An7AC7BgJvQ/Uwy2aLgOncI/AAAAAAAAGYk/8tIGmlz1AKQ/s400/ecd03b.png" alt="eclipse"></p>
+
+<p>[Tomcat インストール・ディレクトリー]に Tomcatを解凍したフォルダのパス(C:\IDE\tomcat\apache-tomcat-7.0.50)を入力し、[完了]をクリック。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-2c158bsb-yw/Uwy2aCeaIDI/AAAAAAAAGYw/XAdsF1bnwwc/s400/ecd04.png" alt="eclipse"></p>
+
+<p>[ターゲット・ランタイム]に[Apache Tomcat v7.0]が表示されたことを確認し、[次へ]をクリック。</p>
+
+<p><img src="https://lh5.googleusercontent.com/-xotX5ql_lsY/Uwy2abDrokI/AAAAAAAAGYs/FBUEeTTUDpM/s400/ecd05.png" alt="eclipse"></p>
+
+<p>[次へ]をクリック。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-208wCFnGq6w/Uwy2fes4OVI/AAAAAAAAGZE/xq39uPgn_ls/s400/ecd06.png" alt="eclipse"></p>
+
+<p>[web.xmlデプロイメント記述しの生成]をチェックし、[完了]をクリック。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-6XcqYsTmFfU/Uwy2fRZ0poI/AAAAAAAAGZI/hBm9bNuYwcs/s400/ecd07.png" alt="eclipse"></p>
+
+<p>[プロジェクトエクスプローラー]に[HelloServlet]プロジェクトが表示される。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-QQpBwAQN_I4/Uwy2fbyKDVI/AAAAAAAAGZA/FTwEB2xwDlQ/s400/ecd08.png" alt="eclipse"></p>
+
+<p>[HelloServlet]プロジェクトを選択した状態で、ツールバーの[ファイル][新規][サーブレット]を選択し、[Java パッケージ]に[hello]、[クラス名]に[MyServlet]と入力し、[完了]をクリック。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-yaU7mso3POU/Uwy2f_wP3UI/AAAAAAAAGZg/4wOxOGs5P0A/s400/ecd09.png" alt="eclipse"></p>
+
+<p>[MyServlet.java]が生成され、ソースが表示される。[doGet]メソッドに以下を追記する。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">response</span><span class="pun">.</span><span class="pln">getWriter</span><span class="pun">().</span><span class="pln">write</span><span class="pun">(</span><span class="str">"Hello, MyServlet !"</span><span class="pun">);</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><img src="https://lh3.googleusercontent.com/-e53CHI4BYCA/Uwy2gHAGHYI/AAAAAAAAGZc/_cBDvBvfz4A/s400/ecd10.png" alt="eclipse"></p>
+
+<p>[プロジェクトエクスプローラー]の[MyServlet.java]を選択した状態で、[右クリック][実行][サーバで実行]を選択し、ダイアログを表示したら[完了]をクリック。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-kpPnoLcX8GQ/Uwy2gdA6wHI/AAAAAAAAGZY/37Ry6DzzP3A/s400/ecd11.png" alt="eclipse"></p>
+
+<p>実行結果が Eclipse 内に表示されます。http://localhost:8080/HelloServlet/MyServlet をブラウザから指定しても同様の処理結果が得られます。</p>
+
+<h2>Struts2 を動かしてみる</h2>
+
+<p>Googleで「Struts2 入門」で検索すると以下のようなさまざまな入門サイトがひっかかりますが、バージョンアップ毎の仕様変更が活発なせいなのか現時点の最新版 2.3.16 の Struts2 で動かそうとするうまくいきません。</p>
+
+<ul>
+<li><a href="http://www.atmarkit.co.jp/fjava/special/struts2/struts2_1.html">＠いう間にWebアプリを作れる「Struts 2」入門 – @IT</a></li>
+<li><a href="http://codezine.jp/article/detail/2296">Struts2入門～基本形で理解する仕組みと構造～ – CodeZine</a></li>
+<li><a href="http://www15.plala.or.jp/k_maeba/struts2/index.html">Struts2を使ってみる</a></li>
+</ul>
+
+<p>Struts2 と言えば規約に従えば設定ファイル不要で動かせるのが売りですが、下記手順で設定ファイルを書かずに（厳密にはちょっと書きますが）Struts2 を動かすことができました。</p>
+
+<p><a href="http://struts.apache.org/">http://struts.apache.org/</a> にアクセスします。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-yzi_lYJRXyk/Uwy2kpYNX1I/AAAAAAAAGbI/7h23f7NpoDo/s400/st01.png" alt="struts2"></p>
+
+<p>[Download]をクリックします。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-WTdMcbeKGjQ/Uwy2qyMeJPI/AAAAAAAAGbU/9oAw3hhDYSQ/s400/st02.png" alt="struts2"></p>
+
+<p>[struts-2.3.16-all.zip]をダウンロードし解凍します。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-4Or_RyuJ1ow/Uwy2rLGrRKI/AAAAAAAAGbY/t4Rdr1qzJps/s800/st03.png" alt="struts2"></p>
+
+<p>[HelloServlet]の作成手順と同様に、動的 Web プロジェクトで[HelloStruts2]プロジェクトを作成し、[HelloStruts2/WebContent/WEB-INF/lib]に、[struts-2.3.16-all.zip]の lib フォルダにある以下ファイルをコピーします。（エクスプローラ上で Ctrl+c し Eclipse 上で Ctrl+v）</p>
+
+<ul>
+<li>asm-3.3.jar</li>
+<li>asm-commons-3.3.jar</li>
+<li>asm-tree-3.3.jar</li>
+<li>commons-fileupload-1.3.jar</li>
+<li>commons-io-2.2.jar</li>
+<li>commons-lang3-3.1.jar</li>
+<li>commons-logging-1.1.3.jar</li>
+<li>freemarker-2.3.19.jar</li>
+<li>javassist-3.11.0.GA.jar</li>
+<li>log4j-1.2.17.jar</li>
+<li>ognl-3.0.6.jar</li>
+<li>struts2-core-2.3.16.jar</li>
+<li>xwork-core-2.3.16.jar</li>
+</ul>
+
+<p>[HelloStruts2/WebContent/WEB-INF/web.xml]を以下のように書き換えます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;?</span><span class="pln">xml version</span><span class="pun">=</span><span class="str">"1.0"</span><span class="pln"> encoding</span><span class="pun">=</span><span class="str">"UTF-8"</span><span class="pun">?&gt;</span></li><li class="L1"><span class="tag">&lt;web-app</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"HelloStruts2"</span><span class="pln"> </span><span class="atn">version</span><span class="pun">=</span><span class="atv">"2.4"</span><span class="pln"> </span><span class="atn">xmlns</span><span class="pun">=</span><span class="atv">"http://java.sun.com/xml/ns/j2ee"</span><span class="pln"> </span><span class="atn">xmlns:xsi</span><span class="pun">=</span><span class="atv">"http://www.w3.org/2001/XMLSchema-instance"</span><span class="pln"> </span><span class="atn">xsi:schemaLocation</span><span class="pun">=</span><span class="atv">"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;display-name&gt;</span><span class="pln">Hello Struts2</span><span class="tag">&lt;/display-name&gt;</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;filter&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;filter-name&gt;</span><span class="pln">struts2</span><span class="tag">&lt;/filter-name&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;filter-class&gt;</span><span class="pln">org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</span><span class="tag">&lt;/filter-class&gt;</span></li><li class="L8"><span class="pln">        </span><span class="tag">&lt;init-param&gt;</span></li><li class="L9"><span class="pln">            </span><span class="tag">&lt;param-name&gt;</span><span class="pln">actionPackages</span><span class="tag">&lt;/param-name&gt;</span></li><li class="L0"><span class="pln">            </span><span class="tag">&lt;param-value&gt;</span><span class="pln">hello</span><span class="tag">&lt;/param-value&gt;</span></li><li class="L1"><span class="pln">        </span><span class="tag">&lt;/init-param&gt;</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;/filter&gt;</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;filter-mapping&gt;</span></li><li class="L5"><span class="pln">        </span><span class="tag">&lt;filter-name&gt;</span><span class="pln">struts2</span><span class="tag">&lt;/filter-name&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;url-pattern&gt;</span><span class="pln">/*</span><span class="tag">&lt;/url-pattern&gt;</span></li><li class="L7"><span class="pln">    </span><span class="tag">&lt;/filter-mapping&gt;</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;welcome-file-list&gt;</span></li><li class="L0"><span class="pln">        </span><span class="tag">&lt;welcome-file&gt;</span><span class="pln">index.html</span><span class="tag">&lt;/welcome-file&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;/welcome-file-list&gt;</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="tag">&lt;/web-app&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 486px;"></textarea></div></div></div>
+
+<p>actionPackages に hello と指定しているのは、アクションクラスを hello パッケージで管理することを明示してます。</p>
+
+<p>[HelloStruts2/Java リソース/src]の直下に下記内容で struts.xml を配置します。これにより設定ファイルの記述不要で規約ベースで動作できるようになります。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;?</span><span class="pln">xml version</span><span class="pun">=</span><span class="str">"1.0"</span><span class="pln"> encoding</span><span class="pun">=</span><span class="str">"UTF-8"</span><span class="pln"> </span><span class="pun">?&gt;</span></li><li class="L1"><span class="dec">&lt;!DOCTYPE struts PUBLIC</span></li><li class="L2"><span class="dec">    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"</span></li><li class="L3"><span class="dec">    "http://struts.apache.org/dtds/struts-2.3.dtd"&gt;</span></li><li class="L4"><span class="tag">&lt;struts&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;constant</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"struts.enable.DynamicMethodInvocation"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"true"</span><span class="pln"> </span><span class="tag">/&gt;</span></li><li class="L6"><span class="tag">&lt;/struts&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 180px;"></textarea></div></div></div>
+
+<p>[HelloStruts2/Java リソース/src]の直下に下記内容で struts.properties を配置します。これにより jsp にてカスタムタグを使用した際、身勝手な（笑）マークアップを出力させないようにします。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">struts</span><span class="pun">.</span><span class="pln">ui</span><span class="pun">.</span><span class="pln">theme</span><span class="pun">=</span><span class="pln">simple</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<h2>ログイン画面の作成</h2>
+
+<p>簡単なログイン画面を Bootstrap3 を使って作成してみます。ログインに成功した場合、セッションにユーザIDをセットし、別画面にリダイレクトさせるようにします。</p>
+
+<p>下記内容の login.jsp, header.jsp, footer.jsp を [HelloStruts2/WebContents] 直下に作成します。</p>
+
+<p class="for-bottom">login.jsp</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;%@</span><span class="pln"> page contentType</span><span class="pun">=</span><span class="str">"text/html; charset=UTF-8"</span><span class="pln"> %&gt;</span></li><li class="L1"><span class="pun">&lt;%@</span><span class="pln"> taglib prefix</span><span class="pun">=</span><span class="str">"s"</span><span class="pln"> uri</span><span class="pun">=</span><span class="str">"/struts-tags"</span><span class="pln"> %&gt;</span></li><li class="L2"><span class="tag">&lt;jsp:include</span><span class="pln"> </span><span class="atn">page</span><span class="pun">=</span><span class="atv">"header.jsp"</span><span class="tag">/&gt;</span></li><li class="L3"><span class="tag">&lt;s:form</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"form-horizontal"</span><span class="tag">&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"form-group"</span><span class="tag">&gt;</span></li><li class="L5"><span class="pln">        </span><span class="tag">&lt;label</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-2 control-label"</span><span class="tag">&gt;</span><span class="pln">USER:</span><span class="tag">&lt;/label&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-10"</span><span class="tag">&gt;</span></li><li class="L7"><span class="pln">            </span><span class="tag">&lt;s:textfield</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"userId"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"form-control"</span><span class="tag">/&gt;</span></li><li class="L8"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"form-group"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">        </span><span class="tag">&lt;label</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-2 control-label"</span><span class="tag">&gt;</span><span class="pln">PASSWORD:</span><span class="tag">&lt;/label&gt;</span></li><li class="L2"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-10"</span><span class="tag">&gt;</span></li><li class="L3"><span class="pln">            </span><span class="tag">&lt;s:textfield</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"password"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"password"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"form-control"</span><span class="tag">/&gt;</span></li><li class="L4"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L6"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"form-group"</span><span class="tag">&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-offset-2 col-sm-10"</span><span class="tag">&gt;</span></li><li class="L8"><span class="pln">            </span><span class="tag">&lt;s:submit</span><span class="pln"> </span><span class="atn">method</span><span class="pun">=</span><span class="atv">"login"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"LOGIN"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"btn btn-primary"</span><span class="tag">/&gt;</span></li><li class="L9"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L1"><span class="tag">&lt;/s:form&gt;</span></li><li class="L2"><span class="tag">&lt;p</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"err"</span><span class="tag">&gt;&lt;s:property</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"errmsg"</span><span class="pln"> </span><span class="tag">/&gt;&lt;/p&gt;</span></li><li class="L3"><span class="tag">&lt;jsp:include</span><span class="pln"> </span><span class="atn">page</span><span class="pun">=</span><span class="atv">"footer.jsp"</span><span class="tag">/&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 486px;"></textarea></div></div></div>
+
+<p class="for-bottom">header.jsp</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;%@</span><span class="pln"> taglib prefix</span><span class="pun">=</span><span class="str">"s"</span><span class="pln"> uri</span><span class="pun">=</span><span class="str">"/struts-tags"</span><span class="pln"> %&gt;</span></li><li class="L1"><span class="dec">&lt;!DOCTYPE html&gt;</span></li><li class="L2"><span class="tag">&lt;html&gt;</span></li><li class="L3"><span class="tag">&lt;head&gt;</span></li><li class="L4"><span class="tag">&lt;meta</span><span class="pln"> </span><span class="atn">http-equiv</span><span class="pun">=</span><span class="atv">"Content-Type"</span><span class="pln"> </span><span class="atn">content</span><span class="pun">=</span><span class="atv">"text/html; charset=UTF-8"</span><span class="pln"> </span><span class="tag">/&gt;</span></li><li class="L5"><span class="tag">&lt;title&gt;</span><span class="pln">Hello Struts2</span><span class="tag">&lt;/title&gt;</span></li><li class="L6"><span class="tag">&lt;link</span><span class="pln"> </span><span class="atn">rel</span><span class="pun">=</span><span class="atv">"stylesheet"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text/css"</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"</span><span class="tag">/&gt;</span></li><li class="L7"><span class="tag">&lt;style&gt;</span></li><li class="L8"><span class="pln">div</span><span class="pun">.</span><span class="pln">container</span><span class="pun">{</span></li><li class="L9"><span class="pln">    max</span><span class="pun">-</span><span class="pln">width</span><span class="pun">:</span><span class="lit">800px</span><span class="pun">;</span></li><li class="L0"><span class="pun">}</span></li><li class="L1"><span class="pln">p</span><span class="pun">.</span><span class="pln">err</span><span class="pun">{</span></li><li class="L2"><span class="pln">    color</span><span class="pun">:</span><span class="pln">red</span><span class="pun">;</span></li><li class="L3"><span class="pun">}</span></li><li class="L4"><span class="pln">div</span><span class="pun">.</span><span class="pln">result dd</span><span class="pun">{</span></li><li class="L5"><span class="pln">    margin</span><span class="pun">-</span><span class="pln">bottom</span><span class="pun">:</span><span class="lit">32px</span><span class="pun">;</span></li><li class="L6"><span class="pun">}</span></li><li class="L7"><span class="tag">&lt;/style&gt;</span></li><li class="L8"><span class="tag">&lt;/head&gt;</span></li><li class="L9"><span class="tag">&lt;body&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"container"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"page-header"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">            </span><span class="tag">&lt;h1&gt;&lt;a</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"/HelloStruts2/login.action"</span><span class="tag">&gt;</span><span class="pln">Hello Struts2</span><span class="tag">&lt;/a&gt;</span><span class="pln"> </span><span class="tag">&lt;small&gt;</span><span class="pln">ver 2.3.16</span><span class="tag">&lt;/small&gt;&lt;/h1&gt;</span></li><li class="L3"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 486px;"></textarea></div></div></div>
+
+<p class="for-bottom">footer.jsp</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;/div&gt;</span></li><li class="L1"><span class="tag">&lt;/body&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+
+<p>[HelloStruts2/Java リソース/src] 直下にパッケージ名を hello とし AbstractAction.java, LoginAction.java を作成します。</p>
+
+<p class="for-bottom">AbstractAction.java</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">package</span><span class="pln"> hello</span><span class="pun">;</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="kwd">import</span><span class="pln"> java</span><span class="pun">.</span><span class="pln">util</span><span class="pun">.*;</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="kwd">import</span><span class="pln"> javax</span><span class="pun">.</span><span class="pln">servlet</span><span class="pun">.</span><span class="pln">http</span><span class="pun">.</span><span class="typ">HttpServletResponse</span><span class="pun">;</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="kwd">import</span><span class="pln"> com</span><span class="pun">.</span><span class="pln">opensymphony</span><span class="pun">.</span><span class="pln">xwork2</span><span class="pun">.</span><span class="typ">ActionSupport</span><span class="pun">;</span></li><li class="L7"><span class="pln">&nbsp;</span></li><li class="L8"><span class="kwd">import</span><span class="pln"> org</span><span class="pun">.</span><span class="pln">apache</span><span class="pun">.</span><span class="pln">struts2</span><span class="pun">.</span><span class="pln">interceptor</span><span class="pun">.</span><span class="typ">ServletResponseAware</span><span class="pun">;</span></li><li class="L9"><span class="pln">&nbsp;</span></li><li class="L0"><span class="kwd">import</span><span class="pln"> org</span><span class="pun">.</span><span class="pln">apache</span><span class="pun">.</span><span class="pln">struts2</span><span class="pun">.</span><span class="pln">interceptor</span><span class="pun">.</span><span class="typ">SessionAware</span><span class="pun">;</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">AbstractAction</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">ActionSupport</span><span class="pln"> </span><span class="kwd">implements</span><span class="pln"> </span><span class="typ">ServletResponseAware</span><span class="pun">,</span><span class="typ">SessionAware</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="pln">    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> serialVersionUID </span><span class="pun">=</span><span class="pln"> </span><span class="lit">1L</span><span class="pun">;</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">HttpServletResponse</span><span class="pln"> response</span><span class="pun">;</span></li><li class="L7"><span class="pln">&nbsp;</span></li><li class="L8"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> setServletResponse</span><span class="pun">(</span><span class="typ">HttpServletResponse</span><span class="pln"> response</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L9"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">response </span><span class="pun">=</span><span class="pln"> response</span><span class="pun">;</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">Map</span><span class="pln"> sessionMap</span><span class="pun">;</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> setSession</span><span class="pun">(</span><span class="typ">Map</span><span class="pln"> sessionMap</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L5"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">sessionMap </span><span class="pun">=</span><span class="pln"> sessionMap</span><span class="pun">;</span></li><li class="L6"><span class="pln">    </span><span class="pun">}</span></li><li class="L7"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 558px;"></textarea></div></div></div>
+
+<p class="for-bottom">LoginAction.java</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">package</span><span class="pln"> hello</span><span class="pun">;</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="kwd">import</span><span class="pln"> org</span><span class="pun">.</span><span class="pln">apache</span><span class="pun">.</span><span class="pln">struts2</span><span class="pun">.</span><span class="pln">config</span><span class="pun">.</span><span class="typ">Result</span><span class="pun">;</span><span class="pln"> </span></li><li class="L3"><span class="kwd">import</span><span class="pln"> org</span><span class="pun">.</span><span class="pln">apache</span><span class="pun">.</span><span class="pln">struts2</span><span class="pun">.</span><span class="pln">dispatcher</span><span class="pun">.*;</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="lit">@Result</span><span class="pun">(</span><span class="pln">name </span><span class="pun">=</span><span class="pln"> </span><span class="str">"main"</span><span class="pun">,</span><span class="pln"> value </span><span class="pun">=</span><span class="pln"> </span><span class="str">"main.action"</span><span class="pun">,</span><span class="pln"> type </span><span class="pun">=</span><span class="pln"> </span><span class="typ">ServletRedirectResult</span><span class="pun">.</span><span class="kwd">class</span><span class="pun">)</span><span class="pln"> </span></li><li class="L6"><span class="pln">&nbsp;</span></li><li class="L7"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">LoginAction</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">AbstractAction</span><span class="pln"> </span><span class="pun">{</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="pln">    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> serialVersionUID </span><span class="pun">=</span><span class="pln"> </span><span class="lit">1L</span><span class="pun">;</span></li><li class="L0"><span class="pln">&nbsp;</span></li><li class="L1"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> errmsg</span><span class="pun">;</span></li><li class="L2"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> userId</span><span class="pun">;</span></li><li class="L3"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> password</span><span class="pun">;</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> execute</span><span class="pun">()</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Exception</span><span class="pln"> </span><span class="pun">{</span></li><li class="L6"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">sessionMap</span><span class="pun">.</span><span class="pln">put</span><span class="pun">(</span><span class="str">"userId"</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">);</span></li><li class="L7"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">userId </span><span class="pun">=</span><span class="pln"> </span><span class="str">"Struts2"</span><span class="pun">;</span></li><li class="L8"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"success"</span><span class="pun">;</span></li><li class="L9"><span class="pln">    </span><span class="pun">}</span></li><li class="L0"><span class="pln">&nbsp;</span></li><li class="L1"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> login</span><span class="pun">()</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Exception</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">        </span><span class="kwd">if</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">.</span><span class="pln">password </span><span class="pun">==</span><span class="pln"> </span><span class="kwd">null</span><span class="pln"> </span><span class="pun">||</span><span class="pln"> </span><span class="pun">!</span><span class="kwd">this</span><span class="pun">.</span><span class="pln">password</span><span class="pun">.</span><span class="pln">equals</span><span class="pun">(</span><span class="str">"pass"</span><span class="pun">)){</span></li><li class="L3"><span class="pln">            </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">password </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">;</span></li><li class="L4"><span class="pln">            </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">errmsg </span><span class="pun">=</span><span class="pln"> </span><span class="str">"PASSWORDは「pass」と入力してください"</span><span class="pun">;</span></li><li class="L5"><span class="pln">            </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"error"</span><span class="pun">;</span></li><li class="L6"><span class="pln">        </span><span class="pun">}</span></li><li class="L7"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">sessionMap</span><span class="pun">.</span><span class="pln">put</span><span class="pun">(</span><span class="str">"userId"</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">userId</span><span class="pun">);</span></li><li class="L8"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"main"</span><span class="pun">;</span></li><li class="L9"><span class="pln">    </span><span class="pun">}</span></li><li class="L0"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 612px;"></textarea></div></div></div>
+
+<p>Tomcat サーバを起動し、http://localhost:8080/HelloStruts2/login.action にアクセスすると以下画面が表示されます。</p>
+
+<p><img src="https://lh6.googleusercontent.com/-83Qpy3VKrXc/Uwy2sD6JaCI/AAAAAAAAGbw/7d_4atT6RDo/s800/st04.png" alt="struts2"></p>
+
+<p>パスワードに “pass” 以外の値を入力しログインするとエラーメッセージが表示され、”pass” と入力すると main アクションが見つからないというシステムエラーが表示されます。</p>
+
+<p>以下の順で処理されます。</p>
+
+<ul>
+<li>login.action にアクセス時、LoginAction クラスの execute() メソッドが起動。メンバー変数の userId に “Struts2″ をセット。</li>
+<li>execute() メソッドの返却値が “success” のため、login-success.jsp を探すが、見つからないのでlogin.jsp の呼び出される。</li>
+<li>カスタムタグの &lt;s:textfield name=”userId&gt; がメンバー変数に対応しており、初期値として “Struts2″ と出力される。</li>
+<li>パスワードに “pass” と入力しログインボタンをクリックすると、アクションクラスの login() メソッドが起動。</li>
+<li>パスワードが正しいため this.sessionMap.put() メソッドで、userId をセッションに保持し返却値として “main” を返す。</li>
+<li>@Result アノテーションにて返却値が “main” の場合は、”main.action” へリダイレクトすると定義してるが、MainAction クラスが無いためシステムエラーとなる。</li>
+</ul>
+
+<h3>Struts2 の挙動ポイント</h3>
+
+<ul>
+<li>初期化処理として execute() メソッドが実行される。</li>
+<li>＜s:submit&gt; の method 属性がアクションクラスのメソッドに対応。</li>
+<li>＜s:textfield&gt; の name 属性に対応したアクションクラスのメンバー変数値がバインドされる。</li>
+<li>セッションを使用する場合は SessionAware を implements し、setServletResponse() メソッドを定義する。</li>
+<li>命名規約と無関係の URL にリダイレクトする場合は、@Result アノテーションを使用する。（Query String を付与する方法が分からない。アノテーションを使用しなければ可。後述。）</li>
+</ul>
+
+<h2>メイン画面の作成</h2>
+
+<p>ログイン後に遷移するメイン画面を作成します。</p>
+
+<p>下記内容の main.jsp, main-send.jsp を [HelloStruts2/WebContents] 直下に作成します。</p>
+
+<p class="for-bottom">main.jsp</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;%@</span><span class="pln"> page contentType</span><span class="pun">=</span><span class="str">"text/html; charset=UTF-8"</span><span class="pln"> %&gt;</span></li><li class="L1"><span class="pun">&lt;%@</span><span class="pln"> taglib prefix</span><span class="pun">=</span><span class="str">"s"</span><span class="pln"> uri</span><span class="pun">=</span><span class="str">"/struts-tags"</span><span class="pln"> %&gt;</span></li><li class="L2"><span class="tag">&lt;jsp:include</span><span class="pln"> </span><span class="atn">page</span><span class="pun">=</span><span class="atv">"header.jsp"</span><span class="tag">/&gt;</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="tag">&lt;s:form</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"form-horizontal"</span><span class="tag">&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"form-group"</span><span class="tag">&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;label</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-2 control-label"</span><span class="tag">&gt;</span><span class="pln">USER:</span><span class="tag">&lt;br/&gt;</span></li><li class="L7"><span class="pln">            </span><span class="tag">&lt;s:submit</span><span class="pln"> </span><span class="atn">method</span><span class="pun">=</span><span class="atv">"gotoProfile"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"PROFILE"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"btn btn-primary btn-xs"</span><span class="tag">/&gt;</span></li><li class="L8"><span class="pln">        </span><span class="tag">&lt;/label&gt;</span></li><li class="L9"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-10"</span><span class="tag">&gt;</span></li><li class="L0"><span class="pln">            </span><span class="tag">&lt;s:textfield</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"userId"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"form-control"</span><span class="tag">/&gt;</span></li><li class="L1"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"form-group"</span><span class="tag">&gt;</span></li><li class="L4"><span class="pln">        </span><span class="tag">&lt;label</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-2 control-label"</span><span class="tag">&gt;</span><span class="pln">DATE:</span><span class="tag">&lt;br/&gt;</span></li><li class="L5"><span class="pln">            </span><span class="tag">&lt;s:submit</span><span class="pln"> </span><span class="atn">method</span><span class="pun">=</span><span class="atv">"resetDate"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"RESET"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"btn btn-success btn-xs"</span><span class="tag">/&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;/label&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-10"</span><span class="tag">&gt;</span></li><li class="L8"><span class="pln">            </span><span class="tag">&lt;s:textfield</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"sendDate"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"form-control"</span><span class="pln"> </span><span class="atn">rows</span><span class="pun">=</span><span class="atv">"10"</span><span class="tag">/&gt;</span></li><li class="L9"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"form-group"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">        </span><span class="tag">&lt;label</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-2 control-label"</span><span class="tag">&gt;</span><span class="pln">COMMENT:</span><span class="tag">&lt;br/&gt;</span></li><li class="L3"><span class="pln">            </span><span class="tag">&lt;s:submit</span><span class="pln"> </span><span class="atn">method</span><span class="pun">=</span><span class="atv">"resetComment"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"RESET"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"btn btn-success btn-xs"</span><span class="tag">/&gt;</span></li><li class="L4"><span class="pln">        </span><span class="tag">&lt;/label&gt;</span></li><li class="L5"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-10"</span><span class="tag">&gt;</span></li><li class="L6"><span class="pln">            </span><span class="tag">&lt;s:textarea</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"comment"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"form-control"</span><span class="pln"> </span><span class="atn">rows</span><span class="pun">=</span><span class="atv">"10"</span><span class="tag">/&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L8"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"form-group"</span><span class="tag">&gt;</span></li><li class="L0"><span class="pln">        </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-offset-2 col-sm-10"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">            </span><span class="tag">&lt;s:submit</span><span class="pln"> </span><span class="atn">method</span><span class="pun">=</span><span class="atv">"send"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"SEND"</span><span class="pln"> </span><span class="atn">cssClass</span><span class="pun">=</span><span class="atv">"btn btn-primary"</span><span class="tag">/&gt;</span></li><li class="L2"><span class="pln">        </span><span class="tag">&lt;/div&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L4"><span class="tag">&lt;/s:form&gt;</span></li><li class="L5"><span class="tag">&lt;jsp:include</span><span class="pln"> </span><span class="atn">page</span><span class="pun">=</span><span class="atv">"footer.jsp"</span><span class="tag">/&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 702px;"></textarea></div></div></div>
+
+<p class="for-bottom">main.send.jsp</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;%@</span><span class="pln"> page contentType</span><span class="pun">=</span><span class="str">"text/html; charset=UTF-8"</span><span class="pln"> %&gt;</span></li><li class="L1"><span class="pun">&lt;%@</span><span class="pln"> taglib prefix</span><span class="pun">=</span><span class="str">"s"</span><span class="pln"> uri</span><span class="pun">=</span><span class="str">"/struts-tags"</span><span class="pln"> %&gt;</span></li><li class="L2"><span class="tag">&lt;jsp:include</span><span class="pln"> </span><span class="atn">page</span><span class="pun">=</span><span class="atv">"header.jsp"</span><span class="tag">/&gt;</span></li><li class="L3"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"result"</span><span class="tag">&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-6"</span><span class="tag">&gt;</span></li><li class="L5"><span class="pln">        </span><span class="tag">&lt;h3&gt;</span><span class="pln">Result</span><span class="tag">&lt;/h3&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;dl</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"result"</span><span class="tag">&gt;</span></li><li class="L7"><span class="pln">            </span><span class="tag">&lt;dt&gt;</span><span class="pln">USER:</span><span class="tag">&lt;/dt&gt;</span></li><li class="L8"><span class="pln">            </span><span class="tag">&lt;dd&gt;&lt;s:property</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"userId"</span><span class="pln"> </span><span class="tag">/&gt;&lt;/dd&gt;</span></li><li class="L9"><span class="pln">            </span><span class="tag">&lt;dt&gt;</span><span class="pln">DATE:</span><span class="tag">&lt;/dt&gt;</span></li><li class="L0"><span class="pln">            </span><span class="tag">&lt;dd&gt;&lt;s:property</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"sendDate"</span><span class="pln"> </span><span class="tag">/&gt;&lt;/dd&gt;</span></li><li class="L1"><span class="pln">            </span><span class="tag">&lt;dt&gt;</span><span class="pln">COMMENT:</span><span class="tag">&lt;/dt&gt;</span></li><li class="L2"><span class="pln">            </span><span class="tag">&lt;dd&gt;&lt;s:property</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"comment"</span><span class="pln"> </span><span class="tag">/&gt;&lt;/dd&gt;</span></li><li class="L3"><span class="pln">        </span><span class="tag">&lt;/dl&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"col-sm-6"</span><span class="tag">&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;h3&gt;</span><span class="pln">Reference Method</span><span class="tag">&lt;/h3&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;dl&gt;</span></li><li class="L8"><span class="pln">            </span><span class="tag">&lt;dt&gt;</span><span class="pln">s:property value="comment"</span><span class="tag">&lt;/dt&gt;</span></li><li class="L9"><span class="pln">            </span><span class="tag">&lt;dd&gt;&lt;s:property</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"comment"</span><span class="pln"> </span><span class="tag">/&gt;&lt;/dd&gt;</span></li><li class="L0"><span class="pln">            </span><span class="tag">&lt;dt&gt;</span><span class="pln">s:property value="%{comment}"</span><span class="tag">&lt;/dt&gt;</span></li><li class="L1"><span class="pln">            </span><span class="tag">&lt;dd&gt;&lt;s:property</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"%{comment}"</span><span class="pln"> </span><span class="tag">/&gt;&lt;/dd&gt;</span></li><li class="L2"><span class="pln">            </span><span class="tag">&lt;dt&gt;</span><span class="pln">request.getAttribute("comment")</span><span class="tag">&lt;/dt&gt;</span></li><li class="L3"><span class="pln">            </span><span class="tag">&lt;dd&gt;</span><span class="pun">&lt;%=</span><span class="pln">request</span><span class="pun">.</span><span class="pln">getAttribute</span><span class="pun">(</span><span class="str">"comment"</span><span class="pun">)</span><span class="pln"> %&gt;</span><span class="tag">&lt;/dd&gt;</span></li><li class="L4"><span class="pln">            </span><span class="tag">&lt;dt&gt;</span><span class="pln">request.getParameter("comment")</span><span class="tag">&lt;/dt&gt;</span></li><li class="L5"><span class="pln">            </span><span class="tag">&lt;dd&gt;</span><span class="pun">&lt;%=</span><span class="pln">request</span><span class="pun">.</span><span class="pln">getParameter</span><span class="pun">(</span><span class="str">"comment"</span><span class="pun">)</span><span class="pln"> %&gt;</span><span class="tag">&lt;/dd&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;/dl&gt;</span></li><li class="L7"><span class="pln">    </span><span class="tag">&lt;/div&gt;</span></li><li class="L8"><span class="pln">    </span><span class="tag">&lt;p&gt;&lt;a</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"main.action"</span><span class="tag">&gt;</span><span class="pln">Back</span><span class="tag">&lt;/a&gt;&lt;/p&gt;</span></li><li class="L9"><span class="tag">&lt;/div&gt;</span></li><li class="L0"><span class="tag">&lt;jsp:include</span><span class="pln"> </span><span class="atn">page</span><span class="pun">=</span><span class="atv">"footer.jsp"</span><span class="tag">/&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 612px;"></textarea></div></div></div>
+
+<p>[HelloStruts2/Java リソース/src] 直下に hello パッケージに MainAction.java を作成します。</p>
+
+<p class="for-bottom">MainAction.java</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">package</span><span class="pln"> hello</span><span class="pun">;</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="kwd">import</span><span class="pln"> java</span><span class="pun">.</span><span class="pln">util</span><span class="pun">.*;</span></li><li class="L3"><span class="kwd">import</span><span class="pln"> java</span><span class="pun">.</span><span class="pln">text</span><span class="pun">.*;</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">MainAction</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">AbstractAction</span><span class="pln"> </span><span class="pun">{</span></li><li class="L6"><span class="pln">&nbsp;</span></li><li class="L7"><span class="pln">    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> serialVersionUID </span><span class="pun">=</span><span class="pln"> </span><span class="lit">1L</span><span class="pun">;</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> userId</span><span class="pun">;</span></li><li class="L0"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> sendDate</span><span class="pun">;</span></li><li class="L1"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> comment</span><span class="pun">;</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="pln">    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> getDefaultDate</span><span class="pun">(){</span></li><li class="L4"><span class="pln">        </span><span class="typ">Date</span><span class="pln"> date </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Date</span><span class="pun">();</span></li><li class="L5"><span class="pln">        </span><span class="typ">SimpleDateFormat</span><span class="pln"> sdf </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">SimpleDateFormat</span><span class="pun">(</span><span class="str">"yyyy/MM/dd k:m:s"</span><span class="pun">);</span></li><li class="L6"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> sdf</span><span class="pun">.</span><span class="pln">format</span><span class="pun">(</span><span class="pln">date</span><span class="pun">);</span></li><li class="L7"><span class="pln">    </span><span class="pun">}</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="pln">    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> getDefaultMessage</span><span class="pun">(){</span></li><li class="L0"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"Hello !\nMy Name is "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">userId</span><span class="pun">;</span></li><li class="L1"><span class="pln">    </span><span class="pun">}</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> execute</span><span class="pun">()</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Exception</span><span class="pln"> </span><span class="pun">{</span></li><li class="L4"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">userId </span><span class="pun">=</span><span class="pln"> </span><span class="pun">(</span><span class="typ">String</span><span class="pun">)</span><span class="kwd">this</span><span class="pun">.</span><span class="pln">sessionMap</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">"userId"</span><span class="pun">);</span></li><li class="L5"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">sendDate </span><span class="pun">=</span><span class="pln"> getDefaultDate</span><span class="pun">();</span></li><li class="L6"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">comment </span><span class="pun">=</span><span class="pln"> getDefaultMessage</span><span class="pun">();</span></li><li class="L7"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"success"</span><span class="pun">;</span></li><li class="L8"><span class="pln">    </span><span class="pun">}</span></li><li class="L9"><span class="pln">&nbsp;</span></li><li class="L0"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> resetDate</span><span class="pun">()</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Exception</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">sendDate </span><span class="pun">=</span><span class="pln"> getDefaultDate</span><span class="pun">();</span></li><li class="L2"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"success"</span><span class="pun">;</span></li><li class="L3"><span class="pln">    </span><span class="pun">}</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> resetComment</span><span class="pun">()</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Exception</span><span class="pln"> </span><span class="pun">{</span></li><li class="L6"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">comment </span><span class="pun">=</span><span class="pln"> getDefaultMessage</span><span class="pun">();</span></li><li class="L7"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"success"</span><span class="pun">;</span></li><li class="L8"><span class="pln">    </span><span class="pun">}</span></li><li class="L9"><span class="pln">&nbsp;</span></li><li class="L0"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> send</span><span class="pun">()</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Exception</span><span class="pun">{</span></li><li class="L1"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">userId </span><span class="pun">=</span><span class="pln"> </span><span class="str">"User is [ "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">userId </span><span class="pun">+</span><span class="pln"> </span><span class="str">" ]"</span><span class="pun">;</span></li><li class="L2"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">sendDate </span><span class="pun">=</span><span class="pln"> </span><span class="str">"Date is [ "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">sendDate </span><span class="pun">+</span><span class="pln"> </span><span class="str">" ]"</span><span class="pun">;</span></li><li class="L3"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">comment </span><span class="pun">=</span><span class="pln"> </span><span class="str">"Comment is [ "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">comment </span><span class="pun">+</span><span class="pln"> </span><span class="str">" ]"</span><span class="pun">;</span></li><li class="L4"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"send"</span><span class="pun">;</span></li><li class="L5"><span class="pln">    </span><span class="pun">}</span></li><li class="L6"><span class="pln">&nbsp;</span></li><li class="L7"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> gotoProfile</span><span class="pun">()</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Exception</span><span class="pun">{</span></li><li class="L8"><span class="pln">        </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">response</span><span class="pun">.</span><span class="pln">sendRedirect</span><span class="pun">(</span><span class="str">"/HelloStruts2/profile.action?userId="</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">userId</span><span class="pun">);</span><span class="pln">       </span></li><li class="L9"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"success"</span><span class="pun">;</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 1008px;"></textarea></div></div></div>
+
+<p>ログイン処理を行うと以下画面が表示されます。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-pDMTuO95qhs/Uwy2rrAI6wI/AAAAAAAAGbo/5ppJMMwS1Rw/s800/st05.png" alt="struts2"></p>
+
+<p>[DATE:]、[COMMENT:] の [RESET] ボタンを押すと他のフィールドの値は維持しつつ初期値を再設定します。また [SEND] ボタンを押すと以下のようフォームの送信データが表示されます。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-kOeDP_UbRr4/Uwy2rz_gN2I/AAAAAAAAGbs/mm2VLjR4PxA/s800/st06.png" alt="struts2"></p>
+
+<p>[PROFILE] ボタンを押すとシステムエラー画面が表示されます。</p>
+
+<p>以下の順で処理されます。</p>
+
+<ul>
+<li>main.action にアクセス時、MainAction クラスの execute() メソッドが起動。</li>
+<li>メンバー変数の userId にはセッションに記録された userId をセットし、sendDate, comment にはそれぞれ初期値をセット。</li>
+<li>execute() メソッドの返却値が “success” のため、main-success.jsp を探すが、見つからないのでmain.jsp の呼び出される。</li>
+<li>カスタムタグの <s:textfield> がメンバー変数に対応しており、初期値が出力される。</s:textfield></li>
+<li>[DATE:]、[COMMENT:] の [RESET] ボタンを押すとそれぞれ resetDate(), resetComment() メソッドが実行され、初期値が再セットされる。</li>
+<li>[SEND] ボタンを押すと send() メソッドが実行され、各メンバー変数の値を加工し返却値として “send” を返す。</li>
+<li>main-send.jsp が呼び出され、メンバー変数の各種値が出力される。</li>
+<li>[PROFILE] ボタンを押すと gotoProfile() メソッドが実行され、AbstractAction.java で定義された response オブジェクトを使用し profile.action へリダイレクトしようとするが、ProfileAction.java が無いためシステムエラーとなる。</li>
+</ul>
+
+<h3>Struts2 の挙動ポイント</h3>
+
+<ul>
+<li>カスタムタグを使用せずメンバー変数を参照する場合は、requestオブジェクトの getAttribute() か getParameter() を使用する。getParameter()ではメンバー変数の値ではなく送信データそのもが取得される。</li>
+<li>Query String 付きでリダイレクトする方法がよく分からないので、response.sendRedirect() を使用する。</li>
+<li>response オブジェクトを使用する場合は ServletResponseAware を implements する。</li>
+</ul>
+
+<p>更新系画面などでは、POST 処理後の更新ボタンによるフォームの再送信を防ぐために表示系の画面にリダイレクトさせることがよくあるかと思いますが、こようなケースの場合、往々にして対象データのキー値を示す Query String が必要になりますが、@Result アノテーションによるリダイレクト時の Query String の指定方法が分からなかったので、response.sendRedirect() でリダイレクトするようにしてます。</p>
+
+<h2>プロフィール画面の作成</h2>
+
+<p>[PROFILE] ボタンクリック時に遷移する画面を作成します。</p>
+
+<p>下記内容の profile.jsp を [HelloStruts2/WebContents] 直下に作成します。</p>
+
+<p class="for-bottom">profile.jsp</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;%@</span><span class="pln"> page contentType</span><span class="pun">=</span><span class="str">"text/html; charset=UTF-8"</span><span class="pln"> %&gt;</span></li><li class="L1"><span class="pun">&lt;%@</span><span class="pln"> taglib prefix</span><span class="pun">=</span><span class="str">"s"</span><span class="pln"> uri</span><span class="pun">=</span><span class="str">"/struts-tags"</span><span class="pln"> %&gt;</span></li><li class="L2"><span class="tag">&lt;jsp:include</span><span class="pln"> </span><span class="atn">page</span><span class="pun">=</span><span class="atv">"header.jsp"</span><span class="tag">/&gt;</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="tag">&lt;h2&gt;&lt;s:property</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"userId"</span><span class="tag">/&gt;</span><span class="pln">'s Profile Page</span><span class="tag">&lt;/h2&gt;</span></li><li class="L5"><span class="tag">&lt;p&gt;&lt;a</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"main"</span><span class="tag">&gt;</span><span class="pln">Back</span><span class="tag">&lt;/a&gt;&lt;/p&gt;</span></li><li class="L6"><span class="pln">&nbsp;</span></li><li class="L7"><span class="tag">&lt;jsp:include</span><span class="pln"> </span><span class="atn">page</span><span class="pun">=</span><span class="atv">"footer.jsp"</span><span class="tag">/&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 198px;"></textarea></div></div></div>
+
+<p>[HelloStruts2/Java リソース/src] 直下に hello パッケージに ProfileAction.java を作成します。</p>
+
+<p class="for-bottom">ProfileAction.java</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">package</span><span class="pln"> hello</span><span class="pun">;</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">ProfileAction</span><span class="pln"> </span><span class="kwd">extends</span><span class="pln"> </span><span class="typ">AbstractAction</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="pln">    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">final</span><span class="pln"> </span><span class="kwd">long</span><span class="pln"> serialVersionUID </span><span class="pun">=</span><span class="pln"> </span><span class="lit">1L</span><span class="pun">;</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> userId</span><span class="pun">;</span></li><li class="L7"><span class="pln">&nbsp;</span></li><li class="L8"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> execute</span><span class="pun">()</span><span class="pln"> </span><span class="kwd">throws</span><span class="pln"> </span><span class="typ">Exception</span><span class="pln"> </span><span class="pun">{</span></li><li class="L9"><span class="pln">        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"success"</span><span class="pun">;</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 288px;"></textarea></div></div></div>
+
+<p>[PROFILE] ボタンクリックすると http://localhost:8080/HelloStruts2/profile.action?userId=Struts2 という URL で以下画面が表示されます。</p>
+
+<p><img src="https://lh3.googleusercontent.com/-KAd76-p9-kc/Uwy2wHcix4I/AAAAAAAAGb4/lUEQO2aNuX8/s400/st07.png" alt="struts2"></p>
+
+<h2>感想</h2>
+
+<p>軽量版の Teeda といった感じでしょうか。IDE に強く依存してないところがいいですね。JSF の仕様の影響なのかカスタムタグのデフォルトの出力がすごい乱暴なところが HTML5 全盛の今の時代にそぐわない気がしますけど、それ以外のところは結構好きかもしれません^^; カスタムタグじゃ何ともならない部分は変にがんばらず CSS と JavaScript でなんとかすればいいんで</p>
+
+<h2>サンプルソース</h2>
+
+<p>こちらからダウンロードできます。</p>
+
+<ul>
+<li><a href="https://github.com/cyokodog/JAVA_STUDY">https://github.com/cyokodog/JAVA_STUDY</a></li>
+</ul>
+
+<h2>参考にしたサイト</h2>
+
+<ul>
+<li><a href="http://www.atmarkit.co.jp/fjava/special/struts2/struts2_1.html">＠いう間にWebアプリを作れる「Struts 2」入門 – @IT</a></li>
+<li><a href="http://codezine.jp/article/detail/2296">Struts2入門～基本形で理解する仕組みと構造～ – CodeZine</a></li>
+<li><a href="http://www15.plala.or.jp/k_maeba/struts2/index.html">Struts2を使ってみる</a></li>
+<li><a href="https://www.ibm.com/developerworks/jp/web/library/wa-dynamicstruts/">Struts 2 による動的なデータ処理 – developerWorks</a></li>
+<li><a href="https://sites.google.com/site/yasuda/java/struts2">Struts2 意地でもZeroConfiguretion – ノウハウ共有サイト</a></li>
+<li><a href="http://bbs.flatworld.jp/node/1253">Struts2チュートリアル6：Actionクラスで、HttpServletResponseオブジェクトを取得する四つの方法 – フラットワールドソフト掲示板</a></li>
+<li><a href="http://www.h3.dion.ne.jp/~alpha-pz/misc2329.html">サーブレットリクエスト(HttpServletRequest) – Serendipity2</a></li>
+<li><a href="http://www.h3.dion.ne.jp/~alpha-pz/misc2816.html">セッションの操作 – Serendipity2</a></li>
+<li><a href="http://www.t-net.ne.jp/~cyfis/struts2/index.html">struts2の部屋</a></li>
+<li><a href="http://news.mynavi.jp/special/2007/struts2/008.html">アクションで生成した動的な値をJSPで参照する方法(その2) – mynavi</a></li>
+</ul>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

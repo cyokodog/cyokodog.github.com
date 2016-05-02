@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/bootstrap-datetimepicker-ja/" title="Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2013-08-14</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <p>Bootstrap が普及して以降、Bootstrap のデザインを基調とした jQuery プラグインをちらほら見かけるようになりました。
+日付／時刻ピッカーの「Bootstrap Datetime Picker」もそんなプラグインの１つですが、今、仕事で開発してる Web アプリに使ってみたところ、いろいろとかゆいところがあったので、使いやすくなるようカスタマイズしてみました。
+</p>
+
+<!--more-->
+<h2>Bootstrap Datetime Picker の基本機能</h2>
+
+<p><a href="http://tarruda.github.io/bootstrap-datetimepicker/">Bootstrap Datetime Picker</a>  は、１つの入力フィールドに対し下記パターンで値をセットすることができます。</p>
+
+<ol>
+<li>日付と時刻（YYYY/MM/DD HH:MI:SS）</li>
+<li>日付のみ（YYYY/MM/DD）</li>
+<li>時刻のみ（HH:MI:SS）</li>
+</ol>
+
+<p>1 のように日付と時刻を入力する場合は、ダイアログの上下部に表示されるアイコンで選択画面を切り替えます。</p>
+
+<p><img src="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/img/image01.png" alt="Bootstrap Datetime Picker"></p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/demo1.html#contents0" class="demo external" target="_blank">Demo</a></div></p>
+
+<p>Bootstrap,jQuery,bootstrap-datetimepicker を読み込み以下のよう実行します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;link</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"</span><span class="tag">&gt;</span></li><li class="L1"><span class="tag">&lt;link</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"bootstrap-datetimepicker.min.css"</span><span class="tag">&gt;</span></li><li class="L2"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L3"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text/javascript"</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L4"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"bootstrap-datetimepicker.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L5"><span class="tag">&lt;script&gt;</span></li><li class="L6"><span class="pln">    $</span><span class="pun">(</span><span class="str">'#datetimepicker1'</span><span class="pun">).</span><span class="pln">datetimepicker</span><span class="pun">({</span></li><li class="L7"><span class="pln">        format </span><span class="pun">:</span><span class="pln"> </span><span class="str">'yyyy/MM/dd hh:mm:ss'</span></li><li class="L8"><span class="pln">    </span><span class="pun">});</span></li><li class="L9"><span class="tag">&lt;/script&gt;</span></li><li class="L0"><span class="tag">&lt;div</span><span class="pln"> </span><span class="atn">id</span><span class="pun">=</span><span class="atv">"datetimepicker1"</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"input-append"</span><span class="tag">&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;input</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text"</span><span class="tag">/&gt;&lt;span</span><span class="pln"> </span><span class="atn">class</span><span class="pun">=</span><span class="atv">"add-on"</span><span class="tag">&gt;&lt;i&gt;&lt;/i&gt;&lt;/span&gt;</span></li><li class="L2"><span class="tag">&lt;/div&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 288px;"></textarea></div></div></div>
+
+<h2>日付を選択した時にダイアログを閉じるようにする</h2>
+
+<p>一般的な日付ピッカーの場合、日付を選択したタイミングでダイアログが閉じますが、Bootstrap Datetime Picker の場合、選択後、ダイアログ以外の画面のどこかをクリックしないと閉じない仕様になっています。これは恐らく、日付と時刻の両方を指定する場合、日付選択後に時刻選択画面に切り替える必要があるからかと思います。</p>
+
+<p>ですが純粋な日付ピッカーとして使用する場合、やはり不便ですので、以下のように記述することで、日付選択時にダイアログを閉じるようにすることができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> api </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'#datetimepicker2'</span><span class="pun">).</span><span class="pln">datetimepicker</span><span class="pun">({</span></li><li class="L1"><span class="pln">    format </span><span class="pun">:</span><span class="pln"> </span><span class="str">'yyyy/MM/dd'</span><span class="pun">,</span></li><li class="L2"><span class="pln">    pickTime </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span></li><li class="L3"><span class="pun">}).</span><span class="pln">data</span><span class="pun">(</span><span class="str">'datetimepicker'</span><span class="pun">);</span></li><li class="L4"><span class="pln">api</span><span class="pun">.</span><span class="pln">widget</span><span class="pun">.</span><span class="pln">on</span><span class="pun">(</span><span class="str">'click'</span><span class="pun">,</span><span class="str">'td.day'</span><span class="pun">,</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L5"><span class="pln">    api</span><span class="pun">.</span><span class="pln">hide</span><span class="pun">();</span></li><li class="L6"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 180px;"></textarea></div></div></div>
+
+<p>data() メソッドで API オブジェクトを取得し、日付選択時に、API で提供された hide() メソッドでダイアログを閉じるようにしてます。</p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/demo1.html#contents1" class="demo external" target="_blank">Demo</a></div></p>
+
+<h2>日本語表示にする</h2>
+
+<p>日本語表示にするには、事前に $.fn.datetimepicker.dates に日本語設定をしておき、プラグイン実行時に language パラメータを指定します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">.</span><span class="pln">extend</span><span class="pun">(</span><span class="pln">$</span><span class="pun">.</span><span class="pln">fn</span><span class="pun">.</span><span class="pln">datetimepicker</span><span class="pun">.</span><span class="pln">dates </span><span class="pun">,</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">    ja</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span></li><li class="L2"><span class="pln">        days</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="str">'日曜日'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'月曜日'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'火曜日'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'水曜日'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'木曜日'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'金曜日'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'土曜日'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'日曜日'</span><span class="pun">],</span></li><li class="L3"><span class="pln">        daysShort</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="str">'日'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'火'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'水'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'木'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'金'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'土'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'日'</span><span class="pun">],</span></li><li class="L4"><span class="pln">        daysMin</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="str">'日'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'火'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'水'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'木'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'金'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'土'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'日'</span><span class="pun">],</span></li><li class="L5"><span class="pln">        months</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="str">'1月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'2月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'3月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'4月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'5月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'6月'</span><span class="pun">,</span><span class="str">'7月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'8月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'9月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'10月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'11月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'12月'</span><span class="pun">],</span></li><li class="L6"><span class="pln">        monthsShort</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="str">'1月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'2月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'3月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'4月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'5月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'6月'</span><span class="pun">,</span><span class="str">'7月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'8月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'9月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'10月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'11月'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'12月'</span><span class="pun">]</span></li><li class="L7"><span class="pln">    </span><span class="pun">}</span></li><li class="L8"><span class="pun">});</span></li><li class="L9"><span class="pln">$</span><span class="pun">(</span><span class="str">'#datetimepicker3'</span><span class="pun">).</span><span class="pln">datetimepicker</span><span class="pun">({</span></li><li class="L0"><span class="pln">    format </span><span class="pun">:</span><span class="pln"> </span><span class="str">'yyyy/MM/dd hh:mm:ss'</span><span class="pun">,</span></li><li class="L1"><span class="pln">    language </span><span class="pun">:</span><span class="pln"> </span><span class="str">'ja'</span></li><li class="L2"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 288px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/demo1.html#contents2" class="demo external" target="_blank">Demo</a></div></p>
+
+<h2>時刻ピッカーの秒を非表示にする</h2>
+
+<p><img src="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/img/image02.png" alt="Bootstrap Datetime Picker"></p>
+
+<p>時刻を入力する際、秒を指定するケースというのはあまり無いかと思われます。以下のように記述することで、時刻ピッカーの秒を非表示にすることができます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">var</span><span class="pln"> api </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'#datetimepicker4'</span><span class="pun">).</span><span class="pln">datetimepicker</span><span class="pun">({</span></li><li class="L1"><span class="pln">    format </span><span class="pun">:</span><span class="pln"> </span><span class="str">'hh:mm:ss'</span><span class="pun">,</span></li><li class="L2"><span class="pln">    pickDate </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span></li><li class="L3"><span class="pun">}).</span><span class="pln">data</span><span class="pun">(</span><span class="str">'datetimepicker'</span><span class="pun">);</span></li><li class="L4"><span class="pln">api</span><span class="pun">.</span><span class="pln">widget</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="str">'.timepicker-picker tr'</span><span class="pun">).</span><span class="pln">each</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L5"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> td </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">).</span><span class="pln">find</span><span class="pun">(</span><span class="str">'td'</span><span class="pun">);</span></li><li class="L6"><span class="pln">    td</span><span class="pun">.</span><span class="pln">eq</span><span class="pun">(</span><span class="lit">3</span><span class="pun">).</span><span class="pln">hide</span><span class="pun">();</span></li><li class="L7"><span class="pln">    td</span><span class="pun">.</span><span class="pln">eq</span><span class="pun">(</span><span class="lit">4</span><span class="pun">).</span><span class="pln">hide</span><span class="pun">();</span></li><li class="L8"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 216px;"></textarea></div></div></div>
+
+<p>API よりダイアログのコンテナ部（api.widget）を取得し、その中にある時刻ピッカーの秒表示の部分を非表示にしています。</p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/demo1.html#contents3" class="demo external" target="_blank">Demo</a></div></p>
+
+<h2>分の選択画面の時間間隔を変更する</h2>
+
+<p>時刻ピッカーの画面で、時間の数字部を選択すると画面が切り替わり、一定間隔の時間一覧が表示され、いずれかの時間を選択することができます。</p>
+
+<p><img src="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/img/image03.png" alt="Bootstrap Datetime Picker"></p>
+
+<p>分を選択した場合、デフォルトでは何故か３分間隔の一覧が表示されます。アプリにもよるかと思いますが、一般的には 5分、10分、15分間隔あたりがよく使われると思います。以下のように記述することで、任意の時間間隔で表示させることができます。（以下例では５分間隔）</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">.</span><span class="pln">fn</span><span class="pun">.</span><span class="pln">datetimepicker</span><span class="pun">.</span><span class="typ">Constructor</span><span class="pun">.</span><span class="pln">prototype</span><span class="pun">.</span><span class="pln">fillMinutes </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L1"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> minutesRange </span><span class="pun">=</span><span class="pln"> </span><span class="lit">5</span><span class="pun">;</span></li><li class="L2"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> minutesX </span><span class="pun">=</span><span class="pln"> </span><span class="lit">4</span><span class="pun">;</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="pln">    </span><span class="kwd">function</span><span class="pln"> padLeft</span><span class="pun">(</span><span class="pln">s</span><span class="pun">,</span><span class="pln"> l</span><span class="pun">,</span><span class="pln"> c</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L5"><span class="pln">        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">l </span><span class="pun">&lt;</span><span class="pln"> s</span><span class="pun">.</span><span class="pln">length</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> s</span><span class="pun">;</span></li><li class="L6"><span class="pln">        </span><span class="kwd">else</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="typ">Array</span><span class="pun">(</span><span class="pln">l </span><span class="pun">-</span><span class="pln"> s</span><span class="pun">.</span><span class="pln">length </span><span class="pun">+</span><span class="pln"> </span><span class="lit">1</span><span class="pun">).</span><span class="pln">join</span><span class="pun">(</span><span class="pln">c </span><span class="pun">||</span><span class="pln"> </span><span class="str">' '</span><span class="pun">)</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> s</span><span class="pun">;</span></li><li class="L7"><span class="pln">    </span><span class="pun">}</span></li><li class="L8"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> hour </span><span class="pun">=</span><span class="pln"> </span><span class="lit">60</span><span class="pun">;</span></li><li class="L9"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> minutesCol </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Math</span><span class="pun">.</span><span class="pln">floor</span><span class="pun">((</span><span class="pln">hour </span><span class="pun">-</span><span class="pln"> </span><span class="lit">1</span><span class="pun">)</span><span class="pln"> </span><span class="pun">/</span><span class="pln"> minutesRange</span><span class="pun">);</span></li><li class="L0"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> minutesY </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Math</span><span class="pun">.</span><span class="pln">ceil</span><span class="pun">(</span><span class="pln">minutesCol </span><span class="pun">/</span><span class="pln"> minutesX</span><span class="pun">);</span></li><li class="L1"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> table </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">.</span><span class="pln">widget</span><span class="pun">.</span><span class="pln">find</span><span class="pun">(</span><span class="str">'.timepicker .timepicker-minutes table'</span><span class="pun">);</span></li><li class="L2"><span class="pln">    table</span><span class="pun">.</span><span class="pln">parent</span><span class="pun">().</span><span class="pln">hide</span><span class="pun">();</span></li><li class="L3"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> html </span><span class="pun">=</span><span class="pln"> </span><span class="str">''</span><span class="pun">;</span></li><li class="L4"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> current </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span></li><li class="L5"><span class="pln">    </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;</span><span class="pln"> minutesY</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L6"><span class="pln">        html </span><span class="pun">+=</span><span class="pln"> </span><span class="str">'&lt;tr&gt;'</span><span class="pun">;</span></li><li class="L7"><span class="pln">        </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> j </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> j </span><span class="pun">&lt;</span><span class="pln"> minutesX</span><span class="pun">;</span><span class="pln"> j </span><span class="pun">+=</span><span class="pln"> </span><span class="lit">1</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L8"><span class="pln">            </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">current </span><span class="pun">&lt;</span><span class="pln"> hour</span><span class="pun">){</span></li><li class="L9"><span class="pln">                </span><span class="kwd">var</span><span class="pln"> c </span><span class="pun">=</span><span class="pln"> current</span><span class="pun">.</span><span class="pln">toString</span><span class="pun">();</span></li><li class="L0"><span class="pln">                html </span><span class="pun">+=</span><span class="pln"> </span><span class="str">'&lt;td class="minute"&gt;'</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> padLeft</span><span class="pun">(</span><span class="pln">c</span><span class="pun">,</span><span class="pln"> </span><span class="lit">2</span><span class="pun">,</span><span class="pln"> </span><span class="str">'0'</span><span class="pun">)</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="str">'&lt;/td&gt;'</span><span class="pun">;</span></li><li class="L1"><span class="pln">            </span><span class="pun">}</span></li><li class="L2"><span class="pln">            </span><span class="kwd">else</span><span class="pun">{</span></li><li class="L3"><span class="pln">                html </span><span class="pun">+=</span><span class="pln"> </span><span class="str">'&lt;td/&gt;'</span></li><li class="L4"><span class="pln">            </span><span class="pun">}</span></li><li class="L5"><span class="pln">            current </span><span class="pun">+=</span><span class="pln"> minutesRange</span><span class="pun">;</span></li><li class="L6"><span class="pln">        </span><span class="pun">}</span></li><li class="L7"><span class="pln">        html </span><span class="pun">+=</span><span class="pln"> </span><span class="str">'&lt;/tr&gt;'</span><span class="pun">;</span></li><li class="L8"><span class="pln">    </span><span class="pun">}</span></li><li class="L9"><span class="pln">    table</span><span class="pun">.</span><span class="pln">html</span><span class="pun">(</span><span class="pln">html</span><span class="pun">);</span></li><li class="L0"><span class="pun">}</span></li><li class="L1"><span class="pln">$</span><span class="pun">(</span><span class="str">'#datetimepicker5'</span><span class="pun">).</span><span class="pln">datetimepicker</span><span class="pun">({</span></li><li class="L2"><span class="pln">    format </span><span class="pun">:</span><span class="pln"> </span><span class="str">'hh:mm:ss'</span><span class="pun">,</span></li><li class="L3"><span class="pln">    pickDate </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span></li><li class="L4"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 684px;"></textarea></div></div></div>
+
+<p>オリジナルのソースの fillMinutes メソッドを動的に上書きしてます。変数 minutesRange に分の間隔、minutesX に一行当たりに表示する分の数を指定します。</p>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/demo1.html#contents4" class="demo external" target="_blank">Demo</a></div></p>
+
+<h2>オリジナルのソースをラップし、カスタマイズ版としてプラグイン化してみる</h2>
+
+<p>上記のような記述を毎回するのも面倒なので、オリジナルのソースをラップしてプラグイン化してみます。</p>
+
+<ul>
+<li><a href="https://github.com/cyokodog/jquery.bootstrap-datetimepicker-ja/blob/gh-pages/bootstrap-datetimepicker-ja.js">bootstrap-datetimepicker-ja.js</a></li>
+</ul>
+
+<h2>カスタマイズ版のデフォルトの動作は日付ピッカー</h2>
+
+<p>カスタマイズ版をパラメータを指定せず実行してみます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'#datetimepicker1'</span><span class="pun">).</span><span class="pln">datetimepicker_ja</span><span class="pun">();</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/demo2.html#contents0" class="demo external" target="_blank">Demo</a></div></p>
+
+<p>以下のような挙動となります。</p>
+
+<ul>
+<li>日付ピッカーとして動作</li>
+<li>日付選択時にダイアログが閉じる</li>
+<li>日本語表示</li>
+</ul>
+
+<h2>カスタマイズ版を時刻ピッカーとして起動する</h2>
+
+<p>時刻ピッカーとして起動する場合は、以下のように記述します。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'#datetimepicker2'</span><span class="pun">).</span><span class="pln">datetimepicker_ja</span><span class="pun">({</span></li><li class="L1"><span class="pln">    format </span><span class="pun">:</span><span class="pln"> </span><span class="str">'hh:mm'</span><span class="pun">,</span></li><li class="L2"><span class="pln">    pickDate </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span></li><li class="L3"><span class="pln">    pickTime </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span></li><li class="L4"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 144px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/demo2.html#contents1" class="demo external" target="_blank">Demo</a></div></p>
+
+<p>以下のような挙動となります。</p>
+
+<ul>
+<li>時刻ピッカーのダイアログで秒が非表示</li>
+<li>分の選択一覧が５分間隔</li>
+</ul>
+
+<p>秒を表示させたい場合は、hideSeconds パラメータに false を指定します。</p>
+
+<h2>分の選択一覧の分間隔を指定する</h2>
+
+<p>minutesRange パラメータで分の選択一覧の分間隔を指定することができます。以下例では10分間隔にしてます。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'#datetimepicker3'</span><span class="pun">).</span><span class="pln">datetimepicker_ja</span><span class="pun">({</span></li><li class="L1"><span class="pln">    format </span><span class="pun">:</span><span class="pln"> </span><span class="str">'hh:mm'</span><span class="pun">,</span></li><li class="L2"><span class="pln">    pickDate </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span></li><li class="L3"><span class="pln">    pickTime </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span></li><li class="L4"><span class="pln">    minutesRange </span><span class="pun">:</span><span class="pln"> </span><span class="lit">10</span><span class="pun">,</span></li><li class="L5"><span class="pln">    minutesX </span><span class="pun">:</span><span class="pln"> </span><span class="lit">3</span></li><li class="L6"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 180px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/demo2.html#contents2" class="demo external" target="_blank">Demo</a></div></p>
+
+<p>minutesX パラメータには一行当たりに表示する分の数を指定することができます。</p>
+
+<h2>オリジナル版の挙動に影響なし</h2>
+
+<p>オリジナルのソースの動的な上書きをしてますが、挙動に影響はありません。</p>
+
+<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'#datetimepicker4'</span><span class="pun">).</span><span class="pln">datetimepicker</span><span class="pun">({</span></li><li class="L1"><span class="pln">    format </span><span class="pun">:</span><span class="pln"> </span><span class="str">'yyyy/MM/dd hh:mm:ss'</span></li><li class="L2"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 108px;"></textarea></div></div></div>
+
+<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.bootstrap-datetimepicker-ja/demo2.html#contents3" class="demo external" target="_blank">Demo</a></div></p>
+
+<h2>ダウンロード</h2>
+
+<p>こちらからどうぞ。</p>
+
+<ul>
+<li><a href="https://github.com/cyokodog/jquery.bootstrap-datetimepicker-ja">jquery.bootstrap-datetime-picker-ja – GitHug</a></li>
+</ul>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

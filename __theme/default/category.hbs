@@ -1,0 +1,17 @@
+{{#extend "layout"}}
+
+{{#content "body"}}
+
+<h2>{{article.title}}</h2>
+
+<div>
+  <ul>
+  {{#each category.articles}}
+    <li><a href="{{this.url}}">{{this.title}}</a></li>
+  {{/each}}
+  </ul>
+</div>
+
+{{/content}}
+
+{{/extend}}

@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>JavaScript の prototype オブジェクト入門 | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/javascript-prototype/" title="JavaScript の prototype オブジェクト入門">JavaScript の prototype オブジェクト入門</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2014-12-14</li>
+<!--
+        <li class="article__info__category"><a href="/category/javascript/" rel="category tag">JavaScript</a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <p><div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/javascript-prototype/"><img src="http://lh4.googleusercontent.com/-x4rFLOEqKbY/VIscBlfOi4I/AAAAAAAAIfw/CsuYjaNQZZ0/s144/prototype.png"></a>
+</div></p>
+<p>こんにちわ、2015年3月をもって所属会社が解散することになってしまった CYOKODOG です（悲） 
+ただいま絶賛就活中、当方にご興味ございましたらお声かけのほどよろしくお願い致します ^^;<br>
+そんな背景もあり過去の資料を整理することも多々ありまして、今回は昔懐かしい JavaScript の prototype 周りについて自分なりにまとめてみました。</p>
+
+<!--more-->
+<h2>this と オブジェクトの関係</h2>
+
+<p>prototype の話の前に this と オブジェクトの関係をおさらいします。
+JavaScript ではオブジェクトは以下のように作ります。</p>
+
+<pre><code>var Hello = {}
+</code></pre>
+
+<p><br>
+オブジェクトに対し、値やメソッドを追加したい場合は以下のように書きます。</p>
+
+<pre><code>var Hello = {}
+Hello.msg = 'hello';
+Hello.say = function(){
+    alert(this.msg);
+}
+</code></pre>
+
+<p><br>
+say() メソッドを実行してみます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = {}
+Hello.msg = 'hello';
+Hello.say = function(){
+    alert(this.msg);
+}
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>Hello.say(); /* hello */
+</code></pre>
+
+<p>this.msg の値である “hello” が表示されます。<br>
+this は、その処理を記述してる場所が属しているオブジェクトを指します。<br>
+ここでは say が属してる Hello オブジェクトが this にあたり、 this.msg は Hello.msg に相当するためその値である “hello” が表示されます。</p>
+
+<p><br>
+では、script タグ内でいきなり this と記述した場合、あるいはどのオブジェクトにも属さない function 内で this と記述した場合、this はなにに相当するでしょうか？</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script</h5>
+
+<pre><code>alert(this); /* [object Window] */
+var f = function(){ alert(this) }
+f(); /* [object Window] */
+</code></pre>
+
+<p>[object Window] と表示されます。<br>
+つまり DOM 階層のルート要素にあたる window オブジェクトに相当することとなり、実行してる場所は window オブジェクト に属しているということになります。</p>
+
+<p>また、実行場所が window オブジェクト以外に属していたとしても、以下のように function のみ参照し実行した場合も this は window オブジェクトに属すことになります。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script</h5>
+
+<pre><code>var obj = {}
+obj.showThis = function(){ alert(this) }
+var f = obj.showThis;
+f(); /* [object Window] */
+</code></pre>
+
+<h2>window オブジェクトの汚染</h2>
+
+<p>変数や function を定義する際、var の記述を省略するとその属性が window オブジェクトに追加（汚染）されます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script</h5>
+
+<pre><code>msg = 'hello';
+say = function(){
+    alert(this.msg);
+}
+window.say(); /* hello ← window オブジェクトに say がある */
+</code></pre>
+
+<p><br>
+また、html 内の要素に id 属性を振ることはよくあるかと思いますが、これも window オブジェクトを汚染することになります。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>html</h5>
+
+<pre><code>&lt;div id="myObj"&gt;Hello&lt;/div&gt;
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>alert(myObj); /* [object HTMLDivElement] */
+alert(window.myObj); /* [object HTMLDivElement] ← window オブジェクトに myObj がある */
+alert(window.myObj.innerText); /* Hello */
+</code></pre>
+
+<p><br>
+window オブジェクトはさまざまな属性値を持っているので、これらの値を上書きしてしまわないよう var の記述や id の命名には配慮が必要です。</p>
+
+<h4>code + demo</h4>
+
+<h5>html</h5>
+
+<pre><code>window オブジェクトの持つ属性値
+&lt;div style="height:160px;overflow:auto"&gt;
+    &lt;ul&gt;&lt;/ul&gt;
+&lt;/div&gt;
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>for(var i in window) $('&lt;li style="float:left;margin-right:8px"/&gt;').text(i).appendTo($DEMO.find('ul'));
+</code></pre>
+
+<h2>よそ様の function を自分のメソッドのように使う</h2>
+
+<p>say() メソッドを持たない Bye オブジェクトがあったとします。</p>
+
+<pre><code>var Bye = {}
+Bye.msg = 'bye';
+</code></pre>
+
+<p><br>
+以下のように記述することで、Hello オブジェクトのもつ say() メソッドを自分のメソッドのように実行できます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = {}
+Hello.msg = 'hello';
+Hello.say = function(){
+    alert(this.msg);
+}
+Bye = {}
+Bye.msg = 'bye';
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>Hello.say.apply(Bye); /* bye */
+/* あるいは */
+Hello.say.call(Bye); /* bye */
+</code></pre>
+
+<p><br>
+say() は引数を必要としないメソッドのため apply と call の違いが分かりませんが、apply と call では引数の渡し方が異なります。
+２つの引数を必要とする function で試してみます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Bye = {}
+Bye.msg = 'bye';
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>var customMsg = function(prefix, safix){
+    alert(prefix + this.msg + safix);
+}
+customMsg.apply(Bye, ['good ',' !']); /* good bye ! */
+customMsg.call(Bye, 'good ',' !'); /* good bye ! */
+</code></pre>
+
+<p>apply の場合は配列でまとめて渡し、call の場合は引数を必要な分だけ記述します。</p>
+
+<h2>prototype から生成する オブジェクト</h2>
+
+<p>前置きが長くなりましたが、ここからが本題です。<br>
+JavaScript の function は prototype という名前のオブジェクトを持っています</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script</h5>
+
+<pre><code>var f = function(){};
+alert(typeof f.prototype); /* object */
+</code></pre>
+
+<p><br>
+prototype もオブジェクトなので、属性名を指定し function や 値を追加することができます。</p>
+
+<pre><code>var Hello = function(){};
+Hello.prototype.msg = 'Hello';
+Hello.prototype.say = function(){
+    alert(this.msg);
+}
+</code></pre>
+
+<p><br>
+当然それらを参照したり、実行することもできます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = function(){};
+Hello.prototype.msg = 'Hello';
+Hello.prototype.say = function(){
+    alert(this.msg);
+}
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>Hello.prototype.say(); /* Hello */
+Hello.prototype.msg = 'Good Morning !';
+Hello.prototype.say(); /* Good Morning ! */
+</code></pre>
+
+<p><br>
+new でインスタンス化することで、新しいオブジェクトを生成できます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = function(){};
+Hello.prototype.msg = 'Hello';
+Hello.prototype.say = function(){
+    alert(this.msg);
+}
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>var hello1 = new Hello();
+var hello2 = new Hello();
+hello2.msg = 'Good Morning !';
+hello1.say(); /* Hello */
+hello2.say(); /* Good Morning ! */
+</code></pre>
+
+<p><br>
+prototype に設定した値や function がインスタンス化した各オブジェクトにコピーされたように見えますが、実際はそうではなく prototype オブジェクトの所有物が自分のもののように見えてるだけです。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = function(){};
+Hello.prototype.msg = 'Hello';
+Hello.prototype.say = function(){
+    alert(this.msg);
+}
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>var hello = new Hello();
+alert(hello.hasOwnProperty('msg')); /* false */
+alert(hello.hasOwnProperty('say')); /* false */
+</code></pre>
+
+<p><br>
+但し、インスタンス化したオブジェクトに対し同じ名前の属性値を追加すると、prototype 上の同名の属性値は見えなくなり、追加した属性値は自分のものになります。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = function(){};
+Hello.prototype.msg = 'Hello';
+Hello.prototype.say = function(){
+    alert(this.msg);
+}
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>var hello1 = new Hello();
+var hello2 = new Hello();
+hello1.msg = 'Good Night !'; /* 上書き */
+alert(hello1.hasOwnProperty('msg')); /* true */
+alert(hello2.hasOwnProperty('msg')); /* false */
+</code></pre>
+
+<p><br>
+逆に言えば同名の属性値の追加をしてない状態で prototype の属性値を書き換えると、インスタンス化したオブジェクトたちはその影響を受けます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = function(){};
+Hello.prototype.msg = 'Hello';
+Hello.prototype.say = function(){
+    alert(this.msg);
+}
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>var hello1 = new Hello();
+var hello2 = new Hello();
+hello1.say(); /* Hello */
+hello2.say(); /* Hello */
+Hello.prototype.msg = 'Bye !';
+hello1.say(); /* Bye ! */
+hello2.say(); /* Bye ! */
+</code></pre>
+
+<h2>インスタンス、コンストラクタ、prototype の関係を調べる</h2>
+
+<p>new で生成されたオブジェクトは constructor 属性で自分の生成元となった function（コンストラクタ）を参照することができます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script</h5>
+
+<pre><code>var Hello = function(){/* Hello 関数 */}
+var hello = new Hello();
+alert(hello.constructor); // function(){/* Hello 関数 */}
+alert(hello.constructor === Hello); /* true */
+</code></pre>
+
+<p><br>
+instanceof 関数を使用することで指定 function が、自オブジェクトの constructor かどうかを知る事ができます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script</h5>
+
+<pre><code>var Hello = function(){}
+var hello = new Hello();
+alert(hello instanceof Hello); /* true */
+alert(hello instanceof hello.constructor); /* true */
+</code></pre>
+
+<p><br>
+自分のコンストラクタを知る事ができるので、当然、prototype も知る事ができます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = function(){}
+hello = new Hello();
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>alert(hello.constructor.prototype); /* [object Object] */
+</code></pre>
+
+<p><br>
+＿proto＿ 属性でコンストラクタを経由せず prototype を参照することもできます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = function(){}
+hello = new Hello();
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>alert(hello.__proto__); /* [object Object] */
+alert(hello.constructor.prototype === hello.__proto__); /* true */
+</code></pre>
+
+<p><br>
+arguments オブジェクトの callee 属性を参照することで、
+自身のコンストラクタ（new してない場合は所属する function）を処理内で知ることができます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script</h5>
+
+<pre><code>var f = function(){
+    alert(f === arguments.callee)
+    alert(this instanceof arguments.callee)
+};
+new f(); /* true, true */
+f(); /* true, false */
+</code></pre>
+
+<h2>prototype オブジェクトの継承</h2>
+
+<p>prototype オブジェクトでの継承方法を考えてみます。<br>
+前述の動作原理から、継承先 prototype に継承元の prototype のメンバー属性をコピーすれば継承は可能かと考えられます。</p>
+
+<pre><code>/* 継承元 */
+var From = function(param){
+    this.param = param;
+};
+From.prototype = {
+    id : 'from',
+    desc : 'Extend Test',
+    param : null
+}
+/* 継承先 */
+var To = function(){};
+for(var i in From.prototype) To.prototype[i] = From.prototype[i]; /* 継承 */
+To.prototype.id = 'to';
+</code></pre>
+
+<p>実行してみます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>/* 継承元 */
+From = function(param){
+    this.param = param;
+};
+From.prototype = {
+    id : 'from',
+    desc : 'Extend Test',
+    param : null
+}
+/* 継承先 */
+To = function(){};
+for(var i in From.prototype) To.prototype[i] = From.prototype[i]; /* 継承 */
+To.prototype.id = 'to';
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>var to = new To();
+alert(to.id); /* to */
+alert(to.desc); /* Extend Test */
+alert(to.param); /* null */
+</code></pre>
+
+<p>問題なさそうですが、param が null のままです。<br>
+<br>
+param に 値をセットするのは、From コンストラクタの役割なので、To コンストラクタから From コンストラクタ を call するようにしてみます。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>/* 継承元 */
+From = function(param){
+    this.param = param;
+};
+From.prototype = {
+    id : 'from',
+    desc : 'Extend Test',
+    param : null
+}
+/* 継承先 */
+To = function(){};
+for(var i in From.prototype) To.prototype[i] = From.prototype[i]; /* 継承 */
+To.prototype.id = 'to';
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>To = function(param){
+    From.call(this, param);
+};
+var to = new To('Send Param');
+alert(to.param); /* Send Param */
+</code></pre>
+
+<h2>３階層以上の継承</h2>
+
+<p>３階層以上の継承も試してみます。</p>
+
+<p>まずは継承元である Greeting コンストラクタを定義します。
+say() メソッドを実行するとオブジェクト生成時の引数として指定した名前に msg 属性値で挨拶をします。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script</h5>
+
+<pre><code>/* Greeting */
+var Greeting = function(name){
+    this.name = name;
+}
+Greeting.prototype.name = '';
+Greeting.prototype.msg = 'Hi';
+Greeting.prototype.say = function(){
+    alert(this.msg + ', ' + this.name)
+}
+/* Run */
+var greeting = new Greeting('Taro');
+greeting.say(); /* Hi, Taro*/
+</code></pre>
+
+<p><br>
+次に Greeting を継承する Hello コンストラクタを定義します。
+talk() メソッドを実行すると Greeting の msg 属性値を使用し confirm() 関数で挨拶してきます。
+OK を選択した時のみ自身の msg 属性値で挨拶し返します。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>/* Greeting */
+Greeting = function(name){
+    this.name = name;
+}
+Greeting.prototype.name = '';
+Greeting.prototype.msg = 'Hi';
+Greeting.prototype.say = function(){
+    alert(this.msg + ', ' + this.name)
+}
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>/* Hello */
+var Hello = function(name){
+    Greeting.call(this, name);
+}
+for(var i in Greeting.prototype) Hello.prototype[i] = Greeting.prototype[i];
+Hello.prototype.msg = 'Hello';
+Hello.prototype.talk = function(){
+    if(confirm(Greeting.prototype.msg + ', I\'m ' + this.name)){
+        this.say()
+    }
+}
+/* Run */
+var hello = new Hello('Taro');
+hello.talk(); /* Hi, I'm Taro → Hello, Taro */
+</code></pre>
+
+<p><br>
+次に Hello を継承する Bye コンストラクタを定義します。
+msg 属性値のみ “Bye” で上書きし、その他の拡張は行いません。</p>
+
+<h4>demo noAuto noReset code</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>/* Greeting */
+Greeting = function(name){
+    this.name = name;
+}
+Greeting.prototype.name = '';
+Greeting.prototype.msg = 'Hi';
+Greeting.prototype.say = function(){
+    alert(this.msg + ', ' + this.name)
+}
+</code></pre>
+
+<h5>script noCode</h5>
+
+<pre><code>Hello = function(name){
+    Greeting.call(this, name);
+}
+for(var i in Greeting.prototype) Hello.prototype[i] = Greeting.prototype[i];
+Hello.prototype.msg = 'Hello';
+Hello.prototype.talk = function(){
+    if(confirm(Greeting.prototype.msg + ', I\'m ' + this.name)){
+        this.say()
+    }
+}
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>/* Bye */
+var Bye = function(name){
+    Hello.call(this, name);
+}
+for(var i in Hello.prototype) Bye.prototype[i] = Hello.prototype[i];
+Bye.prototype.msg = 'Bye';
+/* Run */
+var bye = new Bye('Taro');
+bye.talk(); /* Hi, I'm Taro → Bye, Taro */
+</code></pre>
+
+<h2>親コンストラクタの参照</h2>
+
+<p>次は、動的に親コンストラクタを参照する方法を考えてみます。<br>
+talk() メソッドで最初に表示される “Hi” は、Hello コンストラクタから見ると親コンストラクタに当たる Greeting の属性値ですが、
+Bye コンストラクタから見ると親の親に当たります。<br>
+bye.talk() とした場合は、親コンストラクタの属性値である “Hello” が表示されるようにしてみます。</p>
+
+<p>継承処理の一環として以下記述を追加し、インスタンス化されたオブジェクト自身が継承元のコンストラクタを参照できるようにします。。</p>
+
+<pre><code>Hello.prototype.__super = Greeting;
+Bye.prototype.__super = Hello;
+</code></pre>
+
+<p><br>
+talk() メソッドを以下のように書き換えます。</p>
+
+<pre><code>Hello.prototype.talk = function(){
+    //if(confirm(Greeting.prototype.msg + ', I\'m ' + this.name)){
+    //↓
+      if(confirm(this.__super.prototype.msg + ', I\'m ' + this.name)){
+</code></pre>
+
+<p><br>
+実行してみます。</p>
+
+<h4>demo code noAuto</h4>
+
+<h5>script</h5>
+
+<pre><code>//Greeting
+var Greeting = function(name){
+    this.name = name;
+}
+Greeting.prototype.name = '';
+Greeting.prototype.msg = 'Hi';
+Greeting.prototype.say = function(){
+    alert(this.msg + ', ' + this.name)
+}
+//Hello
+var Hello = function(name){
+    Greeting.call(this, name);
+}
+for(var i in Greeting.prototype) Hello.prototype[i] = Greeting.prototype[i];
+Hello.prototype.__super = Greeting;
+Hello.prototype.msg = 'Hello';
+Hello.prototype.talk = function(){
+    if(confirm(this.__super.prototype.msg + ', I\'m ' + this.name)){
+        this.say()
+    }
+}
+//Bye
+var Bye = function(name){
+    Hello.call(this, name);
+}
+for(var i in Hello.prototype) Bye.prototype[i] = Hello.prototype[i];
+Bye.prototype.__super = Hello;
+Bye.prototype.msg = 'Bye';
+//RUN
+var hello = new Hello('Taro'); // Hi, I'm Taro → Hello, Taro
+hello.talk();
+var bye = new Bye('Jiro'); // Hello, I'm Jiro → Bye, Jiro
+bye.talk();
+</code></pre>
+
+<p>hello.talk()、bye.talk() の実行時、それぞれ継承元の msg 属性値である “Hi” と “Hello” が表示されることが確認できます。</p>
+
+<h2>コンストラクタ生成処理を汎用化してみる</h2>
+
+<p>継承処理の for 文や __super への格納等の冗長な処理を汎用化してみます。</p>
+
+<pre><code>var Constructor = function(__super, constructor, prototype){
+    if(!prototype) {
+        prototype = constructor;
+        constructor = __super;
+    }
+    if(__super){
+        for(var i in __super.prototype) constructor.prototype[i] = __super.prototype[i]
+        constructor.prototype.__super = __super;
+    }
+    for(var i in prototype) constructor.prototype[i] = prototype[i];
+    return constructor;
+}
+</code></pre>
+
+<p><br>
+以下のようにコンストラクタの定義を行います。</p>
+
+<pre><code>//Greeting
+var Greeting = Constructor(function(name){
+    this.name = name;
+},{
+    name : '',
+    msg : 'Hi !',
+    say : function(){
+        alert(this.msg + ' ' + this.name)
+    }
+});
+//Hello
+var Hello = Constructor(Greeting, function(name){
+    Greeting.call(this, name);
+},{
+    msg : 'Hello !',
+    talk : function(){
+        if(confirm(this.__super.prototype.msg + ' I\'m ' + this.name)){
+            this.say()
+        }
+    }
+});
+//Bye
+var Bye = Constructor(Hello, function(name){
+    Hello.call(this, name);
+}, {
+    msg : 'Bye !'
+});
+</code></pre>
+
+<p>継承を行うときのみ第一引数に継承元のコンストラクタを指定します。</p>
+
+<p><br>
+実行してみます。</p>
+
+<h4>demo code noAuto</h4>
+
+<h5>script noCode</h5>
+
+<pre><code>var Constructor = function(__super, constructor, prototype){
+    if(!prototype) {
+        prototype = constructor;
+        constructor = __super;
+    }
+    if(__super){
+        for(var i in __super.prototype) constructor.prototype[i] = __super.prototype[i]
+        constructor.prototype.__super = __super;
+    }
+    for(var i in prototype) constructor.prototype[i] = prototype[i];
+    return constructor;
+}
+//Greeting
+Greeting = Constructor(function(name){
+    this.name = name;
+},{
+    name : '',
+    msg : 'Hi !',
+    say : function(){
+        alert(this.msg + ' ' + this.name)
+    }
+});
+//Hello
+Hello = Constructor(Greeting, function(name){
+    Greeting.call(this, name);
+},{
+    msg : 'Hello !',
+    talk : function(){
+        if(confirm(this.__super.prototype.msg + ' I\'m ' + this.name)){
+            this.say()
+        }
+    }
+});
+//Bye
+Bye = Constructor(Hello, function(name){
+    Hello.call(this, name);
+}, {
+    msg : 'Bye !'
+});
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>var hello = new Hello('Taro'); // Hi, I'm Taro → Hello, Taro
+hello.talk();
+var bye = new Bye('Jiro'); // Hello, I'm Jiro → Bye, Jiro
+bye.talk();
+</code></pre>
+
+<p>汎用化前と同じ処理結果が得られることが確認できます。</p>
+
+<h2>最後に</h2>
+
+<p>実用の際にはパラメータのディープコピー等、他にも必要そうなものはあるかと思いますがとりあえずここまでとしときます。</p>
+
+<p>最後のコンストラクタ生成処理の汎用化はすごい懐かしい気持ちになりました・・・
+UI コンポーネントをこれと継承処理で独自定義してよく活用していました。</p>
+
+<p>あと prototype とか this についてはいろいろな意見があったような気がしますが、個人的にはあのローコスト感とか apply や call を活用できる柔軟性は結構好きです。
+変に他の言語を意識することなく JavaScript は JavaScript らしさを貫いてほしいと思う次第です。</p>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

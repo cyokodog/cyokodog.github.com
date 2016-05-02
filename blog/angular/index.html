@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>MVWフロントエンド・フレームワーク、AngularJS をはじめてみる | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/angular/" title="MVWフロントエンド・フレームワーク、AngularJS をはじめてみる">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2015-01-17</li>
+<!--
+        <li class="article__info__category"><a href="/category/angular/" rel="category tag">Angular</a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/angularjs/"><img src="http://lh5.googleusercontent.com/-xOoqk6kYWH0/VLgKgXtPmHI/AAAAAAAAIw4/4oUA1dpIcoc/s800/angular.png"></a>
+</div>
+<p>AngularJS は、クライアントサイド MVC フレームワークの１つですが、自身のことを MVW フレームワークと呼んでます。
+これは Model-View-Whatever の略で
+「MV＊について議論するなんて時間の無駄、そんな暇あるならコード書きなよ。MV＊の＊の部分なんて”Whatever”でいいんだよ。」
+という思いが込められてるそうです・・・いかしてますね！<br>
+という訳でコードを書きながら AngularJS を紹介したいと思います ^^;</p>
+
+<!--more-->
+
+<h2>はじめに</h2>
+
+<p>2000 年頃から「web アプリでいかにネイティブアプリに迫れるか」をテーマに半分趣味で JavaScript と向かい合ってきた身としましては、
+就活せまられる現状に乗じ、あわよくばフロントエンドエンジニアに転身できないかなぁ・・・などと思いを馳せつつ転職サイトを検索したりしております。</p>
+
+<p>そんな中、フロントエンドで採用されてる技術としてよく目につくのが AngularJS です。
+最近は賛否両論な意見をよく目にする AngularJS ですが、想像以上に世間では使われてるんだなぁ という印象をうけてます。</p>
+
+<p><a href="http://www.buildinsider.net/web/popularjslib/2015">人気上昇中のJavaScriptライブラリを調べてみた【2015年版】</a> という記事でも
+MVC系フレームワーク部門で利用率はだんとつの１位のようです。</p>
+
+<p><img src="https://lh4.googleusercontent.com/-wjy7lRh8hfE/VLjRv4mQ0kI/AAAAAAAAIxQ/VbAYadrOARk/s640/js-mvc.png" alt="mvc"></p>
+
+<p>そんなわけで AngularJS 体験のファーストステップをまとめてみたいと思います。必要となるライブラリは angular.js 本体のみです。</p>
+
+<pre><code>https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js
+</code></pre>
+
+<p>今回も Backbone.js の時と同様（<a href="http://www.cyokodog.net/blog/backbone-js/">「Backbone.js ではじめるクライアントサイド MVC プログラミング – CYOKODOG」</a>）、最初に TODO アプリを作っていってみたいと思います。</p>
+
+<h2>モジュールの定義</h2>
+
+<p>AngularJS でアプリケーションを作成する際、最初にモジュールの定義を行います。
+今回作成するのは TODO アプリなので taskApp という名前でモジュールを定義してみます。</p>
+
+<pre><code>var app = angular.module('taskApp', []);
+</code></pre>
+
+<p><br>
+このモジュールを適用する場所、つまり HTML 上の TODO アプリを出力する要素に ng-app 属性を記述し、モジュール名である taskApp を指定します。</p>
+
+<pre><code>&lt;div ng-app="taskApp"&gt;
+    &lt;!-- ここに TODO アプリを出力する --&gt;
+&lt;/div&gt;
+</code></pre>
+
+<h2>コントローラの定義</h2>
+
+<p>次にモデルの操作を行うコントローラを定義します。
+AngularJS ではモデルとビューの双方向バインディングという機能があり、
+モデルを変更すればビューも変更され、ビューを変更すればモデルも変更されるようになっています。
+双方向バインディングは $scope オブジェクトを通じて行なわれます。
+例えばアプリの設定を管理する conf モデルがあったとします。</p>
+
+<pre><code>app.controller('TaskCtrl', function($scope){
+    $scope.conf = {
+        appName : 'TODO'
+    }
+});
+</code></pre>
+
+<p><br>
+この conf モデルの値をビューにバインドするには、
+HTML 上のコントローラの機能を有効にする範囲に ng-controller 属性を記述し、モデルの値をバインドしたい箇所に {{属性名}} と記述します。</p>
+
+<pre><code>&lt;div ng-controller="TaskCtrl"&gt;
+    &lt;h1&gt;{{conf.appName}}&lt;/h1&gt; &lt;!-- TODO と表示される--&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>これで h1 要素に TODO と表示されます。モデルの値を変更するとリアルタイムに画面上の出力も変更されます。
+（コントローラー内に別のコントローラーを定義した場合、親コントローラーに定義された属性値を $scope 経由で参照することができます。）</p>
+
+<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo01.html">DEMO</a></p>
+
+<h2>フォームとモデルのバインド</h2>
+
+<p>HTML のフォーム要素にモデルの値やメソッドを割り当てることもできます。
+タスクの登録フォームを設置し、未入力の状態で登録しようとした場合、エラー表示するようにしてみます。</p>
+
+<pre><code>&lt;form ng-submit="addTask()"&gt;
+    &lt;input ng-model="taskTitle" placeholder="タスクを入力してください"&gt;
+    &lt;span&gt;{{error}}&lt;/span&gt;
+&lt;/form&gt;
+</code></pre>
+
+<p><br>
+$scope に addTask, taskTitle, error を追加することでビューとバインドされ、
+何も入力せずエンターした場合はエラーが表示されます。</p>
+
+<pre><code>$scope.taskTitle = '';
+$scope.addTask = function(){
+    if(!$scope.taskTitle.length){
+        $scope.error = 'タスクが入力されてません！'
+        return;
+    }
+    $scope.error = '';
+}
+</code></pre>
+
+<p><img src="http://lh5.googleusercontent.com/-8GV9VANkgJw/VLqGAO_K3mI/AAAAAAAAIyY/BfaX00Kbu4Q/s800/angular01.png" alt="demo"></p>
+
+<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo02.html">DEMO</a></p>
+
+<h2>コレクションの繰り返し処理</h2>
+
+<p>登録したタスクを配列に格納することで、リスト形式で出力させることができます。
+前述の addTask() メソッドにてモデルを配列に追加していきます。</p>
+
+<pre><code>//配列の定義
+$scope.tasks = [];
+$scope.addTask = function(){
+    ・・・
+    //モデルの追加
+    $scope.tasks.push({
+        title: $scope.taskTitle,
+        closed: false
+    });
+    //入力フィールドのクリア
+    $scope.taskTitle = '';
+}
+</code></pre>
+
+<p><br>
+画面に表示する際は、ng-repeat を使用します。</p>
+
+<pre><code>&lt;ul class="taskList"&gt;
+    &lt;li ng-repeat="task in tasks" class="closed-{{task.closed}}"&gt;
+        &lt;input type="checkbox" ng-model="task.closed"&gt;
+        &lt;span class="title"&gt;{{task.title}}&lt;/span&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+<p><br>
+li のクラスに closed-{{task.closed}} と割り振っているので、下記スタイルの適用で完了タスクに取消線が引かれます。</p>
+
+<pre><code>li.closed-true .title{
+    color: gray;
+    text-decoration: line-through;
+}
+</code></pre>
+
+<p><img src="http://lh4.googleusercontent.com/-6Bk8Ylt_oJU/VLqGALcB0eI/AAAAAAAAIx8/mXd-PVRO2Hc/s800/angular02.png" alt="demo"></p>
+
+<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo03.html">DEMO</a></p>
+
+<h2>選択したタスクの削除</h2>
+
+<p>ng-repeat 内で $index を参照すると配列番号を取得することができます。
+これを利用し選択したタスクを削除する機能を追加してみます。
+また、クリックイベントにて preventDefault() を行うために $event も参照します。</p>
+
+<pre><code>&lt;ul class="taskList"&gt;
+    &lt;li ng-repeat="task in tasks" class="closed-{{task.closed}}"&gt;
+        &lt;input type="checkbox" ng-model="task.closed"&gt;
+        &lt;span class="title"&gt;{{task.title}}&lt;/span&gt;
+        &lt;!-- delTaskに$event, $indexを渡す --&gt;
+        &lt;a ng-click="delTask($event, $index)" href="#"&gt;x&lt;/a&gt;
+    &lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+<p><br>
+delTask() メソッドに $index を渡すことで、指定されたタスク番号を配列から削除することができます。</p>
+
+<pre><code>$scope.delTask = function($event, $index){
+    $event.preventDefault();
+    $scope.tasks.splice($index, 1)
+}
+</code></pre>
+
+<p><br>
+ついでにタスクを全て削除するボタンも設置してみます。</p>
+
+<pre><code>&lt;button class="clear" ng-click="delAllTask()"&gt;全て削除&lt;/button&gt;
+</code></pre>
+
+<p><br>
+配列の中身を空にすることで全て削除されます。</p>
+
+<pre><code>$scope.delAllTask = function(){
+    $scope.tasks = [];
+}
+</code></pre>
+
+<p><img src="http://lh5.googleusercontent.com/-g8Otlv2PSWE/VLqGAOX2oMI/AAAAAAAAIyM/eP270ovfV0Q/s800/angular03.png" alt="demo"></p>
+
+<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo04.html">DEMO</a></p>
+
+<h2>TODO アプリの完成</h2>
+
+<p>とりあえずここまでで TODO アプリの機能としては完成とします。
+ソースは以下のようになります。</p>
+
+<h4>code</h4>
+
+<h5>css</h5>
+
+<pre><code>li.closed-true .title{
+    color: gray;
+    text-decoration: line-through;
+}
+</code></pre>
+
+<h5>html</h5>
+
+<pre><code>&lt;div ng-app="taskApp"&gt;
+    &lt;div ng-controller="TaskCtrl"&gt;
+        &lt;h1&gt;{{conf.appName}}&lt;/h1&gt;
+        &lt;form ng-submit="addTask()"&gt;
+            &lt;input ng-model="taskTitle" placeholder="タスクを入力してください"&gt;
+            &lt;span&gt;{{error}}&lt;/span&gt;
+        &lt;/form&gt;
+        &lt;ul class="taskList"&gt;
+            &lt;li ng-repeat="task in tasks" class="closed-{{task.closed}}"&gt;
+                &lt;input type="checkbox" ng-model="task.closed"&gt;
+                &lt;span class="title"&gt;{{task.title}}&lt;/span&gt;
+                &lt;a class="del" ng-click="delTask($event, $index)" href="#"&gt;x&lt;/a&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;button class="clear" ng-click="delAllTask()"&gt;全て削除&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<h5>script</h5>
+
+<pre><code>angular.module('taskApp',[]).
+    controller('TaskCtrl', function($scope){
+        $scope.conf = {
+            appName : 'TODO'
+        }
+        $scope.taskTitle = '';
+        $scope.tasks = [];
+        $scope.addTask = function(){
+            if(!$scope.taskTitle.length){
+                $scope.error = 'タスクが入力されてません！'
+                return;
+            }
+            $scope.tasks.push({
+                title: $scope.taskTitle,
+                closed: false
+            });
+            $scope.taskTitle = '';
+            $scope.error = '';
+        }
+        $scope.delTask = function($event, $index){
+            $event.preventDefault();
+            $scope.tasks.splice($index, 1)
+        }
+        $scope.delAllTask = function(){
+            if(confirm('タスクを全て削除しますか？')){
+                $scope.tasks = [];
+            }
+        }
+    });
+</code></pre>
+
+<h2>外部テンプレートの読み込み</h2>
+
+<p>テンプレートを読み込んだり、DOM に処理を追加する機能としてディレクティブといものがあります。
+ここでは独自のディレクティブを定義し、外部テンプレートを読み込んでみます。
+画面の上部、下部それぞれに以下の tmpl-bar.html を読み込んでみます。</p>
+
+<pre><code>&lt;!-- tmpl-bar.html --&gt;
+&lt;div class="bar"&gt;{{bar.title}}&lt;/div&gt;
+</code></pre>
+
+<p><br>
+テンプレートを出力したい箇所に、独自定義のディレクティブ名 tmpl-bar（ハイフン区切りで表記）を記述します。</p>
+
+<pre><code>&lt;div tmpl-bar ng-controller="BarCtrl" data="top"&gt;&lt;/div&gt;
+&lt;div ng-controller="TaskCtrl"&gt;・・・&lt;/div&gt;
+&lt;div tmpl-bar ng-controller="BarCtrl" data="bottom"&gt;&lt;/div&gt;
+</code></pre>
+
+<p><br>
+directive() にて、テンプレートファイルとディレクティブ名のマッチングを行います。</p>
+
+<pre><code>angular.module('taskApp', []).
+    controller('TaskCtrl', function($scope){
+        ・・・
+    }).
+    controller('BarCtrl', function($scope){
+        $scope.top = {title:'HEAD'}
+        $scope.bottom = {title:'FOOT'}
+    }).
+    directive('tmplBar', function() {
+        return {
+            scope: {
+                bar: '=data'
+            },
+            templateUrl: "tmpl-bar.html"
+        };
+    });
+</code></pre>
+
+<p><img src="http://lh6.googleusercontent.com/-HX0pkwFAK7Q/VLqGBCMLkaI/AAAAAAAAIyI/2gIHkSEfvBw/s800/angular04.png" alt="demo"></p>
+
+<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo05.html">DEMO</a></p>
+
+<h2>モジュールの再利用とサービス化</h2>
+
+<p>再利用したい処理は別モジュールで管理し、必要に応じ読み込んで利用できます。
+また、汎用的な処理はサービスとして定義できます。
+例えば以下のように認証処理のモックを別モジュールのサービスとして定義してみます。</p>
+
+<pre><code>angular.module('auth',[]).
+    service('authService', function(){
+        return {
+            user : '',
+            label : 'LOGIN',
+            toggle : function(){
+                if(this.label == 'LOGIN'){
+                    this.label = 'LOGOUT';
+                    this.user = 'Taro Yamada';
+                }
+                else{
+                    this.label = 'LOGIN';
+                    this.user = '';
+                }
+            }
+        }
+    });
+</code></pre>
+
+<p><br>
+このサービスを利用するには、以下のように記述します。</p>
+
+<pre><code>angular.module('taskApp',['auth']). // authモジュールの読み込み
+    controller('AuthCtrl', function($scope, authService){ // authServiceの取得
+            $scope.auth = authService;
+    }).
+    controller('TaskCtrl', function($scope){
+        alert($scope.auth); //undefined ※参照ＮＧ
+    });
+</code></pre>
+
+<p>但し、上記の記述のままだと AuthCtrl で定義された $scope.auth を TaskCtrl 内から参照できません。</p>
+
+<p>以下のように authService を $rootScope に割り当てることで、他のコントローラからも参照可能になります。</p>
+
+<pre><code>angular.module('taskApp',['auth']). // authモジュールの読み込み
+    controller('AuthCtrl',function($rootScope, authService){ // authServiceの取得
+        $rootScope.auth = authService;
+    }).
+    controller('TaskCtrl', function($scope){
+        alert($scope.auth); //[object Object] ※参照ＯＫ
+    });
+</code></pre>
+
+<p><br>
+または、TaskCtrl で authService を取得することで、同一の authService オブジェクトを参照することができます。</p>
+
+<pre><code>angular.module('taskApp',['auth']). // authモジュールの読み込み
+    controller('AuthCtrl',function($scope, authService){ // authServiceの取得
+        $scope.auth = authService;
+    }).
+    controller('TaskCtrl', function($scope, authService){ // authServiceの取得
+        alert(authService); //[object Object] ※参照ＯＫ
+    })
+</code></pre>
+
+<p><br>
+以下のようなマークアップを追加することで、認証 UI が表示されます。</p>
+
+<pre><code>&lt;div ng-app="taskApp"&gt;
+    &lt;div ng-controller="AuthCtrl"&gt;
+        &lt;button ng-click="auth.toggle()"&gt;{{auth.label}}&lt;/button&gt; {{auth.user}} 
+    &lt;/div&gt;
+    ・・・
+</code></pre>
+
+<p><img src="http://lh3.googleusercontent.com/-fLQAFrxcB5c/VLqGBePjw6I/AAAAAAAAIyU/-mUC4ezHJLo/s800/angular05.png" alt="demo"></p>
+
+<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo06.html">DEMO</a></p>
+
+<h2>サービスとしての外部テンプレート機能</h2>
+
+<p>前述の定義方法だと認証サービスと外部テンプレートのバインドを、自前でコントローラを用意して行う必要がありました。
+サービスモジュール内でこれらのバインド処理を行い、呼び出し側の記述をシンプルにしてみます。</p>
+
+<p>ファクトリ関数内で link 属性に関数を記述することで、scope を参照できるので、ここでバインドします。</p>
+
+<pre><code>angular.module('auth', []).
+    service('authService', function(){
+        ・・・
+    }).
+    directive('tmplAuth', function(authService) { // 認証サービスの読み込み
+        return {
+            templateUrl: "tmpl-auth.html",
+            link : function(scope, element, attrs){ // scope を参照できる
+                scope.auth = authService;
+            }
+        };
+    });
+</code></pre>
+
+<p><br>
+これによりサービスを利用する側は、サービスのモジュールを読み込むのみでよく、コントローラの定義も $scope へのバインドも不要になります。</p>
+
+<pre><code>angular.module('taskApp',['auth']) // authモジュールの読み込み
+</code></pre>
+
+<p><br>
+HTML にディレクティブ属性を記述すれば、テンプレートが埋め込まれます。</p>
+
+<pre><code>&lt;div tmpl-auth&gt;&lt;/div&gt;
+</code></pre>
+
+<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo07.html">DEMO</a></p>
+
+<h2>最後に</h2>
+
+<p>こうやってまとめるのもなかなか骨がおれますね・・^^;<br>
+最小のアプリを作る上で最低限おさえておきたい機能はどの辺かなぁ、という視点で調べたとこをまとめてみました。
+最初は<a href="http://dotinstall.com/lessons/basic_angularjs">ドットインストールさんの動画</a>が分かりやすくて良いかもしれません。
+<a href="http://cyokodog.github.io/JS_STUDY/angularjs/dot-install.html">こちら</a>に動画を見ながらタイプしたコードがありますのでよろしければどうぞ。</p>
+
+<p>AngularJS で検索すると結構な数の日本語記事があり注目されているのが良く分かります。
+機能も豊富なようで覚えることだらけとの事で、
+趣味の範囲で習得するのは大変そうですが仕事でこれを扱えたらやりがいがありそうですね！（うらやましい・・）</p>
+              </div>
+
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

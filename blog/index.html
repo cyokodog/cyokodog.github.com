@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>BLOG | CYOKODOG</title>
+	<link rel="shortcut icon" href="/__theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+	<link href='/__theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' id='style-css'  href='/__theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in list" >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+
+    <div class="l-article">
+      <article class="article">
+
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/media-capture-and-streams-web-audio-api/" title="Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2015-04-08</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/media-capture-and-streams-web-audio-api/"><img src="http://lh5.googleusercontent.com/-jdxrmNzSfRY/VSVJoOgrExI/AAAAAAAAI7o/afEKypy4JdU/s288/capture.jpg"></a>
+          </div>
+          
+          <p><a href="http://www.cyokodog.net/blog/web-speechi-api/">前回のエントリ</a>ではマイク経由の音声認識を行う Speech Recognition API を試しましたが、今回はカメラ・マイクからの動画・音声キャプチャを行う Media Capture and Streams を試してみます。
+          また、キャプチャした音声の録音については MediaStream Recording を使用することで可能ですが、現時点（2015年4月）では Firefox にしか実装されていません。
+          そこで Web Audio API を使用することで他のブラウザでも音声録音を可能にし、それらの音声データを wav 形式で保存する方法についても試してみました。</p>
+          
+          
+          
+          
+          <!--
+              <a href="/blog/media-capture-and-streams-web-audio-api/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/web-speechi-api/" title="ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2015-03-18</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/web-speechi-api/"><img src="http://lh6.googleusercontent.com/-frDTerYNb8A/VQoRmf3edQI/AAAAAAAAI6I/Snu-6hQOYR8/s800/mike.png"></a>
+          </div>
+          
+          
+          <p>HTML5 の Web Speech API をご存知でしょうか？
+          ブラウザベースで音声認識とテキストの読み上げを実現する API です。
+          今回はこの Web Speech API について試したことをまとめてみました。
+          ちなみに少し前の Chrome では Speech Input API という INPUT 要素に x-webkit-speech という属性を記述するのみで、手軽に音声認識を実現できるという機能がありましたが現バージョンでは廃止されてるようです・・・<br>
+          Web Speech API の対応ブラウザは <a href="http://caniuse.com/#feat=web-speech">Can I Use</a> よりご確認ください。</p>
+          
+          
+          
+          <!--
+              <a href="/blog/web-speechi-api/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/thinking-toc/" title="TOC（目次メニュー）の実装方法について考えてみる">TOC（目次メニュー）の実装方法について考えてみる</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2015-03-09</li>
+          <!--
+                <li class="article__info__category"><a href="/category/javascript/" rel="category tag">JavaScript</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/thinking-toc/"><img src="http://lh4.googleusercontent.com/-O_NZPRs1P-U/VQHKXZnVZ0I/AAAAAAAAI5E/rncNpstSV-E/s800/tocjs.png"></a>
+          </div></p>
+          <p>みなさん、日々の勉強で得たナレッジはどこに記録されてますか？<br>
+          自分の場合、少しでも気になって調べた事はとりあえずマークダウンで記述してテキストファイルに保存してます（閲覧は HTML 形式に変換したドキュメントをロカール web サーバや Bitbucket 越しに参照してます）。
+          そんな調子で気軽にメモしてくと情報量がすぐに増えてしまうので、見出し要素ごとにカテゴライズされたコンテンツに素早く移動するための TOC（目次メニュー）は欠かせない機能です。<br>
+          今回はこの目次メニューの実装方法について考えてみました。</p>
+          
+          
+          <!--
+              <a href="/blog/thinking-toc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/web-audio-api-music/" title="HTML5 の Web Audio API で音楽してみる">HTML5 の Web Audio API で音楽してみる</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2015-02-21</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/web-audio-api-music/"><img src="http://lh4.googleusercontent.com/-efCmwZxDxh4/VOkG7IoWdAI/AAAAAAAAI2w/GArxqNRH20o/s800/audio.png"></a>
+          </div>
+          
+          <p>HTML5 の Web Audio API の存在をご存知でしょうか？
+          購読してる専門誌でも紹介されてるのを見かけた記憶がなかったのでよく知らなかったのですが、検索してみると興味深い記事が結構目につきます。
+          CANVAS や WebGL など見た目系機能が注目されがちな HTML5 ですが、音声方面も面白いかなという事で、今回調べたことをまとめがてら紹介してみたいと思います。</p>
+          
+          
+          <!--
+              <a href="/blog/web-audio-api-music/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/first-node-js/" title="Windows ではじめてみる Node.js">Windows ではじめてみる Node.js</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2015-01-28</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/first-node-js/"><img src="http://lh3.googleusercontent.com/-949FT7PVcXE/VMhwhHPmYcI/AAAAAAAAI0Q/MsnZKQyHtho/s144/node03.png"></a>
+          </div></p>
+          <p>Node.js といえば発表された当初、イベント駆動、ノンブロッキングI/O、スケーラブルネットワークブログラミング、といった部分が注目され非常に話題になりました。
+          フロントエンド技術の興隆目覚しい昨今においては、Sass や CoffeeScript のコンパイルを自動化する Grunt や Gulp といったタスクランナーを動かすための開発環境インフラとして大きな役割をはたしています。<br>
+          今回はそんな node.js の基本的な利用方法についてまとめてみました。</p>
+          
+          
+          <!--
+              <a href="/blog/first-node-js/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/angular/" title="MVWフロントエンド・フレームワーク、AngularJS をはじめてみる">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2015-01-17</li>
+          <!--
+                <li class="article__info__category"><a href="/category/angular/" rel="category tag">Angular</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/angularjs/"><img src="http://lh5.googleusercontent.com/-xOoqk6kYWH0/VLgKgXtPmHI/AAAAAAAAIw4/4oUA1dpIcoc/s800/angular.png"></a>
+          </div></p>
+          <p>AngularJS は、クライアントサイド MVC フレームワークの１つですが、自身のことを MVW フレームワークと呼んでます。
+          これは Model-View-Whatever の略で
+          「MV＊について議論するなんて時間の無駄、そんな暇あるならコード書きなよ。MV＊の＊の部分なんて”Whatever”でいいんだよ。」
+          という思いが込められてるそうです・・・いかしてますね！<br>
+          という訳でコードを書きながら AngularJS を紹介したいと思います ^^;</p>
+          
+          
+          <!--
+              <a href="/blog/angular/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/backbone-js/" title="Backbone.js ではじめるクライアントサイド MVC プログラミング">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2015-01-07</li>
+          <!--
+                <li class="article__info__category"><a href="/category/backbone-js/" rel="category tag">Backbone.js</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/backbone-js/"><img src="http://lh4.googleusercontent.com/-vWEuTNpGLTE/VK3H2siMs_I/AAAAAAAAIu0/LNSy61X0aUE/s288/backbone.png"></a>
+          </div></p>
+          <p>MVC と言えば Apache Struts をはじめとするサーバサイド・フレームワークを想像しますが、
+          今回は JavaScript による大規模開発の際に採用されるクライアントサイド MVC フレームワーク「Backbone.js」の使い方についてまとめてみました。
+          (厳密にはクライアントサイドの場合、MVC とは呼ばず MVVM とか MV* とか呼ばれてるようです。)</p>
+          
+          
+          <!--
+              <a href="/blog/backbone-js/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/pull-request-github/" title="Pull Request ではじめてみる！GitHub ソーシャルコーディング">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-12-23</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/pull-request-github/"><img src="https://lh6.googleusercontent.com/-DsqqmKvb_vg/VJhJ8sF3s5I/AAAAAAAAIsA/l8Sk2SD5wKI/s800/github.png"></a>
+          </div></p>
+          <p>こんにちわ、就活の面接がいつの間にか雑談ぽくなりがちな cyokodog です。
+          普段できないプログラムの話とか、異業種の現場の話とか聞いたりできるのってすごい楽しいものですね！(お時間とらせてしまってすいません^^;)<br>
+          今回はそんなコミニケーションを取りながら、皆でわいわい開発するのが当たり前の時代がきたらいいなぁ…
+          そんな思いを込めて、ソーシャルコーディングを可能にする WEB サービス GitHub の利用方法についてまとめてみました。</p>
+          
+          
+          <!--
+              <a href="/blog/pull-request-github/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/javascript-prototype/" title="JavaScript の prototype オブジェクト入門">JavaScript の prototype オブジェクト入門</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-12-14</li>
+          <!--
+                <li class="article__info__category"><a href="/category/javascript/" rel="category tag">JavaScript</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/javascript-prototype/"><img src="http://lh4.googleusercontent.com/-x4rFLOEqKbY/VIscBlfOi4I/AAAAAAAAIfw/CsuYjaNQZZ0/s144/prototype.png"></a>
+          </div></p>
+          <p>こんにちわ、2015年3月をもって所属会社が解散することになってしまった CYOKODOG です（悲） 
+          ただいま絶賛就活中、当方にご興味ございましたらお声かけのほどよろしくお願い致します ^^;<br>
+          そんな背景もあり過去の資料を整理することも多々ありまして、今回は昔懐かしい JavaScript の prototype 周りについて自分なりにまとめてみました。</p>
+          
+          
+          <!--
+              <a href="/blog/javascript-prototype/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/easy-code-prettify-doc/" title="マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-11-16</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/easy-code-prettify-doc/"><img src="http://lh3.googleusercontent.com/-62fhvgWZi0M/VGjEBsJYdkI/AAAAAAAAIUo/S3DUeApYCTo/s800/elogo.png"></a>
+          </div></p>
+          <p>Easy Code Prettify は、Ex Code Prettify(<a href="http://www.cyokodog.net/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>)を簡易的に実行することができる jQuery プラグインです。
+          クラス名等の HTML 属性値によるパラメータ指定を必要としないため、マークダウン形式でブログを書いてる場合等に利用すると便利です。</p>
+          
+          
+          <!--
+              <a href="/blog/easy-code-prettify-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/ex-code-prettify-v05/" title="Ex Code Prettify をバージョンアップしました【追記あり】">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-11-06</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/ex-code-prettify-v05/"><img src="https://lh4.googleusercontent.com/-3exvGUhfP0A/UkBVHV--XgI/AAAAAAAAFZs/iqBAvKfjyLc/s800/logo.png"></a>
+          </div></p>
+          <p>その場で編集／実行できるシンタックスハイライター jQuery プラグイン <a href="http://www.cyokodog.net/blog/ex-code-prettify-doc/">Ex Code Prettify</a> をバージョンアップしました。</p>
+          
+          
+          <!--
+              <a href="/blog/ex-code-prettify-v05/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/sk8-bs-bordslide/" title="うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-10-26</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/sk8-bs-bordslide/"><img src="https://lh5.googleusercontent.com/-_3ab5t_9ZGg/VEKFM-n_-cI/AAAAAAAAIIM/dNI0f5MCLeE/s800/IMG_2618c.jpg"></a>
+          </div></p>
+          <p>うちの小３男子はスケボーが趣味なのですが、この度念願の「ダウンレールでのバックサイドボードスライド」という技を習得することができました！
+          開発者ブログをうたっときながら、相変わらず興味のない人にはなんのことやらという内容ですが、ついにきた！という思いがあまりに強かったので記念に動画を載せさせて頂きます。
+          親バカと思って許してください（笑）</p>
+          
+          
+          
+          <!--
+              <a href="/blog/sk8-bs-bordslide/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/twitter-cards/" title="WordPress 製のブログを Twitter カードに対応させてみた">WordPress 製のブログを Twitter カードに対応させてみた</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-10-05</li>
+          <!--
+                <li class="article__info__category"><a href="/category/wordpress/" rel="category tag">WordPress</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/twitter-cards/"><img src="https://lh6.googleusercontent.com/-ecfadcrZ87g/VDAX2BrtuaI/AAAAAAAAIGo/-rxVJX14ejw/s144/tw.png"></a>
+          </div></p>
+          <p><p>Twitter カードってご存知でしょうか？ツイート内に URL が含まれている場合、そのページのタイトル、概要、アイコン写真なども一緒に表示してくれる機能です。
+          これは前回のエントリ「<a href="http://www.cyokodog.net/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>」で紹介した OGP の Twitter 版の機能にあたります。OGP の対応が済んでいれば簡単な手順で対応させることができます。</p>
+          
+          <!--
+              <a href="/blog/twitter-cards/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/wordpress-ogp/" title="WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-10-02</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/wordpress-ogp/"><img src="https://lh5.googleusercontent.com/-Ug4DMapS1L4/VC2CpKczXrI/AAAAAAAAIFM/dUGWWJhFjes/s144/OGP6.png"></a>
+          </div></p>
+          <p><p>OGP ってご存知でしょうか？Open Graph Protocol の略で、「このウェブページは、こんな内容です」ということをプログラムに対し正しく伝達するための仕様だそうです。どんな時に活用されるかというと、Facebook や Google+ 等で OGP が記述されたページがシェアされた際、この OGP の情報をもとにフィードに表示する画像やコンテンツの概要を載せてくれるようになります。<br></p>
+          
+          <!--
+              <a href="/blog/wordpress-ogp/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/fade-page-doc/" title="フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-09-29</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/fade-page-doc/"><img src="https://lh6.googleusercontent.com/-F47ySthifT4/VCwPezN6GoI/AAAAAAAAIBU/wGYHJoV08DI/s144/fade-page.png"></a>
+          </div></p>
+          <p><p>Fage Page はフェード効果を使ってふわっとページ切替を行えるようにする jQuery プラグインです。各ページに CSS と JS ファイルを読み込むのみで適用されます。<br>
+          <a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
+          
+          <!--
+              <a href="/blog/fade-page-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/fade-page-change/" title="フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-09-24</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/fade-page-change/"><img src="https://lh6.googleusercontent.com/-m-I7XTLjfJU/VCwgVmSzhiI/AAAAAAAAIBs/pz0Eb8Qb-dc/s144/fade.png"></a>
+          </div></p>
+          <p><p>ネットで見つけたプログラムの TIPS などはなるべく実践を心がけてるんですが、やはりブログ等に残しておかないとすぐに忘れてしまうなぁ と感じてる今日この頃です。そんな訳でなるべく細いネタでもちょくちょく投稿してこうかと思います。<br>
+          で、今回はページからページへ遷移する際、フェードイン／フェードアウトを使って「ふわっ」とページを切り替える方法について考えてみました。</p>
+          
+          <!--
+              <a href="/blog/fade-page-change/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/fit-sidebar-doc/" title="レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-09-23</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/fit-sidebar-doc/"><img src="https://lh3.googleusercontent.com/-DGHXosHmYYI/VCwk4Ms-qWI/AAAAAAAAICE/pEND4clz3ZI/s144/fit-sidebar.png"></a>
+          </div></p>
+          <p>久しぶりのプログラム関連のエントリーです。<br>
+          表題の「サイドメニューを一定範囲で固定表示」って意味通じますでしょうか？
+          画面スクロール時、サイドメニューが上部に流れきって消えてしまわないように途中から position:fixed で位置固定して、フッターにかぶる位置にきたら位置固定を解除するＵＩのことです。あの有名な <a href="http://liginc.co.jp/">LIG</a> さんや<a href="http://blog.livedoor.jp/dqnplus/">痛いニュース</a>でも採用されてるデザインです。<br>
+          このちょくちょく見かけるＵＩのかゆいとこを解消した jQuery プラグインを紹介します。</p>
+          
+          
+          <!--
+              <a href="/blog/fit-sidebar-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/making-fg-chopper/" title="挑戦！自作フィギュア　ワンピース・チョッパー編">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-09-15</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/making-fg-chopper/"><img src="https://lh6.googleusercontent.com/-2R4U2WQsW6k/VBcU0JtiieI/AAAAAAAAH3Y/3f-yuYdFEdA/s144/IMG_2142.png"></a>
+          </div></p>
+          <p>皆様、今年の夏はいかがお過ごしでしたでしょうか？<br>
+          うちでは夏といえば子供と一緒にプールに海にスケボーにと、プログラマーらしからぬ肌の色になるまで外で遊びつくすのが恒例ですが、今年は小３がママさんの怒りを買いまくりーので外出禁止でインナープレイに終始しました。<br>
+          そんなわけで、夏休み前から始めたチョッパー・フィギュアの製作活動にも精を出す結果となり、この度、無事完成させることができましたのでお披露目いたします。</p>
+          
+          
+          <!--
+              <a href="/blog/making-fg-chopper/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/sketch-akuma-cyoojin/" title="大人だけど全力で「７人の悪魔超人編」の絵を描いてみた">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-07-24</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/sketch-akuma-cyoojin/"><img src="https://lh4.googleusercontent.com/-n0Xo-Hr7k_E/U8_oLHQ0oAI/AAAAAAAAHks/JXurra1m9PY/s144/IMG_1977.png"></a>
+          </div></p>
+          <p>昨年の暮れ、ウォーズマン・フィギュアを作り始めた頃、子供にせがまれて「７人の悪魔超人編」の絵も同時並行で書き始めました。その後、フィギュア製作もお絵かきの方も途中であきてずーと放置状態だったわけですが、
+          二ヶ月程前に奮起してフィギュアを無事完成されることができました。絵の方も中途半端は子供の教育上良くないなーという事で、こちらの方も今回完成させてしまいました。</p>
+          
+          
+          <!--
+              <a href="/blog/sketch-akuma-cyoojin/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/making-fg-ramen-2/" title="挑戦！自作フィギュア　ラーメンマン編　その２">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-07-15</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/making-fg-ramen-2/"><img src="https://lh4.googleusercontent.com/-AwHRp5onhp4/U787t8SdnRI/AAAAAAAAHhk/nX8f34ORc1E/s144/IMG_1925.png"></a>
+          </div></p>
+          <p>フィギュア製作は作業場所が石膏粘土で汚れるので、きれい好きなママさんに見つかると激怒される恐れがあるので夜な夜なこっそり作っています。<br>
+          なので現物をお披露目できる相手はオーバーリアクションで褒めてくれる心優しい職場の方々だけな訳ですが、先日、珍しく飲み会を催すという話があり、そこでぜひ完成したラーメンマンをお披露目したく、急遽１～２時間程度で塗装まで仕上げましたので、こちらでもお披露目したいと思います。</p>
+          
+          
+          <!--
+              <a href="/blog/making-fg-ramen-2/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/making-fg-ramen-1/" title="挑戦！自作フィギュア　ラーメンマン編　その１">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-07-11</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/making-fg-ramen-1/"><img src="https://lh6.googleusercontent.com/-TReGP4MwypI/U71nvEqwFxI/AAAAAAAAHec/ztEMRVireLU/s144/IMG_1810.png"></a>
+          </div></p>
+          <p>前作のウォーズマンに引き続き二作品目となる自作フィギュアは、ラーメンマンです！<br>
+          当時の小学生のトラウマになった？という、脳みそグッサリやられて植物人間になってしまうウォーズマン戦のラーメンマンを意識して作ってみました。</p>
+          
+          
+          <!--
+              <a href="/blog/making-fg-ramen-1/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/fitbar-doc/" title="ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-06-24</li>
+          <!--
+                <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+              <a href="http://www.cyokodog.net/blog/fitbar-doc/"><img src="https://lh4.googleusercontent.com/-S-Pb_sbFBHE/U6mVBZqVshI/AAAAAAAAHag/fO2FtcbxDJE/s800/fitbar01.png"></a>
+            </div></p>
+          <p>管理者向け画面などで、画面下部にコマンドボタンを配置した際、画面に表示するデータ量が多いとコマンドボタンが画面の表示枠内に収まらず不便に・・・かと言って position:fixed で固定表示すると、データ量が少ない場合に不格好に見えてしまう・・・そんな経験は無いでしょうか？<br>
+          Fitbar は、ツールバーやナビゲーションメニューを画面のスクロール位置に応じ上部又は下部に固定表示させることができる jQuery プラグインです。
+          <a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
+          
+          
+          <!--
+              <a href="/blog/fitbar-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/picasa-zoom-doc/" title="Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-06-17</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/picasa-zoom-doc/"><img src="https://lh4.googleusercontent.com/-0rWakBaYnyQ/U6BgcOgjhNI/AAAAAAAAHYc/xjgKBBYWQkc/s144/picasa01.png"></a>
+          </div></p>
+          <p>皆さん、Google の写真共有サービス「Picasa」をご利用でしょうか？
+          2048×2048ピクセル以下の画像であれば容量が実質無制限であることもあり、自分の場合、ブログの掲載写真等に使用してます。<br>
+          Picasa Zoom は Picasa で管理された写真の拡大／縮小を簡単に行うことできる jQuery プラグインです。
+          <a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
+          
+          
+          <!--
+              <a href="/blog/picasa-zoom-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/making-fg-2/" title="挑戦！自作フィギュア　ウォーズマン編　その２">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-06-09</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/making-fg-2/"><img src="https://lh5.googleusercontent.com/-7cggVHG-i74/U5M05ee0DAI/AAAAAAAAHWA/iM3hb0gONVc/s144/IMG_1727.png"></a>
+          </div></p>
+          <p>前回、約半年かけて（そのほとんど放置期間でしたが）作り上げたウォーズマンの造形をお披露目しましたが、重い腰を上げやっと塗装に取り掛かりました。実質三日程度の作業でしたが、とりあえずそれなりに満足のいく出来栄えになったのでお披露目します。</p>
+          
+          
+          <!--
+              <a href="/blog/making-fg-2/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/dqy-excel/" title="システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-06-09</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/dqy-excel/"><img src="https://lh4.googleusercontent.com/-NWY5hQpoDgE/U5XTeyEDneI/AAAAAAAAHWs/hKeuK2cK8cg/s800/dqy01.png"></a>
+          </div></p>
+          <p>社内ＳＥなどという仕事をしていると「システムでいちいち条件指定してデータとるのメンドイから、エクセルにまとめてメールで送ってよ！」などと言われる事がちょくちょくあります（自分だけ？）。そんな時は dqy ファイルを使用し SQL の実行結果をエクセルに出力させてます。テキストファイルにＤＢ接続情報と SQL を書くだけで良いとってもお手軽＋おすすめ Tips をご紹介いたします。</p>
+          
+          
+          <!--
+              <a href="/blog/dqy-excel/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/update-easy-social-buttons-and-social-info/" title="Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-06-09</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/update-easy-social-buttons-and-social-info/"><img src="https://lh4.googleusercontent.com/-78sxYJCHLuc/VFirlgQhxZI/AAAAAAAAIRU/HCGz-uxajUE/s144/gplus.png"></a>
+          </div></p>
+          <p>ソーシャルボタンを表示する jQuery プラグイン <a href="http://www.cyokodog.net/blog/easy-social-buttons-doc/">Easy Social Buttons</a> と ソーシャル系サービスの共通 API を提供する <a href="http://www.cyokodog.net/blog/social-info-doc/">Social Info</a> で Google+ の共有数を表示、取得できるようにしました。<br>
+          サーバサイドのプログラムは不要です。</p>
+          
+          
+          <!--
+              <a href="/blog/update-easy-social-buttons-and-social-info/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/mailto-doc/" title="mailto:リンク機能を利用しやすくする jQuery プラグイン">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-06-05</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/mailto-doc/"><img src="https://lh5.googleusercontent.com/-_BxI3esidJ0/U5B0nRpf8LI/AAAAAAAAHRk/F2BLSkk5URI/s800/mailto02.png"></a>
+          </div></p>
+          <p>mailto:～ と記述されたリンク要素をクリックするとメールクライアントの作成フォームが起動されるのはご存知でしょうか？Web メールが主流な昨今あまり見かけなくなりましたが、宛先や本文を指定することでメールテンプレートとしも利用できるので、企業内システムなどで活用すると結構便利かと思います。<br>
+          Mailto は、そんな mailto リンク機能を利用しやすくする jQuery プラグインです。
+          <a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
+          
+          
+          <!--
+              <a href="/blog/mailto-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/ml-narisumasi-gmail-and-gas/" title="メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-05-28</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/ml-narisumasi-gmail-and-gas/"><img src="https://lh3.googleusercontent.com/-m_kTmYTel6Q/U4XU4fJEPJI/AAAAAAAAHPI/Q5ezti_QpjQ/s800/gas02.png"></a>
+          </div></p>
+          <p>携帯のメールアドレスで Google グループ（メーリングリスト）に参加したら、「なりすまし」と判定されメールが届いてこないといった経験はないでしょうか？<br>
+          携帯キャリアのセキュリティレベルの設定を変更することで大抵は解決できますが、メンバーが大勢いたり、ＩＴに詳しい人が少ない場合、この作業が結構面倒だったりします。<br>
+          今回、Gmail と Google Apps Script（GAS） を使用し、この問題を回避させる事ができたので手順をご紹介します。</p>
+          
+          
+          <!--
+              <a href="/blog/ml-narisumasi-gmail-and-gas/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/making-fg-1/" title="挑戦！自作フィギュア　ウォーズマン編　その１">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-05-25</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/making-fg-1/"><img src="https://lh5.googleusercontent.com/-CZriJwRIt-E/U4DAu4Wt8cI/AAAAAAAAHMM/-fjF8p6xEo4/s144/IMG_1596.png"></a>
+          </div></p>
+          <p>昨年の暮れぐらいから何故かキン肉マンにはまりだした我が家の小３男子、「<a href="http://www.cyokodog.net/blog/category/diary/find-fg/">フィギュア探しの旅</a>」でも目当てはキン肉マン関連ですが、旬でない作品を探すのは一苦労です。
+          実際、どれだけ種類があるのかとネットで検索してみると、なんと自作でしかもかなりのクオリティの「ザ・ニンジャ」のフィギュアを作ってる人を発見！<br>
+          しかも、材料は百円ショップで揃えられるものばかり・・・とくれば自分も試さないわけにはいきません！（笑）</p>
+          
+          <p>塗装はまだしてませんが、今回なんとかそれなりの形にすることができたウォーズマンをお披露目したいと思います！</p>
+          
+          
+          <!--
+              <a href="/blog/making-fg-1/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/find-fg-akiba-3/" title="第３回アキバ・フィギュア探しの旅">第３回アキバ・フィギュア探しの旅</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-05-18</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/find-fg-akiba-3/"><img src="https://lh4.googleusercontent.com/-lQqQpWSto48/U3jU1s59vxI/AAAAAAAAHHc/dyF9xNFLRYI/s144/IMG_1512.JPG"></a>
+          </div></p>
+          <p><p>ゴールデンウィーク、当初はディズニー行こうとか、登山行こうとかいろいろ言ってましたが、結局またまたアキバでのフィギュア探しになりました。
+          ママさんと小３男子のフィギュア熱はまだ冷めてないようです。
+          今回は二度目となる浅草で遊んで、徒歩で浅草→上野→秋葉原と移動しました。</p>
+          
+          <!--
+              <a href="/blog/find-fg-akiba-3/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/easy-social-buttons-doc/" title="はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-03-25</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/easy-social-buttons-doc/"><img src="https://lh4.googleusercontent.com/-5u9L0G8c97E/UzF4nVihc-I/AAAAAAAAGxE/nnRNuf12mq0/s800/esb_logo.png"></a>
+          </div></p>
+          <p><p>Easy Social Buttons は、はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルなデザインで表示することのできる jQuery プラグインです。各サービスが提供しているソーシャルボタンより動作が軽いので投稿記事一覧画面などで大量にボタンを表示したいような場合に向いています。<a href="http://www.cyokodog.net/blog/jquery-sitekit/">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。<br></p>
+          
+          <!--
+              <a href="/blog/easy-social-buttons-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/wordpress-openshift/" title="PaaS で動かす WordPress ＋ OpenShift 入門">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-03-05</li>
+          <!--
+                <li class="article__info__category"><a href="/category/cloud-service/" rel="category tag">Cloud Service</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+              <a href="http://www.cyokodog.net/blog/wordpress-openshift/"><img src="http://lh5.googleusercontent.com/-xT-Q8v44aN8/Uxddj3d-_uI/AAAAAAAAGrA/0_aGpQcTU18/s800/logo.png"></a>
+            </div></p>
+          <p><p>このブログは PaaS の AppFog のフリープランで動かしてるのですが、先日、<a href="http://blog.appfog.com/changes-to-appfog-free-plans/">フリープランのサービス縮小の通知</a>がありました。念のため WordPress が動く目ぼしいところが他にないか探したところ、OpenShift が 「無料、広告なし、独自ドメイン対応、Git でアップロード」といった感じで良さげでした。<br>
+          そんな訳で OpenShift で WordPress を使用する手順をまとめてみました。<br></p>
+          
+          <!--
+              <a href="/blog/wordpress-openshift/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/first-appengine-and-struts2/" title="Google App Engine for Java 入門 ＋ Struts2 デプロイ手順">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-03-02</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/first-appengine-and-struts2/"><img src="https://lh5.googleusercontent.com/-KfG7vrTqsYI/UxC14k0yjQI/AAAAAAAAGic/ACNmKX8e2mY/s800/logo.png"></a>
+          </div></p>
+          <p>
+          <a href="http://www.cyokodog.net/blog/first-struts2/">前回のエントリ</a>で作成した Struts2 のサンプルプログラムのデモを <a href="https://www.openshift.com/">Openshift</a>、<a href="https://www.appfog.com/">AppFog</a>、<a href="https://www.heroku.com/">Heroku</a> といった Java の動く PaaS で公開できないかなぁとちょっと調べてみたのですが、Eclipse で開発したらその場でポンっとデプロイできる Google App Engine が一番手軽でいいんじゃないか・・・と言うことで<a href="http://d.hatena.ne.jp/cyokodog/20090716/GAE01">約４年ぶりに</a> Google App Engine をさわってみました。<br>
+          そんな訳で Google App Engine for Java の導入手順と合わせ、Struts2 のデプロイ手順もまとめてみました。</p>
+          
+          
+          <!--
+              <a href="/blog/first-appengine-and-struts2/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/first-struts2/" title="2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-02-25</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/first-struts2/"><img src="https://lh4.googleusercontent.com/-BnnEKWjX7fs/Uwy2kZ5u0bI/AAAAAAAAGbA/qolL5I6b9cs/s800/logo.png"></a>
+          </div></p>
+          <p>オラクル管理下になって以降めっきり話題が減った感のある Java ですが、最近、隣の席の新人 SE さんが研修で Struts2 ベースの Web アプリを構築をしてるようで、時々質問を受けたりします。Java と言えば Struts に次ぐ定番フレームワークが長らく待望されてましたが、結局どうなったのでしょう？<br>
+          Struts の冠のある Struts2 がネーミング的には有利な気もするので便乗して勉強してみることにしました。</p>
+          
+          
+          <!--
+              <a href="/blog/first-struts2/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/social-info-doc/" title="はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-02-06</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/social-info-doc/"><img src="https://lh6.googleusercontent.com/-rBKRoHhg4Wo/UvOxm22z_3I/AAAAAAAAGUA/Ni6p1Vq3qsE/s800/logo.png"></a>
+          </div></p>
+          <p><p>Social Info は、はてなブックマーク数や Twitter のつぶやき数などを取得するソーシャル系サービスの API を簡単に利用できるようにする jQuery プラグインです。独自デザインのソーシャルボタンなどを自作する際に利用すると便利かと思います。
+          <a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
+          
+          <!--
+              <a href="/blog/social-info-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/easy-feed-doc/" title="Google Feed API を手軽に利用できるようにする jQuery プラグイン">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-01-28</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/easy-feed-doc/"><img src="https://lh4.googleusercontent.com/-nw7v3toLSeE/UuffsRSXxHI/AAAAAAAAGFk/gTaAzkUJpSc/s144/FireShot%2520Screen%2520Capture%2520%2523023%2520-%2520%2527Easy%2520Editor%2527%2520-%2520cyokodog_github_io_easy-editor.png"></a>
+          </div></p>
+          <p><p>Easy Feed は、外部ドメインの RSS フィードの読み込みを可能にする Google Feed API を手軽に利用できるようにする jQuery プラグインです。
+          <a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
+          
+          <!--
+              <a href="/blog/easy-feed-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/find-fg-akiba-2/" title="第２回アキバ・フィギュア探しの旅">第２回アキバ・フィギュア探しの旅</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2014-01-04</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/find-fg-akiba-2/"><img src="https://lh6.googleusercontent.com/-3Y4zhJfb9E8/U2kLOBzU7eI/AAAAAAAAHAg/eIoHwDdO3s4/s144/IMG_1367.JPG"></a>
+          </div></p>
+          <p>年末に行ったばかりなのに、正月連休にも行ってしまった第二回アキバ・フィギュア探しの旅。<br>
+          やはり今回もママさんの鶴の一声で行くことになりました。前回、目をつけてたがっちゃんフィギュアを目の前でもってかれたのが悔しかったのと、やること無くて暇だったのが主たる動機のようです。</p>
+          
+          
+          <!--
+              <a href="/blog/find-fg-akiba-2/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/sketch-kinnikuman/" title="大人だけど全力でキン肉マンの絵を描いてみた">大人だけど全力でキン肉マンの絵を描いてみた</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-12-17</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/sketch-kinnikuman/"><img src="https://lh3.googleusercontent.com/-cnGyCyfIw64/UzGdag8rR-I/AAAAAAAAGxo/HZPRImRZxBQ/s800/kin.png"></a>
+          </div></p>
+          <p>うちには小２の男子が１名いるのですが「誕生日プレゼントなに欲しい？」って聞いたら「キン肉マンの絵」と返ってきました(笑)<br>
+          家での遊びは、けん玉、コマ、お絵かき、読む漫画は、北斗の拳、Ｄｒスランプ、キン肉マン・・というある意味「昔ながら」な彼らしい回答です。</p>
+          
+          <p><p>そんなわけで、会社の休憩時間と睡眠時間を削って全力でキン肉マンの絵を書いてみました。</p>
+          
+          <!--
+              <a href="/blog/sketch-kinnikuman/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/hash-contents-doc/" title="location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-12-08</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/hash-contents-doc/"><img src="http://lh5.googleusercontent.com/-4fAVaNDKYCk/UynJZec-d7I/AAAAAAAAGvM/DddMo96qKIY/s800/hashcontents.png"></a>
+          </div></p>
+          <p>Hash Contents は タブ、アコーディオン、ツリービュー、TOC 形式等で location.hash の変化に応じ表示コンテンツを切り替えることのできる jQuery プラグインです。</p>
+          
+          
+          <!--
+              <a href="/blog/hash-contents-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/keep-position-doc/" title="ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-12-03</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/keep-position-doc/"><img src="http://lh4.googleusercontent.com/-50bIMVbVevE/UzGqqca57pI/AAAAAAAAGyo/hkZhYtT-7kw/s800/keep.png"></a>
+          </div></p>
+          <p>Keep Position は、ページのスクロール位置を維持したまま、フォーム送信処理やページ切替処理をできるようにする jQuery プラグインです。Ajax なんかでかっつり作り込んでらんないなぁって時に使うと便利です。
+          </p>
+          
+          
+          <!--
+              <a href="/blog/keep-position-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/find-fg-akiba-1/" title="第１回アキバ・フィギュア探しの旅">第１回アキバ・フィギュア探しの旅</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-12-02</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/find-fg-akiba-1/"><img src="https://lh4.googleusercontent.com/-dlSUHA6oqVo/U2Ju-QFIbBI/AAAAAAAAG8Q/X-WvyFMimIY/s144/IMG_1226.JPG"></a>
+          </div></p>
+          <p>ちょっと前のママさんの誕生日、「なにが欲しー？」と聞くと即答で</p>
+          
+          <p>「ガっちゃんのフィギュア！」</p>
+          
+          <p>と返ってきました・・・</p>
+          
+          <p>さっそくネット通販で調べたけどどこも品薄、いろいろ調べて楽天で見つけてなんとか注文。送料やら手数料やらで 500 円ちょいのおもちゃが 2000 円以上もかかってしまいました・・・</p>
+          
+          
+          <!--
+              <a href="/blog/find-fg-akiba-1/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/keyinfo-doc/" title="入力キーの種類を調べることができる jQuery プラグイン">入力キーの種類を調べることができる jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-11-25</li>
+          <!--
+                <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><p>Keyinfo は、入力キーの種類を調べることができる jQuery プラグインです。
+          <a href="/web/20150911211412/https://github.com/cyokodog/jquery.utility-kit">jQuery Utility Kit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
+          
+          <!--
+              <a href="/blog/keyinfo-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/parse-url-doc/" title="URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-11-05</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              
+          <!--
+              <a href="/blog/parse-url-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/ex-scroll-doc/" title="スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-10-31</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+              <a href="http://www.cyokodog.net/blog/ex-scroll-doc/"><img src="https://lh6.googleusercontent.com/-TmqRzfcArtg/UnKBF3_o13I/AAAAAAAAFcM/wm-IZk_JXJc/s144/logo.png"></a>
+          </div></p>
+          <p>Ex Scroll は、スクロールイベントの開始／終了のタイミング、スクロール方向を判別することのできる jQuery プラグインです。<a href="http://d.hatena.ne.jp/cyokodog/20090928/jqueryexscrollevent01">2009 年頃に書いたプログラム</a>ですが、ちょくちょく需要があるようなのでソースの見直しも兼ね GitHub で管理するようにしました。リポジトリは jquery.utility-kit とし軽量の utility 系のプラグインはこちらで管理し追加してく予定です。
+          </p>
+          
+          
+          <!--
+              <a href="/blog/ex-scroll-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/ex-code-prettify-doc/" title="その場で編集／実行できるシンタックスハイライター jQuery プラグイン">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-09-23</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/ex-code-prettify-doc/"><img src="https://lh4.googleusercontent.com/-3exvGUhfP0A/UkBVHV--XgI/AAAAAAAAFZs/iqBAvKfjyLc/s800/logo.png"></a>
+          </div></p>
+          <p>Ex Code Prettify は、Google Code Prettify をベースとしたシンタックスハイライトを行う jQuery プラグインです。ソースコードの編集／実行をその場で行う機能や、外部 CSS / JS ファイルの動的インポート機能等を使用して、<a href="http://jsdo.it/">jsdo.it</a> や <a href="http://jsfiddle.net/">jsFiddle</a> のようなライブデモ機能を自サイトに実装することができます。</p>
+          
+          
+          <!--
+              <a href="/blog/ex-code-prettify-doc/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/garamodel02/" title="ガラクタで重厚感のあるおもちゃを作ってみた ～その２～">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-09-07</li>
+          <!--
+                <li class="article__info__category"><a href="/category/life/" rel="category tag">Life</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="/web/20150912020149/http://www.cyokodog.net/blog/garamodel02/"><img src="https://lh4.googleusercontent.com/-3HUHFKtVTJg/UiS-v1EwonI/AAAAAAAAFO0/dTC6vZTRXUA/s144/IMG_0991.JPG"></a>
+          </div></p>
+          <p>
+          皆さん、今年の夏はいかがおすごしでしたでしょうか。<br>
+          うちは子供を中心にプール、クワガタ探し、スケボーと例年通りの変わり映えない夏でした。ただ唯一いつもと違ったのは、<a href="/web/20150912020149/http://www.cyokodog.net/blog/garamodel/">前回のエントリー</a>でも書いたガラクタ（というか日常ゴミ）によるおもちゃ作りに家族全員が精を出してたという事です。
+          という訳でその後、置き場所も考えず、調子にのってさらに作りこんでしまった作品郡も載せときますのでよろしかったら見てやってください。</p>
+          
+          
+          <!--
+              <a href="/blog/garamodel02/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/garamodel/" title="ガラクタで重厚感のあるおもちゃを作ってみた">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-09-04</li>
+          <!--
+                <li class="article__info__category"><a href="/category/life/" rel="category tag">Life</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/garamodel/"><img src="https://lh3.googleusercontent.com/-skerYXxvj34/UhiPfLvWPHI/AAAAAAAAFCA/8elO-eWTvUw/s144/IMG_0897.JPG"></a>
+          </div></p>
+          <p>
+          ガラクティストこと <strong><a href="http://mo-3.no-blog.jp/hitoligoto">ゴトー孟(もう)</a></strong> さんをご存じでしょうか？<br>
+          ペットボトルや空き箱などの日常生活で出るがらくたを使って、ハイクオリティなおもちゃを作ってしまうすごい方なのですが、先日、子供の自由研究のネタ探しに訪れた横浜こども宇宙科学館でその作品を初めて見ました。とてもガラクタでできてるとは思えない重厚感、完成度に衝撃を受けました。<br>
+          そんな訳で夏休みの時間を利用し、我が家でも作ってみました。
+          </p>
+          
+          
+          <!--
+              <a href="/blog/garamodel/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/bootstrap-datetimepicker-ja/" title="Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-08-14</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p>Bootstrap が普及して以降、Bootstrap のデザインを基調とした jQuery プラグインをちらほら見かけるようになりました。
+          日付／時刻ピッカーの「Bootstrap Datetime Picker」もそんなプラグインの１つですが、今、仕事で開発してる Web アプリに使ってみたところ、いろいろとかゆいところがあったので、使いやすくなるようカスタマイズしてみました。
+          </p>
+          
+          
+          <!--
+              <a href="/blog/bootstrap-datetimepicker-ja/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/jquery-hash-contents/" title="location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-08-12</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><p>location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみました。大した処理じゃありませんが、jQuery プラグインのデモページとか作る際、複数パターンのデモがある時など毎回記述するのが面倒なのでプラグイン化してみました。ついでに location.hash のリンクリストも生成するようにしてます。</p>
+          
+          <!--
+              <a href="/blog/jquery-hash-contents/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/jquery-keep-position/" title="フォームデータ登録後もページスクロール位置を維持する方法を考えてみた">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-07-31</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><p>Web アプリケーションにおいて、入力項目が一画面に収まらないような入力フォームの場合、入力値の一時保存ボタンが必須になるかと思いますが、通常の作りだと保存処理後、ページスクロール位置が先頭に戻ってしまうのが悩みどころです。Ajax で実装すれば解決もできますが、もっと手軽に解決できる方法がないか考えてみました。</p>
+          
+          <!--
+              <a href="/blog/jquery-keep-position/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/jquery-sitekit/" title="Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-07-03</li>
+          <!--
+                <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><p>なにか近頃なにもやる気が起きずブログも更新してませんでしたが、ぼちぼちはじめようかなと思います。だいぶ前に作った jQuery プラグインの紹介です。大したものじゃありませんが、よかったら使ってみてください。<br></p>
+          
+          <!--
+              <a href="/blog/jquery-sitekit/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/jquery-ex-code-prettify/" title="Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-04-24</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/jquery-ex-code-prettify/"><img src="https://lh3.googleusercontent.com/-S8E_6ZNFV3c/UYvJglphAHI/AAAAAAAAEto/gPciSHCQlbE/s800/72846.jpg"></a>
+          </div></p>
+          <p><style>
+          .info{
+              margin:0 32px 32px 0;
+              padding:16px;
+              max-width:768px;
+              font-size:12px;
+              color:#ff5577;
+              background-color:#ffffdd;
+              clear:both;
+          }
+          </style></p>
+          
+          <p>ソースコードをかっこよく表示してくれる JavaScript ライブラリ「<a href="http://code.google.com/p/google-code-prettify/">Google Code Prettify</a>」。巷では高機能な「<a href="http://code.google.com/p/syntaxhighlighter/">SyntaxHighlighter</a>」におされ気味ではありますが、シンプル仕様で見た目もかっこよくて好みです。今回はちょっと手を加えて使い勝手の方を少し改善してみました。</p>
+          
+          
+          <!--
+              <a href="/blog/jquery-ex-code-prettify/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/wordpress-markdown-behave_js/" title="WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-04-17</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/wordpress-markdown-behave_js/"><img src="https://lh4.googleusercontent.com/-tFW4KWTtUjw/UW7IEi4_RzI/AAAAAAAAEmc/hJHHxsrQbQA/s800/6688631913_77c4bc065f_z.jpg"></a>
+          </div></p>
+          <p>みなさん WordPress の投稿記事はどういう形式で入力されてますか？自分の場合、快適に Markdown 記法を使いたくてブログを転々としてることもあり、「Markdown on Save Improved」というプラグインを使い Markdown で入力してます。今回、さらなる快適編集環境を求め「Behave.js」という JavaScript ライブラリを導入してみました。</p>
+          
+          
+          <!--
+              <a href="/blog/wordpress-markdown-behave_js/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/gmail-client/" title="Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-04-11</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/gmail-client/"><img src="https://lh4.googleusercontent.com/-vEX_c57CvZA/UWbVT2pS_OI/AAAAAAAAEfk/dkPiwE2kT64/s800/.jpg"></a>
+          </div></p>
+          <p>IT リテラシーがまるっきり無かった 10 年以上前、うかつにも会社のメールアドレスをまぐまぐに登録して以来、スパムメールがよく飛んでくるようになりましたｗ そんな場合、強力なスパムフィルターのある Gmail をメールクライアントとして使用することで、問題を解決することができます。<br>
+          備忘録も兼ねて手順をまとめときますので、スパムメールに苦しむ同僚がいたら教えてあげてください。</p>
+          
+          
+          <!--
+              <a href="/blog/gmail-client/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/wordpress-my-setting-plugin-social/" title="WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-03-31</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/wordpress-my-setting-plugin-social/"><img src="http://lh4.googleusercontent.com/-HLqTP3AQj-E/VFjuNubJo9I/AAAAAAAAIS0/M-Nhycbe--I/s144/mysetting.png"></a>
+          </div></p>
+          <p><a href="http://www.cyokodog.net/blog/wordpress-my-setting-plugin/">前回のエントリ</a>で公開した 「WordPress のこまごました設定をまとめてできるプラグイン」に、ソーシャルボタン設置機能、他を追加しました。ソーシャルボタンは結構簡単にできるかなと思ってたんですが、個々のボタンを等間隔に揃えたりとか見た目を調整するのって面倒なんですね・・・疲れました。</p>
+          
+          
+          <!--
+              <a href="/blog/wordpress-my-setting-plugin-social/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/wordpress-my-setting-plugin/" title="こまごました設定をまとめてできる WordPress プラグイン">こまごました設定をまとめてできる WordPress プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-03-25</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/wordpress-my-setting-plugin/"><img src="http://lh4.googleusercontent.com/-HLqTP3AQj-E/VFjuNubJo9I/AAAAAAAAIS0/M-Nhycbe--I/s144/mysetting.png"></a>
+          </div></p>
+          <p>ブログを WordPress にしたので折角なのでテーマもオリジナルなものを作ってみました。CSS3 も角丸ぐらいしか使ってないシンプルなものですが、少しづつ拡張してこうかなと思ってます。また変えるかもしれないので<a href="http://web.archive.org/liveweb/http://www.cyokodog.net/blog/jquery19-browser/">一応魚拓しておきます</a>。（ソースはリファクタリングしてないんで見ないでほしいですｗ）</p>
+          
+          
+          <!--
+              <a href="/blog/wordpress-my-setting-plugin/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/extablefilter/" title="汎用性重視のテーブルフィルタリング系 jQuery プラグイン">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-03-06</li>
+          <!--
+                <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/extablefilter/"><img src="http://lh6.googleusercontent.com/-nDflK8r6694/VGPTmW8pBDI/AAAAAAAAIT8/1Wld1mWJRZU/s144/filter.png"></a>
+          </div></p>
+          <p>
+          汎用性を重視したテーブルフィルタリング系の jQuery プラグインです。<br>
+          実装の基本思想は以前書いた「<a href="http://www.cyokodog.net/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>」に基づいてます。</p>
+          
+          
+          <!--
+              <a href="/blog/extablefilter/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/jquery19-browser/" title="jQuery 1.9 で $.browser が使えなくなってしまった対策">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-02-27</li>
+          <!--
+                <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/jquery19-browser/"><img src="https://lh5.googleusercontent.com/-vI1tcYWBmwk/UU8O8432nwI/AAAAAAAAERY/xRSHIeSiOkQ/s800/jquery1-9.jpg"></a>
+          </div></p>
+          <p>
+          jQuery 1.9 になってとうとう $.browser が使えなくなってしまいましたね。
+          もともと非推奨ということもあり、個人的にはプラグインを実装する時などは極力使用しないようにしてましたが、実際使えなくなってしまうと、動かなくなってしまうプラグインって結構多いんじゃないかなぁって気がします。</p>
+          
+          
+          <!--
+              <a href="/blog/jquery19-browser/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/first-post/" title="引っ越してきました">引っ越してきました</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-02-25</li>
+          <!--
+                <li class="article__info__category"><a href="/category/info/" rel="category tag">Information</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/first-post/"><img src="http://lh3.googleusercontent.com/-LXtjcV5sLig/VFio5IZKUkI/AAAAAAAAIQ0/6eKjogWRBv4/s144/cyokodog.png"></a>
+          </div></p>
+          <p>
+          こんにちは cyokodog（ちょこドッグ）です。</p>
+          
+          <p>ちょこドッグなら <strong>cho</strong>kodog だろとよく言われますが、<strong>cyo</strong>kodog 派（少数派）ですのでよろしくお願いします。
+          （サイコドッグと思われてたこともありますｗ）</p>
+          
+          
+          <!--
+              <a href="/blog/first-post/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
+                <a href="/blog/jquery-simple-table-filter/" title="jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2013-02-25</li>
+          <!--
+                <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p><div class="article__eyecatch">
+            <a href="http://www.cyokodog.net/blog/jquery-simple-table-filter/"><img src="http://lh6.googleusercontent.com/-nDflK8r6694/VGPTmW8pBDI/AAAAAAAAIT8/1Wld1mWJRZU/s144/filter.png"></a>
+          </div></p>
+          <p>ちょっと業務で必要になったので、jQuery によるテーブルフィルタリング処理の実装を考えてみます。<br>
+          まずはなるべくシンプルで、フィルタ条件の入力フィールドとかもプラグインが勝手に生成するんじゃなくて、利用者側が準備する仕様にしたいと思います。</p>
+          
+          
+          <!--
+              <a href="/blog/jquery-simple-table-filter/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+
+        
+
+      </article>
+    </div>
+
+
+    <div class="l-page-nav">
+      <div class="l-page-nav__body">
+    
+    <!--
+        <div class="wp-widget">
+          <div class="wp-widget__header">OTHER BLOG</div>
+          <div class="menu-other-blog-container">
+            <ul id="menu-other-blog" class="menu">
+              <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+              <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+              <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+            </ul>
+          </div>
+        </div>
+    
+        <div class="wp-widget">
+          <div class="wp-widget__header">Category</div>
+          <ul>
+            <li><a href="/category/backbone-js/">Backbone.js</a></li>
+            <li><a href="/category/angular/">Angular</a></li>
+            <li><a href="/category/jquery/">jQuery</a></li>
+            <li><a href="/category/info/">Information</a></li>
+            <li><a href="/category/life/">Life</a></li>
+            <li><a href="/category/javascript/">JavaScript</a></li>
+            <li><a href="/category/wordpress/">WordPress</a></li>
+            <li><a href="/category/cloud-service/">Cloud Service</a></li>
+          </ul>
+        </div>
+    
+        <div class="wp-widget">
+          <div class="wp-widget__header">Recent Posts</div>
+          <ul>
+            <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+            <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+            <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+            <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+            <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+            <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+            <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+            <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+            <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+            <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+            <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+            <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+            <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+            <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+            <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+            <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+            <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+            <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+            <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+            <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+            <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+            <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+            <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+            <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+            <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+            <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+            <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+            <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+            <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+            <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+            <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+            <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+            <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+            <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+            <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+            <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+            <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+            <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+            <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+            <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+            <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+            <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+            <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+            <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+            <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+            <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+            <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+            <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+            <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+            <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+            <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+            <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+            <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+            <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+            <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+            <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+            <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+            <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+            <li><a href="/blog/first-post/">引っ越してきました</a></li>
+            <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          </ul>
+        </div>
+    -->
+      </div><!-- l-page-nav -->
+    </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+<!--
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+-->
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/__theme/cyokodog/index.js'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

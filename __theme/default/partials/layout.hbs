@@ -1,0 +1,49 @@
+<!doctype html>
+<html class="no-js" lang="ja">
+<head>
+
+<!-- <link rel="stylesheet" href="/styles/highlight.css">
+ -->
+ <link rel="stylesheet" href="/modules/jquery.ex-code-prettify/jquery.ex-code-prettify.css">
+
+<script src="/modules/angular.min.js"></script>
+<script src="/modules/jquery.min.js"></script>
+<script src="/modules/jquery.easy-code-prettify/jquery.easy-code-prettify.js"></script>
+<script src="/modules/jquery.ex-code-prettify/jquery.ex-code-prettify.js"></script>
+<script src="/modules/jquery.ex-code-prettify/google-code-prettify/prettify.js"></script>
+</head>
+<body>
+default
+<div>
+<a href="/">HOME</a>
+</div>
+
+{{#block "body"}}
+{{/block}}
+
+
+<div>
+  <h5>CATEGORY</h5>
+  <ul>
+  {{#each categoryList}}
+    <li><a href="{{this.url}}">{{this.title}}</a></li>
+  {{/each}}
+  </ul>
+</div>
+
+<div>
+  <h5>RECENT POST</h5>
+  <ul>
+  {{#each articleList.__blog__}}
+    <li><a href="{{this.url}}">{{this.title}}</a></li>
+  {{/each}}
+  </ul>
+</div>
+
+<script>
+//$('pre').exCodePrettify();
+$('body').easyCodePrettify()
+</script
+
+</body>
+</html>

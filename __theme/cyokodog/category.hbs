@@ -1,0 +1,29 @@
+{{#extend "layout"}}
+
+{{#content "body"}}
+
+    <div class="l-article">
+      <article class="article">
+
+{{#each category.articles}}
+{{> articleList}}
+{{/each}}
+
+      </article>
+    </div>
+
+
+
+{{/content}}
+
+{{#content "pageNav"}}
+
+
+  {{> pageNav}}
+
+{{/content}}
+
+
+
+
+{{/extend}}
