@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>Angular2で簡単なブログアプリを作ってみる | CYOKODOG</title>
+	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+  <link href='/theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' href='/theme/cyokodog/css/app.min.css?a' type='text/css' media='all' />
+  <link rel='stylesheet' id='style-css'  href='/theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>JS DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/angular2/" title="Angular2で簡単なブログアプリを作ってみる">Angular2で簡単なブログアプリを作ってみる</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2016-05-16</li>
+<!--
+        <li class="article__info__category"><a href="/category/angular/" rel="category tag">Angular</a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/angular2/"><img src="http://lh3.googleusercontent.com/-VEr_HZRxr1g/VztQ2rQ0AfI/AAAAAAAAJxY/AL1L89g3_wkfNjaFc-EeeNd7_Da6ErwwQCCo/s144/angular2.png"></a>
+</div>
+
+<p>このブログを運用してたクラウドサービスが吸収合併？かなんかした影響ですべての記事がクラウド上のMySQLに永眠することになってしまい、
+あちらこちらでキャッシュをひろっては、作りかけだった静的サイトジェネレータでホスト先を移行したりとせわしなくしていた今日このごろです。
+そんなわけで「Angular2やるぞ！」と１ヶ月ほど前に書いたAngular2のコードも確実に忘れそうだったのと明日の勉強会に備え、備忘録も兼ねて記事にしとこうと思います。</p>
+
+<!--more-->
+<h2 id="-">ブログアプリを作ってみる</h2>
+<p><a href="https://angular.io/docs/ts/latest/tutorial/">公式のチュートリアル</a>、結構分かりやすいんですがDecorators構文だとかいわゆるESnextな記述がでてくるんで、単純に写経してもすぐに忘れる自信があったので若干公式サンプルをいじって、ブログアプリ的なものを作ってみました。
+Angular2のバージョンは（これを書いた当時最新の）beta.13です。</p>
+<p><img src="https://lh3.googleusercontent.com/--nS-kGUjeMM/VztFpNgM6WI/AAAAAAAAJv0/SutoeXeY5tsI3E3GAu0VDqW4Q3ITDx7owCCo/s640/angular2blog.gif" alt="angular2_blog"></p>
+<p>公式のデモだとデータがモックだったりするんですが、ここではHttpコンポーネントを使って記事データを読み込んだり、データの内容がマークアップなのでエスケープせず展開したりと微妙にプラスαな記述になってます。が、基本的にやってることは公式のデモとそんなに変わりません。</p>
+<p>次のような構成になってます。</p>
+<pre><code>root
+  │ index.html
+  │ style.css
+  │ package.json
+  │ tsconfig.json
+  │ typings.json
+  │ 
+  ├─app
+  │   // アプリの起動
+  │   main.ts
+  │ 
+  │   // 画面系
+  │   app.component.ts
+  │   blog.component.ts
+  │   article.component.ts
+  │ 
+  │   // 画面パーツ
+  │   articlelist.component.ts
+  │ 
+  │   // データ取得サービス
+  │   article.service.ts
+  │ 
+  │   // データ管理クラス
+  │   article.ts
+  │   article.info.ts
+  │ 
+  └─data
+      └─articles
+          // 記事リストを管理
+          index.json
+
+          // 記事
+          introduction.html
+          architecture.html
+</code></pre><p>ソースはGitHubにありますのでpackage.json等の設定ファイルは以下から見れます。npm install と npm start でローカルで動かすことができます。</p>
+<ul>
+<li><a href="https://github.com/cyokodog/angular2_study/tree/master/blog">angular2_study/blog at master · cyokodog/angular2_study</a></li>
+</ul>
+<p>以降、簡単な注釈とともにコードをぺたぺた貼っていきます。</p>
+<h2 id="-html-index-html">ベースHTML｜index.html</h2>
+<p>ベースとなるHTMLです。SPAなので使用するHTMLはこれ１つです。</p>
+<pre><code>&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;base href=&quot;/&quot;/&gt;
+    &lt;title&gt;Angular2 BLOG&lt;/title&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;styles.css&quot;&gt;
+
+    &lt;!-- 1. Load libraries --&gt;
+    &lt;!-- IE required polyfills, in this exact order --&gt;
+    &lt;script src=&quot;node_modules/es6-shim/es6-shim.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;node_modules/systemjs/dist/system-polyfills.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;node_modules/angular2/es6/dev/src/testing/shims_for_IE.js&quot;&gt;&lt;/script&gt;
+
+    &lt;script src=&quot;node_modules/angular2/bundles/angular2-polyfills.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;node_modules/systemjs/dist/system.src.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;node_modules/rxjs/bundles/Rx.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;node_modules/angular2/bundles/angular2.dev.js&quot;&gt;&lt;/script&gt;
+
+    &lt;!-- router, http を追加 --&gt;
+    &lt;script src=&quot;node_modules/angular2/bundles/router.dev.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;node_modules/angular2/bundles/http.dev.js&quot;&gt;&lt;/script&gt;
+
+    &lt;!-- 2. Configure SystemJS --&gt;
+    &lt;script&gt;
+      System.config({
+        packages: {
+          app: {
+            format: &#39;register&#39;,
+            defaultExtension: &#39;js&#39;
+          }
+        }
+      });
+      System.import(&#39;app/main&#39;).then(null, console.error.bind(console));
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;my-app&gt;Loading...&lt;/my-app&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>まず、SystemJSによる遅延ローディング（必要なコンポーネントのみを都度読み込む）を使って、mainモジュールを読み込みます。
+公式ではSystemJSを使ってますが、動的ローディングが必要なければ、使い慣れたBrowserifyやWebpackで事前に結合してもOKです。ググると参考になりそうなコードが見つかります。</p>
+<ul>
+<li><a href="https://github.com/kanatapple/angular2-webpack-quick-start">kanatapple/angular2-webpack-quick-start</a></li>
+<li><a href="https://github.com/nishio-dens/angular2-minimum-starter">nishio-dens/angular2-minimum-starter: Angular2 2.0.0-beta.0 minimum starter</a></li>
+<li><a href="https://github.com/shumpei/angular2-webpack-starter-minimum">shumpei/angular2-webpack-starter-minimum</a></li>
+</ul>
+<p>ちなみにSystemJSだけでも開発中だけはビルドなしの動的ローディングを適用し、リリース時には全ファイルまとめてビルドするっといったこともできるそうです。</p>
+<p>bodyタグ内に記述してるmy-appタグがAngularJSでいうところのディレクティブみたいなもので、Angular2ではコンポーネントと呼び画面のテンプレートやパーツはコンポーネント単位で管理します。</p>
+<h2 id="-main-ts">アプリケーションの実行｜main.ts</h2>
+<p>先ほどSystemJSで読み込んでたmainモジュールです。</p>
+<pre><code>import {bootstrap}    from &#39;angular2/platform/browser&#39;;
+import {AppComponent} from &#39;./app.component&#39;;
+import {HTTP_PROVIDERS} from &#39;angular2/http&#39;;
+
+bootstrap(AppComponent, [HTTP_PROVIDERS]);
+</code></pre><p>ES.nextなimport文で必要なモジュールを読み込んでいます。
+bootstrap関数の第一引数には、このアプリのエントリーポイントとなるコンポーネントを指定します。第二引数ではこのアプリ全体で使用するプロバイダを指定しておくと、呼び出し先の子、孫モジュールで、そのプロバイダの利用宣言（@Componentよるprovidersの定義）を省略できます。</p>
+<h2 id="-app-component-ts">アプリケーションの構成管理｜app.component.ts</h2>
+<p>bootstrapの第一引数に指定されたAppComponentの実装です。</p>
+<pre><code>import { Component, OnInit } from &#39;angular2/core&#39;;
+import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from &#39;angular2/router&#39;;
+import { HomeComponent } from &#39;./home.component&#39;;
+import { BlogComponent } from &#39;./blog.component&#39;;
+import { ArticleComponent } from &#39;./article.component&#39;;
+import { ArticleService } from &#39;./article.service&#39;;
+import { Articlelist } from &#39;./articlelist.component&#39;;
+
+@Component({
+  selector: &#39;my-app&#39;,
+  template: `
+    &lt;nav class=&quot;globalNav&quot;&gt;
+      &lt;!--
+        ここに@RouteConfigで設定したnameを指定する
+        routerLinkを書くには directives:[ROUTER_DIRECTIVES] の定義が必要
+      --&gt;
+      &lt;a [routerLink]=&quot;[&#39;Home&#39;]&quot;&gt;HOME&lt;/a&gt;
+      &lt;a [routerLink]=&quot;[&#39;Blog&#39;]&quot;&gt;ARTICLES&lt;/a&gt;
+    &lt;/nav&gt;
+    &lt;!-- ここに@RouteConfigで設定したテンプレートが表示される --&gt;
+    &lt;div class=&quot;main&quot;&gt;
+      &lt;router-outlet&gt;&lt;/router-outlet&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;footer&quot;&gt;
+      &lt;h3&gt;ARTICLES&lt;/h3&gt;
+      &lt;my-articlelist&gt;&lt;/my-articlelist&gt;
+    &lt;/div&gt;
+  `,
+  styles:[`
+  `],
+  directives: [
+    ROUTER_DIRECTIVES,
+    Articlelist
+  ],
+  providers: [
+    ROUTER_PROVIDERS,
+    ArticleService
+  ]
+})
+
+@RouteConfig([
+  {
+    path: &#39;/&#39;,
+    name: &#39;Home&#39;,
+    component: HomeComponent,
+    useAsDefault: true
+  },
+  {
+    path: &#39;/blog&#39;,
+    name: &#39;Blog&#39;,
+    component: BlogComponent,
+  },
+  {
+    path: &#39;/blog/:id&#39;,
+    name: &#39;Article&#39;,
+    component: ArticleComponent,
+  },
+])
+
+export class AppComponent  implements OnInit {
+
+  ngOnInit() {
+  }
+
+}
+</code></pre><p>ここでは主に、画面全体のレイアウトとパーツの埋め込み、ルータ（画面遷移）の定義をしています。</p>
+<p>ざっと見ると@から始まるDecorators構文（Javaで言うところのアノテーション）と、class定義の二部構成になってるのが分かります。Angular2では属性設定をDecoratorsに、実装はclassにと分けて定義することで視認性の高いコードを書くことができます。</p>
+<h3 id="-component-">@Componentデコレータ</h3>
+<p>@Componentのselector属性では、index.htmlで記述してたmy-appカスタムタグ名を宣言しています。つまりこのapp.componentモジュールがmy-appの実装ということになります。selector属性の値は必ずしもカスタムタグである必要はなく、例えばbodyと記述すればbody要素内にテンプレートが展開されることになります。</p>
+<p>directives属性には、このコンポーネントにて利用するカスタムタグを管理するコンポーネントを指定します。具体的には、template属性にて記述されてるrouterLinkやrouter-outletタグを使用するためにROUTER_PROVIDERSコンポーネントを、my-articlelistタグを使用するためにArticlelistコンポーネントをdirectives属性に指定しています。
+ちなみにmy-articlelistタグではフッター部分の記事一覧を表示してます。</p>
+<p>providersではこのコンポーネント自身や子孫コンポーネントで利用するプロバイダを指定します。利用しようとしてるProviderが自身のコンポーネントで宣言されてなければ親を探しに、親になければそのまた親を探しにいくインジェクトチェーンという仕組みで動作します。
+ここではROUTER_PROVIDERSとArticleServiceを指定することで各画面コンポーネント内でもこれらのサービスを利用できるようにしています。</p>
+<h3 id="-routeconfig-">@RouteConfigデコレータ</h3>
+<p>@RouteConfigではルーティングの設定をしています。この辺はAngularJSのui-routerと似たような感じですね。</p>
+<h3 id="angular2-0-0-rc-router-">Angular2.0.0-RCのRouter周りの変更点</h3>
+<p>で、ここまで書いておいてあれなのですが、Angular2.0.0-RCになってRouter周りの仕様が結構変わってしまったらしいです ^^:
+（公式のデモは2016/05/16時点では上記のような古いコードのままのようです）</p>
+<p>Qiitaのこちらの記事<a href="http://qiita.com/dolpen/items/02083d8fb9cc9fb72726">「Angular 2.0.0-RC の Router 周りの変更点」</a>に分かりやすくまとめられてます。</p>
+<h2 id="-home-component-ts">ホーム画面｜home.component.ts</h2>
+<pre><code>import { Component, OnInit } from &#39;angular2/core&#39;;
+
+@Component({
+  template: `
+      &lt;h1&gt;{{title}}&lt;/h1&gt;
+      &lt;img class=&quot;logo&quot; src=&quot;https://5a2f21e2ab6046465d69ab5ffd597737265b3816-www.googledrive.com/host/0B0b09VuqaAG8dGQ5T095ZHRKakU&quot;/&gt;
+  `,
+  styles:[`
+    .logo{
+      margin: auto;
+      display: block;
+      max-width: 300px;
+    }
+  `],
+})
+export class HomeComponent implements OnInit {
+
+  title: string;
+
+  ngOnInit() {
+    this.title = &#39;ANGULAR2 BLOG&#39;;
+  }
+}
+</code></pre><p>ホーム画面の実装です。AngularJS同様、{{title}}の記述で単方向バインディングしてます。Angular2では原則、単方向バインディングを使用することになってますが、次のように記述することで双方向バインディングさせることもできます。</p>
+<pre><code>&lt;input type=&quot;text&quot; [(ngModel)]=&quot;title&quot;&gt;
+</code></pre><p>内部的には、次のように単方向バインディング＋イベントハンドラが生成されてるそうです。</p>
+<pre><code>&lt;input [ngModel]=&quot;title&quot; (ngModelChange)=&quot;titleChanged($event)&quot;&gt;
+</code></pre><h2 id="-blog-component-ts">記事一覧ページ｜blog.component.ts</h2>
+<p>グローバルメニューのBLOGリンクをクリックした時に表示される記事一覧画面です。</p>
+<pre><code>import { Component, OnInit } from &#39;angular2/core&#39;;
+import { Articlelist } from &#39;./articlelist.component&#39;;
+
+@Component({
+  template: `
+    &lt;h1&gt;{{ title }}&lt;/h1&gt;
+    &lt;my-articlelist [mode]=&quot;&#39;large&#39;&quot; &gt;&lt;/my-articlelist&gt;
+  `,
+  directives: [Articlelist],
+})
+export class BlogComponent implements OnInit {
+
+  title: string;
+
+  ngOnInit() {
+    this.title = &#39;ARTICLES&#39;;
+  }
+
+}
+</code></pre><p>先ほど、フッターにて記事一覧を表示してたmy-articlelistタグを、テンプレート内でmodeパラメータにlargeを指定して利用しています。
+つまり同じコンポーネントを使いまわし、パラメータ指定したモードの値により表示形式が変わるような実装になってます。</p>
+<h2 id="-articlelist-component-ts">記事一覧コンポーネント｜articlelist.component.ts</h2>
+<p>そのmy-articlelistタグの実装です。</p>
+<pre><code>import {Component, OnInit, Input} from &#39;angular2/core&#39;;
+import { ROUTER_DIRECTIVES, Router } from &#39;angular2/router&#39;;
+import Articleinfo from &#39;./articleinfo&#39;;
+import { ArticleService } from &#39;./article.service&#39;;
+
+@Component({
+  selector: &#39;my-articlelist&#39;,
+  template: `
+    &lt;div *ngIf=&quot;mode===&#39;large&#39;&quot;&gt;
+      &lt;div [routerLink]=&quot;[&#39;Article&#39;, { id: article.id }]&quot; class=&quot;panel&quot; *ngFor=&quot;#article of articles&quot;&gt;
+        &lt;h2&gt;{{article.title}}&lt;/h2&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;ul *ngIf=&quot;mode!==&#39;large&#39;&quot;&gt;
+      &lt;li *ngFor=&quot;#article of articles&quot;&gt;
+        &lt;a [routerLink]=&quot;[&#39;Article&#39;, { id: article.id }]&quot;&gt;{{article.title}}&lt;/a&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  `,
+  styles:[`
+    .panel{
+      margin: 1%;
+      padding: 40px;
+      display: inline-block;
+      width: 23%;
+      min-height: 200px;
+      border: solid 1px #eee;
+      box-sizing: border-box;
+      background-color: #fafafa;
+      vertical-align: top;
+      text-align: center;
+    }
+    .panel:hover{
+      border-color: #00aaff;
+      color: #00aaff;
+      cursor: pointer;
+    }
+    ul{
+      margin: 20px 0;
+      padding:0;
+    }
+    li{
+      margin:0;
+      padding:0;
+      list-style: none;
+    }
+  `],
+  directives: [ROUTER_DIRECTIVES],
+})
+export class Articlelist implements OnInit {
+
+  @Input() mode: string;
+
+  articles: Articleinfo[];
+
+  constructor(
+    private _router: Router,
+    private _articleService: ArticleService
+  ){
+  }
+
+  ngOnInit() {
+    this.getArticles();
+  }
+
+  getArticles() {
+    this._articleService.getArticleInfos().subscribe((articles: Articleinfo[]) =&gt; this.articles = articles);
+  }
+
+  gotoArticle( id ) {
+    let link = [&#39;Article&#39;, { id: id }];
+    this._router.navigate(link);
+  }
+
+}
+</code></pre><h3 id="-">テンプレート記法</h3>
+<p>テンプレート内に記述された#や*といった独特な記法についてはそいうものとして、リファレンスみたりググりながら慣れてくしかなさそうですね。</p>
+<h3 id="styles-">styles属性</h3>
+<p>このstyles属性はテンプレートに定義されたタグに対して定義するわけですが、このモジュールで定義したテンプレートにのみしか適用されません。
+Angular2が独自にShadowDomをエミュレートした実装になっています。
+ブラウザに実装されたShadowDomを利用したい場合は次のように記述すればよいらしいです。</p>
+<pre><code>@Component({
+    ...
+    encapsulation: ViewEncapsulation.Native
+})
+</code></pre><h3 id="-input-">@Input()</h3>
+<p>ここではじめてclassに実装らしきものがでてきました。</p>
+<p>まず目につく @Input() mode: string ですが、＠Inputはコンポーネントに属性を定義するAPIになります。つまりこれで親コンポーネントからパラメータを受け取れるようになります。@Input()はangular2/coreモジュールよりimportします。
+また、以下のように書くと内部的に扱う変数名を変えることができます。</p>
+<pre><code>@Input(&#39;displayMode&#39;) mode: string;
+</code></pre><p>ちなみに : string というのは TypeScriptによる型定義で、Visual Studio Codeを使うとコード補完が効いて気持よく開発できます。</p>
+<h3 id="constructor-ngoninit">constructorとngOnInit</h3>
+<p>初期化時に実行されるであろうと想像しやすい constructorとngOnInitですが、これは constructor、ngOnInit の順で実行されます。
+constructor で各種コンポーネントをDIで受け取り、ngOnInitにて初期化処理を行っています。</p>
+<h3 id="-">記事リストの取得</h3>
+<p>getArticles()メソッドでは、先程から登場してるArticleServiceをDIし、getArticleInfos()メソッドで記事の一覧データを取得しテンプレートから参照可能なメンバー変数 articles にセットしています。</p>
+<h3 id="-">ページの移動</h3>
+<p>gotoArticle()メソッドでは、指定した ID の記事に遷移させるコードですがここでは使用してませんね ^^;
+リンク以外で他ページに遷移させたい時に使用します。</p>
+<h2 id="-article-component-ts">記事ページ｜article.component.ts</h2>
+<p>個別の記事ページに相当するコンポーネントです。</p>
+<pre><code>import { Component, OnInit } from &#39;angular2/core&#39;;
+import { Router, RouteParams } from &#39;angular2/router&#39;;
+
+import Article from &#39;./article&#39;;
+import { ArticleService } from &#39;./article.service&#39;;
+
+@Component({
+  template: `
+    &lt;h1 *ngIf=&quot;article&quot;&gt;{{article.title}}&lt;/h1&gt;
+    &lt;div *ngIf=&quot;article&quot; [innerHtml]=&quot;article.content&quot;&gt;&lt;/div&gt;
+  `,
+})
+export class ArticleComponent implements OnInit {
+
+  private article: Article;
+
+  constructor(
+    private _routeParams: RouteParams,
+    private _articleService: ArticleService
+  ){
+  }
+
+  ngOnInit() {
+    let id = this._routeParams.get(&#39;id&#39;);
+    this._articleService.getArticle(id).then((article: Article) =&gt; this.article = article);
+  }
+}
+</code></pre><h3 id="-">エスケープせず記事を差し込む</h3>
+<p>[innerHtml]=&quot;article.content&quot; とすることで記事のマークアップをエスケープせずそのままテンプレートに差し込んでます。</p>
+<h3 id="-">記事データの取得</h3>
+<p>記事データは、RouteParamsモジュールを利用しurlに含まれる記事IDを取得し、ArticleServiceのgetArticleInfos()メソッドでID指定し記事データを取得しています。</p>
+<p>RouteParamsモジュールは、親コンポーネントのapp.component.tsの@ComponentのprovidersにてROUTER_PROVIDERSを指定してるため利用できています</p>
+<h2 id="-articleinfo-ts">記事情報クラス｜ArticleInfo.ts</h2>
+<p>つづいて記事データの取得処理ですが、まず、記事データを格納するArticleInfoクラスを次のように定義します。記事一覧取得サービスではこれを配列に格納して返します。</p>
+<pre><code>export default class ArticleInfo {
+  id: string;
+  title: string;
+}
+</code></pre><h2 id="-article-ts">記事内容クラス｜Article.ts</h2>
+<p>個々の記事の管理は、Articleinfoクラスを継承し、本文を管理するcontentをメンバに追加したArticleクラスを次のように定義します。</p>
+<pre><code>import Articleinfo from &#39;./articleinfo&#39;;
+
+export default class Article extends Articleinfo{
+  content: string;
+}
+</code></pre><h2 id="-article-service-ts">記事データ取得サービス｜article.service.ts</h2>
+<p>前述のデータ管理用のクラスを使用し、次のように記事データ取得サービスを定義します。</p>
+<pre><code>import {Injectable} from &#39;angular2/core&#39;;
+import &#39;rxjs/Rx&#39;;
+import { Observable } from &#39;rxjs/Observable&#39;;
+import {Http, Response} from &#39;angular2/http&#39;;
+import Article from &#39;./article&#39;;
+import Articleinfo from &#39;./articleinfo&#39;;
+
+@Injectable()
+export class ArticleService {
+
+  constructor(private http: Http) {
+  }
+
+  getArticle(id: string){
+    return  new Promise((resolve, reject) =&gt; {
+
+      const url = &quot;data/articles/&quot; + id + &quot;.html&quot;;
+      const article = new Article;
+      article.id = id;
+
+      const extractData = (res: Response) =&gt; {
+        if (res.status &lt; 200 || res.status &gt;= 300) {
+          throw new Error(&#39;Bad response status: &#39; + res.status);
+        }
+        this.getArticleInfos().subscribe((articleInfos: Articleinfo[]) =&gt;{
+          let info = articleInfos.filter(article =&gt; article.id === id)[0];
+          article.title = info.title;
+          article.content = res.text();
+          resolve(article);
+        });
+      }
+
+      const handleNotFound = () =&gt; {
+        article.title = &#39;404 NOT FOUND&#39;;
+        article.content = &#39;&#39;;
+        resolve(article);
+      };
+
+      this.http.get(url).subscribe(extractData, handleNotFound);
+    });
+  }
+
+  getArticleInfos (): Observable&lt;Articleinfo[]&gt; {
+
+    const extractData = (res: Response) =&gt; {
+      if (res.status &lt; 200 || res.status &gt;= 300) {
+        throw new Error(&#39;Bad response status: &#39; + res.status);
+      }
+      return res.json() || { };
+    }
+
+    const handleError = (error: any) =&gt; {
+      let errMsg = error.message || &#39;Server error&#39;;
+      console.error(errMsg); // log to console instead
+      return Observable.throw(errMsg);
+    }
+
+    return this.http.get(&#39;data/articles/index.json&#39;)
+      .map(extractData)
+      .catch(handleError);
+  }
+
+}
+</code></pre><h3 id="rxjs-observable">rxjs、Observable</h3>
+<p>まず冒頭でrxjs、Observable等のモジュールを読み込んでます。これはPromiseに変わる非同期処理によるデータ取得処理として、Observableオブジェクトやsubscribe()メソッドを利用するために読み込んでいます。</p>
+<h3 id="-injectable-">@Injectable()デコレータ</h3>
+<p>@Injectable()デコレータは多段的なDIをしたい場合に指定が必要になります。このarticle.serviceは他のコンポーネントから呼ばれるサービスとして位置づけられますが、そのサービスの中で他のサービスをDIしたい場合（ここではHttpがそれに該当します）に、@Injectable()が必要になります。</p>
+<h2 id="-">さわってみた感想</h2>
+<p>生JSで大規模SPAばかりやってると、いろんな意味で「クライアントでJavaが動けばいいのに...」って気持ちになる瞬間があるわけですが、Angular2＋TypeScriptはすごくJavaっぽくて良いなと感じました。
+過去に、JavaScriptの直さわりを不要とすることを売りにした、GWTやWicketなどが流通したエンタープライズなJava界隈でも、これなら受け入れてもらえる予感が...</p>
+<p>あとはつまらない環境構築などを不要とするEclipseみたいIDEが登場すれば（Visual Studio がそうなるのかな？）、フルスタックを売りとした魅力的なエンタープライズ向けプロダクトになる可能性を秘めてるのではないでしょうか。</p>
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/angular2/">Angular2で簡単なブログアプリを作ってみる</a></li>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2016-05-16</span>
+              <a href="/blog/angular2/">Angular2で簡単なブログアプリを作ってみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+
+<script type="text/javascript" src="/theme/cyokodog/js/bundle.js?"></script>
+
+
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/theme/cyokodog/index.jsx?'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

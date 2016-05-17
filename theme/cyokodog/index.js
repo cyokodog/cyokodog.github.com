@@ -1514,7 +1514,7 @@ setTimeout(function(){
 
     //Ex Code Prettify
 //    $('pre').exCodePrettify();
-    $('div.article__body').easyCodePrettify();
+//    $('div.article__body').easyCodePrettify();
 
     //Demo Button
     // $('a').each(function(){
