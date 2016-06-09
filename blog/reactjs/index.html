@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>ガラクタで重厚感のあるおもちゃを作ってみた ～その２～ | CYOKODOG</title>
+	<title>はじめてのReact.js | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,149 +72,382 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/garamodel02/" title="ガラクタで重厚感のあるおもちゃを作ってみた ～その２～">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+        <a href="/blog/reactjs/" title="はじめてのReact.js">はじめてのReact.js</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2013-09-07</li>
+        <li class="article__info__date">2016-06-09</li>
 <!--
-        <li class="article__info__category"><a href="/category/life/" rel="category tag">Life</a></li>
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
       </ul>
     </div>
     <div class="article__body">
     <div class="article__eyecatch">
-  <a href="/web/20150912020149/http://www.cyokodog.net/blog/garamodel02/"><img src="https://lh4.googleusercontent.com/-3HUHFKtVTJg/UiS-v1EwonI/AAAAAAAAFO0/dTC6vZTRXUA/s144/IMG_0991.JPG"></a>
+  <a href="http://www.cyokodog.net/blog/reactjs/"><img src="https://lh3.googleusercontent.com/-n8Ihw2WUVC8/V1lkaKu6_QI/AAAAAAAAJ1I/VWtXhpG-z1gMoNE44qlPgj67HPgwSTeWgCCo/s144/react.png"></a>
 </div>
-<p>
-皆さん、今年の夏はいかがおすごしでしたでしょうか。<br>
-うちは子供を中心にプール、クワガタ探し、スケボーと例年通りの変わり映えない夏でした。ただ唯一いつもと違ったのは、<a href="/web/20150912020149/http://www.cyokodog.net/blog/garamodel/">前回のエントリー</a>でも書いたガラクタ（というか日常ゴミ）によるおもちゃ作りに家族全員が精を出してたという事です。
-という訳でその後、置き場所も考えず、調子にのってさらに作りこんでしまった作品郡も載せときますのでよろしかったら見てやってください。</p>
 
+
+
+<p>過去にブクマしてたFlux関連の記事を一気読みする機会があったので、その流れで今までノータッチ状態だったReact.jsもさわってみました。
+りぃさんのCodeGridの記事（<a href="https://app.codegrid.net/series/2016-react">これから始めるReact.js 全６回 | CodeGrid</a>）が一段落ついたので、これを見つつアレンジしつつやってみます。</p>
 <!--more-->
+<h2 id="-">環境構築</h2>
+<p>今回作ったやつ</p>
+<ul>
+<li><a href="https://github.com/cyokodog/react_study">cyokodog/react_study</a></li>
+</ul>
+<p>環境構築周りの説明が省かれててリポジトリ見るとシェルベースでコンパイルする感じになってたので、おれおれテンプレされがちであろうgulpベースで整えてみる。</p>
+<h3 id="package-json">package.json</h3>
+<pre><code>{
+  &quot;name&quot;: &quot;react_study&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;devDependencies&quot;: {
+    &quot;babel-preset-es2015&quot;: &quot;6.9.0&quot;,
+    &quot;babel-preset-react&quot;: &quot;6.5.0&quot;,
+    &quot;babelify&quot;: &quot;7.3.0&quot;,
+    &quot;browser-sync&quot;: &quot;2.13.0&quot;,
+    &quot;browserify&quot;: &quot;13.0.1&quot;,
+    &quot;gulp&quot;: &quot;3.9.1&quot;,
+    &quot;react&quot;: &quot;15.1.0&quot;,
+    &quot;react-dom&quot;: &quot;15.1.0&quot;,
+    &quot;run-sequence&quot;: &quot;1.2.1&quot;,
+    &quot;vinyl-source-stream&quot;: &quot;1.1.0&quot;
+  }
+}
+</code></pre><p>ES2015 と Browserifyを採用。</p>
+<h3 id="-babelrc">.babelrc</h3>
+<pre><code>{
+  &quot;presets&quot;: [
+    &quot;es2015&quot;,
+    &quot;react&quot;
+  ]
+}
+</code></pre><h3 id="gulpfile-js">gulpfile.js</h3>
+<pre><code>const gulp = require(&#39;gulp&#39;);
+const browserify = require(&#39;browserify&#39;);
+const babelify = require(&#39;babelify&#39;);
+const source = require(&#39;vinyl-source-stream&#39;);
+const browserSync = require(&#39;browser-sync&#39;);
+const runSequence = require(&#39;run-sequence&#39;);
 
+const proj = [&#39;01&#39;, &#39;02&#39;, &#39;03&#39;, &#39;04&#39;];
 
-<p><style>strong{color:#ff5577;}.large{font-size:140%}.x-large{font-size:180%}</style></p>
+const defineProjTask = (name, task) =&gt; {
+  const tasks = [];
+  const defineTask = (dir) =&gt; {
+    const taskName = name + &#39;:&#39;+dir;
+    tasks.push(taskName);
+    gulp.task(taskName, task(dir));
+  };
+  proj.forEach(defineTask);
+  gulp.task(name, tasks);
+};
 
-<h2>２０１３年、夏</h2>
+defineProjTask(&#39;es:convert&#39;, (dir) =&gt; {
+  return (cb) =&gt; {
+    return browserify(dir + &#39;/main.js&#39;, { debug: true })
+    // .babelrcを書かない場合は以下のようにする
+      // .transform(babelify,{presets: [&quot;react&quot;,&quot;es2015&quot;]})
+      .transform(babelify)
+      .bundle()
+      .on(&quot;error&quot;, function (err) { console.log(&quot;Error : &quot; + err.message); })
+      .pipe(source(&#39;bundle.js&#39;))
+      .pipe(gulp.dest(dir));
+  };
+});
 
-<p class="for-bottom">乗ったり・・・</p>
+defineProjTask(&#39;watch&#39;, (dir) =&gt; {
+  return (cb) =&gt; {
+    gulp.watch([dir + &#39;/**/*.jsx&#39;, dir + &#39;/**/main.js&#39;], () =&gt; {
+      runSequence(&#39;es:convert:&#39; + dir, browserSync.reload);
+    })
+  };
+});
 
-<p><img src="https://lh5.googleusercontent.com/-J1lgRyRdT-0/Uin90zt4rLI/AAAAAAAAFRM/6YFjp0IexMg/s800/IMG_0910.png" alt="2013夏"></p>
+gulp.task(
+  &#39;serve&#39;, () =&gt; {
+    browserSync({
+      server: {
+        baseDir: &#39;.&#39;
+      }
+    });
+  }
+);
 
-<p class="for-bottom">回ったり・・・</p>
+gulp.task(&#39;default&#39;, [&#39;es:convert&#39;, &#39;watch&#39;, &#39;serve&#39;]);
+</code></pre><p>サブディレクトリ単位でbrowserifyする感じで。これでgulpと打てば、コンパイルとソースの変更監視と画面が起動する。</p>
+<h2 id="-">一番簡単なサンプル</h2>
+<h3 id="-01-index-html">/01/index.html</h3>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head lang=&quot;ja&quot;&gt;
+&lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;container&quot;&gt;&lt;/div&gt;
+&lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h3 id="-01-main-js">/01/main.js</h3>
+<pre><code>import React from &quot;react&quot;;
+import ReactDOM from &quot;react-dom&quot;;
+import Message from &quot;./message.jsx&quot;;
+import App from &quot;./app.jsx&quot;;
 
-<p><img src="https://lh6.googleusercontent.com/-HPOAs8dTlQI/Uin91OL0-GI/AAAAAAAAFRQ/IhEnZLzWS5U/s800/IMG_0820.png" alt="2013夏"></p>
+ReactDOM.render(
+  &lt;App /&gt;,
+  document.getElementById(&#39;container&#39;)
+);
+</code></pre><h3 id="-01-app-jsx">/01/app.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+import ReactDOM from &quot;react-dom&quot;;
+import Message from &quot;./message.jsx&quot;;
 
-<p class="for-bottom">飛んだり・・・</p>
+export default class App extends React.Component{
+  render (){
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;簡単なサンプル&lt;/h1&gt;
+        &lt;Message /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre><p>継承の記述がJavaっぽくて良い感じ。ちなみにimport文で{}つければ以下のようも書ける。</p>
+<pre><code>import {Component} from &quot;react&quot;;
+export default class App extends Component{
+  // ...
+}
+</code></pre><h3 id="-01-message-jsx">/01/message.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
 
-<p><img src="https://lh6.googleusercontent.com/-38_FcYC0nhk/Uin90oWK37I/AAAAAAAAFRI/qBHjba8nt3w/s800/MVI_0939.AVI_000004666.png" alt="2013夏"></p>
+export default class Message extends React.Component {
+  render() {
+    return &lt;div&gt;おす、おらごくう&lt;/div&gt;;
+  }
+}
+</code></pre><p>これで以下のようになる。</p>
+<p><img src="https://lh3.googleusercontent.com/-mllDP0TSfD4/V1lh6BccnTI/AAAAAAAAJ0k/zkqPReI0wEQIvNxFOG3NXiRj99hUiwj8QCCo/s640/react01.png" alt="react01"></p>
+<h2 id="props-state">propsとstate</h2>
+<ul>
+<li>props<ul>
+<li>コンポーネント外から渡された、読込専用の値</li>
+</ul>
+</li>
+<li>state<ul>
+<li>コンポーネント内で保持できる、変化する値</li>
+</ul>
+</li>
+</ul>
+<p>React.jsでは「各コンポーネントは極力stateを保持せずに、できる限りpropsでデータを受け取るべき」というポリシーがある。</p>
+<h2 id="props-">propsで表示</h2>
+<h3 id="-02-app-jsx">/02/app.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+import Message from &quot;./message.jsx&quot;;
 
-<p class="for-bottom">はがれたり・・・</p>
+export default class App extends React.Component{
+  render (){
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;propsでメッセージを表示する&lt;/h1&gt;
+        &lt;Message text=&quot;おまえはもう死んでいる&quot;/&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre><h3 id="-02-message-jsx">/02/message.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
 
-<p><img src="https://lh5.googleusercontent.com/-7hvf2F_r8V8/Uin_GIiz-mI/AAAAAAAAFR0/NdyvEsHO75M/s800/MVI_0949.AVI_000001966.png" alt="2013夏"></p>
+export default class Message extends React.Component {
+  render() {
+    const { text } = this.props;
+    return &lt;div&gt;{text}&lt;/div&gt;;
+  }
+}
+</code></pre><p>値の受け取り方が独特。こうなる。</p>
+<p><img src="https://lh3.googleusercontent.com/-guJklaXDDl8/V1lh6Bp72oI/AAAAAAAAJ0g/PlQkpsYSZfcf9irgUEWU3_kvmSC5EYZvACCo/s640/react02.png" alt="react02"></p>
+<h2 id="state-">stateで表示</h2>
+<h3 id="-03-app-jsx">/03/app.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+import Message from &quot;./message.jsx&quot;;
 
-<p>いろいろあった２０１３年夏・・・</p>
+export default class App extends React.Component{
 
-<p>しかしなんと言っても今夏最大の目玉といえば</p>
+  constructor() {
+    super();
 
-<p>これ</p>
+    this.state = {
+      val: &#39;やっほー&#39;
+    };
+    this.changeMessage = this.changeMessage.bind(this);
+  }
 
-<p><img src="https://lh5.googleusercontent.com/-VFDYFHra6No/UiS-srd-KMI/AAAAAAAAFN0/To19gkVbHOo/s800/IMG_0983.JPG" alt="2013夏"></p>
+  changeMessage(ev) {
+    this.setState({ val: ev.target.value });
+  }
 
-<p class="large">新しき創作活動への目覚め！</p>
+  render (){
+    let { val } = this.state;
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;stateでメッセージを表示する&lt;/h1&gt;
+        &lt;input type=&quot;text&quot; onChange={this.changeMessage} value={val}/&gt;
+        &lt;Message text={val}/&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre><p>super()でスーパークラスのコンストラクタを実行しとかないとエラーがでるっぽい。
+setState()でstateの変更を行う。
+こうなる。</p>
+<p><img src="https://lh3.googleusercontent.com/-y7TXSvOl6jA/V1lh6E5SPoI/AAAAAAAAJ0c/jXmIviKqSfItr-Ee0YXjD8sw-qSGZcNBgCCo/s800/react03.gif" alt="react03"></p>
+<p>onClickとかのイベントについては以下参照。</p>
+<ul>
+<li><a href="https://facebook.github.io/react/docs/events.html">Event System | React</a></li>
+</ul>
+<h2 id="jsx-">JSX記法</h2>
+<p>これ覚えるのが一番めんどくさそう。</p>
+<p><a href="https://app.codegrid.net/entry/react-3">JSX記法のつまづきポイント | CodeGrid</a></p>
+<p>とりあえず {} で囲むとJSが書けるらしい</p>
+<pre><code>&lt;div id=&quot;answer&quot;&gt;
+  { (bool) ? &#39;YES&#39; : &#39;NO&#39; }
+&lt;/div&gt;
+</code></pre><p>複雑なやつは外側で書く。</p>
+<pre><code>render() {
+  let el;
+  if (bool) {
+    el = &lt;div&gt;YES&lt;/div&gt;;
+  } else {
+    el = &lt;span&gt;NO&lt;/span&gt;;
+  }
+  return (
+    &lt;div&gt;
+      {el}
+    &lt;/div&gt;
+  );
+}
+</code></pre><p>変換されると以下のようになる。</p>
+<pre><code>React.createElement(
+  &#39;div&#39;,
+  { id: &#39;answer&#39; },
+  (bool) ? &#39;YES&#39; : &#39;NO&#39;
+)
+</code></pre><p>２語以上の属性値名はキャメルケースで書く</p>
+<ul>
+<li>tabindex → tabIndex</li>
+<li>maxlength → maxLength</li>
+</ul>
+<p>あと、ループ処理とkey propsとか...CodeGridみる</p>
+<h2 id="todo-">TODOアプリ</h2>
+<h3 id="04-app-jsx">04/app.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+import AddTodo from &quot;./add_todo.jsx&quot;;
+import TodoList from &quot;./todo_list.jsx&quot;;
 
-<h2>置き場所に困る作品郡</h2>
+export default class App extends React.Component{
 
-<p><img src="https://lh6.googleusercontent.com/-WxkYf7jXO1M/UiS-k1C2YtI/AAAAAAAAFLc/LFBAvPyFugE/s800/IMG_0951.JPG" alt="ガラプラ"></p>
+  constructor() {
+    super();
 
-<p class="for-top">セブンアイのマークが絶妙の位置あるオートバイ。ハンドルにはストローの蛇腹を利用。</p>
+    this.state = {
+      todo: &#39;働く&#39;,
+      todoList: [&#39;寝る&#39;,&#39;起きる&#39;,&#39;休む&#39;,&#39;食べる&#39;]
+    };
+    this._onChange = this._onChange.bind(this);
+    this._onAdd = this._onAdd.bind(this);
+    this._onClose = this._onClose.bind(this);
+  }
 
-<p><img src="https://lh3.googleusercontent.com/-mi0fSATIQjQ/UiS-lL3OMtI/AAAAAAAAFLY/4Hi7Eu9X62c/s800/IMG_0952.JPG" alt="ガラプラ"></p>
+  _onChange(ev) {
+    this.setState({ todo: ev.target.value });
+  }
 
-<p class="for-top">・・・絵になるぜぇ</p>
+  _onAdd(ev) {
+    ev.preventDefault();
+    const todo = this.state.todo;
+    if( !todo ) return;
+    const todoList = this.state.todoList.slice();
+    todoList.push(todo);
+    this.setState({ todoList: todoList, todo:&#39;&#39;});
+  }
 
-<p><img src="https://lh5.googleusercontent.com/-tf5j7RNQpto/UiS-njaajvI/AAAAAAAAFMQ/VhcxUdTAMkk/s800/IMG_0959.JPG" alt="ガラプラ"></p>
+  _onClose(ev, idx){
+    ev.preventDefault();
+    const todoList = this.state.todoList.filter((item, _idx)=&gt;{
+      return _idx !== idx;
+    });
+    this.setState({ todoList: todoList});
+  }
 
-<p class="for-top">Dr.スランプのせんべいさんが作りそうな感じにしたというヘリっぽい乗り物（ママ作）</p>
+  render (){
+    let {todo, todoList} = this.state;
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;React TODO&lt;/h1&gt;
+        &lt;AddTodo onChange={this._onChange} onAdd={this._onAdd} value={todo}/&gt;
+        &lt;TodoList list={todoList} onClose={this._onClose}/&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre><p>あまりコンポーネントで持たないほうが望ましいというstateはルートコンポーネントで管理。
+stateを操作する各種イベントのコールバックもルートで管理。
+一見 onChangeが不要そうだけど、これないとinput要素がreadOnlyになってしまう。</p>
+<h3 id="04-add_todo-jsx">04/add_todo.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
 
-<p><img src="https://lh3.googleusercontent.com/-IkurYJcDHjY/UiS-kCy2-gI/AAAAAAAAFLE/UvJLGb6Ns_o/s800/IMG_0931.JPG" alt="ガラプラ"></p>
+export default class AddTodo extends React.Component {
+  render() {
+    const {
+      onChange,
+      onAdd,
+      value
+    } = this.props;
+    return (
+      &lt;form onSubmit={onAdd}&gt;
+        &lt;input type=&quot;text&quot; onChange={onChange} value={value}/&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;add&quot;/&gt;
+      &lt;/form&gt;
+    );
+  }
+}
 
-<p class="for-top">散乱するテーブル。テレビによりかかってるのはママへの誕生日プレゼントとしてオフハウスで購入したウォーズマン。（ウォーズマンとバッファローマンが好きらしい）</p>
+AddTodo.propTypes = {
+  onChange: React.PropTypes.func.isRequired,
+  onAdd: React.PropTypes.func.isRequired,
+  value: React.PropTypes.string.isRequired
+};
+</code></pre><p>TODO追加用の入力フィールドを定義したコンポーネント。
+AddTodo.propTypesはpropsの型チェックを実行時に行ってくれるもの。詳細は以下。</p>
+<ul>
+<li><a href="https://app.codegrid.net/entry/react-4">実用的なコンポーネント | CodeGrid</a></li>
+</ul>
+<h3 id="04-todo_list-jsx">04/todo_list.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
 
-<p><img src="https://lh3.googleusercontent.com/-d9h6g71Lbnc/UiS-rLae6TI/AAAAAAAAFNQ/azaJGodCbSY/s800/IMG_0978.JPG" alt="ガラプラ"></p>
+export default class TodoList extends React.Component {
+  render() {
+    const {
+      list,
+      onClose
+    } = this.props;
+    return (
+      &lt;ul&gt;
+        { list.map((d, idx) =&gt; {
+          return &lt;li key={idx}&gt;&lt;input type=&quot;checkbox&quot; onClick={(ev)=&gt;{onClose(ev, idx)}}/&gt;{d}&lt;/li&gt;
+        }) }
+      &lt;/ul&gt;
+    );
+  }
+}
 
-<p class="for-top"><span class="large">そして完成！</span>　でも置き場所がない・・・またママが捨てるとか言ってきたらどうしよう・・・</p>
-
-<p><img src="https://lh3.googleusercontent.com/-Jw3H2NXiBgg/UiS-pWgt08I/AAAAAAAAFM0/0Q7bUWGHb0c/s800/IMG_0973.JPG" alt="ガラプラ"></p>
-
-<p class="for-top large">「行ったれーー！！」</p>
-
-<p><img src="https://lh5.googleusercontent.com/-Korck5kyMA0/UioBNpOc8aI/AAAAAAAAFTo/jbmcLyBU4Rc/s800/IMG_0982.JPG" alt="ガラプラ"></p>
-
-<p class="for-top large">「ほおあぁぁぁぁぁぁ・・・」</p>
-
-<p><img src="https://lh6.googleusercontent.com/-yelcL4re5Ow/UiS-pwz6DRI/AAAAAAAAFM4/JVyFsgjG3sE/s800/IMG_0975.JPG" alt="ガラプラ"></p>
-
-<p class="for-top large">「・・・」</p>
-
-<p><img src="https://lh5.googleusercontent.com/-SHrGtF82DbQ/UiS-o4atILI/AAAAAAAAFMo/OnOO5GfUQPc/s800/IMG_0972.JPG" alt="ガラプラ"></p>
-
-<p class="for-top large">「とおっ！」</p>
-
-<p><img src="https://lh3.googleusercontent.com/-Rtg8LxzBw3g/UiS-wipkQNI/AAAAAAAAFPA/JMjtdQqe6vY/s800/IMG_0993.JPG" alt="ガラプラ"></p>
-
-<p class="for-top x-large">ブルンッ、ブルブルブルッルルル・・</p>
-
-<p><img src="https://lh4.googleusercontent.com/-uHAFeeu4xGQ/UiS-uISzDMI/AAAAAAAAFOM/qPn9JUsYbX8/s800/IMG_0986.JPG" alt="ガラプラ"></p>
-
-<p class="for-top large">ドッドッドッドッドッドッドッ！</p>
-
-<p><img src="https://lh4.googleusercontent.com/-3HUHFKtVTJg/UiS-v1EwonI/AAAAAAAAFO0/dTC6vZTRXUA/s800/IMG_0991.JPG" alt="ガラプラ"></p>
-
-<p class="for-top x-large">ドッドッドッドッドッドッドッ！</p>
-
-<p><img src="https://lh5.googleusercontent.com/-phstjsoWowM/UiS-vR7TbxI/AAAAAAAAFOo/YjtWlg_Otnw/s800/IMG_0989.JPG" alt="ガラプラ"></p>
-
-<p class="for-top large">ゴゴゴゴゴゴゴゴゴゴゴゴォォォ</p>
-
-<p><img src="https://lh3.googleusercontent.com/-Q4LSLJeXb8A/UiS-wVDtdZI/AAAAAAAAFO4/YHjufubJ9zI/s800/IMG_0992.JPG" alt="ガラプラ"></p>
-
-<p class="for-top x-large">ゴゴゴゴゴゴゴゴゴゴゴゴォォォ</p>
-
-<p><img src="https://lh3.googleusercontent.com/-ReVPq_A6Nr8/UiS-xArGdEI/AAAAAAAAFPE/l2C-t4y3pQg/s800/IMG_0994.JPG" alt="ガラプラ"></p>
-
-<p class="for-top large">ピタッ</p>
-
-<p><img src="https://lh5.googleusercontent.com/-m-nawGqIVE8/UiS-vkk60tI/AAAAAAAAFOs/e7jnuAzXqIs/s800/IMG_0990.JPG" alt="ガラプラ"></p>
-
-<p class="for-top large">「・・・」</p>
-
-<p><img src="https://lh6.googleusercontent.com/-HPOAs8dTlQI/Uin91OL0-GI/AAAAAAAAFRQ/IhEnZLzWS5U/s800/IMG_0820.png" alt="ガラプラ"></p>
-
-<p class="for-top x-large">ゴゴゴゴゴゴゴゴゴゴゴゴォォォ</p>
-
-<p><br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br></p>
-
-<p class="large">～追伸～</p>
-
-<p><a href="/web/20150912020149/http://www.cyokodog.net/blog/garamodel/">前回のエントリー</a>で、ガラクティストこと <strong><a href="/web/20150912020149/http://mo-3.no-blog.jp/hitoligoto">ゴトー孟(もう)</a></strong> さんよりコメントを頂きました！（ブログの URL 変えちゃったんでもう見えないんだけど・・・）</p>
-
-<p><img src="https://lh6.googleusercontent.com/-jU7OMibfdZw/UitAoAT6WRI/AAAAAAAAFXg/0qCjtc5kv80/s800/mo24kuwfev8nz5mi.png" alt="ゴトー孟(もう)さん"></p>
-
-<p class="large">恐縮です。ありがとうございます！</p>
-              </div>
-
+TodoList.propTypes = {
+  list: React.PropTypes.arrayOf(React.PropTypes.string),
+  onClose: React.PropTypes.func.isRequired
+};
+</code></pre><p>TODO一覧。</p>
+<p><img src="https://lh3.googleusercontent.com/-lf0rGni3qVg/V1lh63p9PRI/AAAAAAAAJ0s/RWAQEGEBXF86zM0QhRFlsbE-x2hkSVLdwCCo/s800/react04.gif" alt="react04"></p>
+<p>次はりぃさんの新連載、Flux編を見ながらやってみたい。</p>
 
     </div>
 
