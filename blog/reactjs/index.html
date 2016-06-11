@@ -127,10 +127,11 @@
 const browserify = require(&#39;browserify&#39;);
 const babelify = require(&#39;babelify&#39;);
 const source = require(&#39;vinyl-source-stream&#39;);
+const buffer = require(&#39;vinyl-buffer&#39;);
 const browserSync = require(&#39;browser-sync&#39;);
 const runSequence = require(&#39;run-sequence&#39;);
 
-const proj = [&#39;01&#39;, &#39;02&#39;, &#39;03&#39;, &#39;04&#39;];
+const proj = [&#39;01&#39;, &#39;02&#39;, &#39;03&#39;, &#39;04&#39;, &#39;05&#39;, &#39;06&#39;, &#39;07&#39;];
 
 const defineProjTask = (name, task) =&gt; {
   const tasks = [];
@@ -152,13 +153,14 @@ defineProjTask(&#39;es:convert&#39;, (dir) =&gt; {
       .bundle()
       .on(&quot;error&quot;, function (err) { console.log(&quot;Error : &quot; + err.message); })
       .pipe(source(&#39;bundle.js&#39;))
+      .pipe(buffer())
       .pipe(gulp.dest(dir));
   };
 });
 
 defineProjTask(&#39;watch&#39;, (dir) =&gt; {
   return (cb) =&gt; {
-    gulp.watch([dir + &#39;/**/*.jsx&#39;, dir + &#39;/**/main.js&#39;], () =&gt; {
+    gulp.watch([dir + &#39;/**/*.jsx&#39;, dir + &#39;/main.js&#39;, dir + &#39;/*/*.js&#39;], () =&gt; {
       runSequence(&#39;es:convert:&#39; + dir, browserSync.reload);
     })
   };
@@ -174,7 +176,13 @@ gulp.task(
   }
 );
 
-gulp.task(&#39;default&#39;, [&#39;es:convert&#39;, &#39;watch&#39;, &#39;serve&#39;]);
+gulp.task(&#39;default&#39;, () =&gt; {
+  runSequence(
+    &#39;es:convert&#39;,
+    &#39;serve&#39;,
+    &#39;watch&#39;
+  );
+});
 </code></pre><p>サブディレクトリ単位でbrowserifyする感じで。これでgulpと打てば、コンパイルとソースの変更監視と画面が起動する。</p>
 <h2 id="-">一番簡単なサンプル</h2>
 <h3 id="-01-index-html">/01/index.html</h3>
@@ -486,6 +494,7 @@ TodoList.propTypes = {
       <div class="wp-widget">
         <div class="wp-widget__header">Recent Posts</div>
         <ul>
+          <li><a href="/blog/facebook-flux/">はじめてのfacebook/flux</a></li>
           <li><a href="/blog/reactjs/">はじめてのReact.js</a></li>
           <li><a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a></li>
           <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
@@ -604,6 +613,10 @@ TodoList.propTypes = {
       <div class="wp-widget">
         <div class="wp-widget__header" id="allPosts">All Posts</div>
           <ul>
+            <li>
+              <span class="post-date">2016-06-11</span>
+              <a href="/blog/facebook-flux/">はじめてのfacebook/flux</a>
+            </li>
             <li>
               <span class="post-date">2016-06-09</span>
               <a href="/blog/reactjs/">はじめてのReact.js</a>

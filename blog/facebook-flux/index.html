@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>Life | CYOKODOG</title>
+	<title>はじめてのfacebook/flux | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -67,74 +67,402 @@
 
   <div class="l-contents">
     <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
 
-    <div class="l-article">
-      <article class="article">
-
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/garamodel/" title="ガラクタで重厚感のあるおもちゃを作ってみた">ガラクタで重厚感のあるおもちゃを作ってみた</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2013-09-04</li>
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/facebook-flux/" title="はじめてのfacebook/flux">はじめてのfacebook/flux</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2016-06-11</li>
 <!--
-      <li class="article__info__category"><a href="/category/life/" rel="category tag">Life</a></li>
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/garamodel/"><img src="https://lh3.googleusercontent.com/-skerYXxvj34/UhiPfLvWPHI/AAAAAAAAFCA/8elO-eWTvUw/s144/IMG_0897.JPG"></a>
-</div></p>
-<p>
-ガラクティストこと <strong><a href="http://mo-3.no-blog.jp/hitoligoto">ゴトー孟(もう)</a></strong> さんをご存じでしょうか？<br>
-ペットボトルや空き箱などの日常生活で出るがらくたを使って、ハイクオリティなおもちゃを作ってしまうすごい方なのですが、先日、子供の自由研究のネタ探しに訪れた横浜こども宇宙科学館でその作品を初めて見ました。とてもガラクタでできてるとは思えない重厚感、完成度に衝撃を受けました。<br>
-そんな訳で夏休みの時間を利用し、我が家でも作ってみました。
-</p>
+      </ul>
+    </div>
+    <div class="article__body">
+    <div class="article__eyecatch">
+  <a href="http://www.cyokodog.net/blog/reactjs/"><img src="https://lh3.googleusercontent.com/-n8Ihw2WUVC8/V1lkaKu6_QI/AAAAAAAAJ1I/VWtXhpG-z1gMoNE44qlPgj67HPgwSTeWgCCo/s144/react.png"></a>
+</div>
 
+<p>前回書いたReact.jsのコードをfacebook/fluxで書きなおしてみます。前回同様、ほぼ殴り書きです。</p>
+<!--more-->
+<h2 id="flux-">Fluxの考え方</h2>
+<p>基本、React.jsの担当するViewコンポーネントでは状態の変化するデータや、データを変更する処理を持たせたくない。
+Fluxを適用してない前回のコードでは仕方なく、ルートコンポーネントでそれらをしてたが、Fluxを適用することで、それらをViewコンポーネントの外側でやるようにする。</p>
+<p><img src="https://lh3.googleusercontent.com/-yCTbVqvY32A/V1vnHlOefRI/AAAAAAAAJ10/IrXNCWmZWzk_Crx6vPbBjV5azx2KMHgSACCo/s800/flux0.png" alt="fluxの図"></p>
+<p>データの管理やその操作はStoreでやる。ViewはAction（という名前のパラメータみたいなもの）をDispatcherを通じてStoreに渡し、StoreはそのActionを受けてデータの操作をする。</p>
+<p>リポジトリは前回と同じ場所でこちら。</p>
+<ul>
+<li><a href="https://github.com/cyokodog/react_study">cyokodog/react_study</a></li>
+</ul>
+<h2 id="-facebook-flux">一番簡単なfacebook/flux</h2>
+<p>前回やった単純にメッセージを表示するだけのReact.jsをFlux化してみる。表示してオシマイなのでActionはない。</p>
+<h3 id="-05-message-jsx">/05/message.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
 
-<!--
-    <a href="/blog/garamodel/" class="more-link">Read More</a>
--->
-  </div>
+export default class Message extends React.Component {
+  render() {
+    const { text } = this.props;
+    return &lt;div&gt;{text}&lt;/div&gt;;
+  }
+}
+</code></pre><p>前回のコードと変化なし。</p>
+<h3 id="-05-app-jsx">/05/app.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+import Message from &quot;./message.jsx&quot;;
+import MessageStore from &quot;./stores/MessageStore&quot;;
+import { Container } from &#39;flux/utils&#39;;
 
-</article>
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/garamodel02/" title="ガラクタで重厚感のあるおもちゃを作ってみた ～その２～">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2013-09-07</li>
-<!--
-      <li class="article__info__category"><a href="/category/life/" rel="category tag">Life</a></li>
--->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="/web/20150912020149/http://www.cyokodog.net/blog/garamodel02/"><img src="https://lh4.googleusercontent.com/-3HUHFKtVTJg/UiS-v1EwonI/AAAAAAAAFO0/dTC6vZTRXUA/s144/IMG_0991.JPG"></a>
-</div></p>
-<p>
-皆さん、今年の夏はいかがおすごしでしたでしょうか。<br>
-うちは子供を中心にプール、クワガタ探し、スケボーと例年通りの変わり映えない夏でした。ただ唯一いつもと違ったのは、<a href="/web/20150912020149/http://www.cyokodog.net/blog/garamodel/">前回のエントリー</a>でも書いたガラクタ（というか日常ゴミ）によるおもちゃ作りに家族全員が精を出してたという事です。
-という訳でその後、置き場所も考えず、調子にのってさらに作りこんでしまった作品郡も載せときますのでよろしかったら見てやってください。</p>
+class App extends React.Component{
 
+  render (){
+    const { message } = this.state;
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;一番簡単なFlux&lt;/h1&gt;
+        &lt;Message text={message}/&gt;
+      &lt;/div&gt;
+    );
+  }
+}
 
-<!--
-    <a href="/blog/garamodel02/" class="more-link">Read More</a>
--->
-  </div>
+App.getStores = () =&gt; {
+  return [ MessageStore ];
+};
 
-</article>
+App.calculateState = (_prevState) =&gt; {
+  return {
+    message: MessageStore.getMessage()
+  };
+};
 
-      </article>
+const app = Container.create(App);
+
+export default app;
+</code></pre><p>facebook/flux郡とReactとのつなぎとなるルートコンポーネントはこんな感じで定義する。
+App.getStoresで利用するStoreを、App.calculateStateで参照するStoreのデータの取得処理を定義する。</p>
+<h3 id="-05-dispatcher-dispatcher-js">/05/dispatcher/Dispatcher.js</h3>
+<pre><code>import { Dispatcher } from &#39;flux&#39;;
+export default (new Dispatcher());
+</code></pre><p>インスタンス化して定義。</p>
+<h3 id="-05-stores-messagestore-js">/05/stores/MessageStore.js</h3>
+<pre><code>import { ReduceStore } from &#39;flux/utils&#39;;
+import Dispatcher from &#39;../dispatcher/Dispatcher&#39;;
+
+class MessageStore extends ReduceStore {
+  getInitialState() {
+    return { message: &#39;おす、おらFlux&#39; };
+  }
+
+  getMessage() {
+    return this.getState().message;
+  }
+
+}
+export default (new MessageStore(Dispatcher));
+</code></pre><p>Storeの定義。今回はアクションがないので初期値とゲッターのみを定義。</p>
+<p>その他のコードは前回同様。これで以下のように表示される。</p>
+<p><img src="https://lh3.googleusercontent.com/-DBOSJMqb4xU/V1vnHqwC2bI/AAAAAAAAJ2A/biu06LXtRDY8J0qiQXNIw1Bqh8m3BFvQQCCo/s640/flux1.png" alt="一番簡単なflux"></p>
+<h2 id="-">アクションを定義する</h2>
+<p>ボタン押したらメッセージを変更するというアクションを追加してみる。</p>
+<h3 id="-06-message-jsx">/06/message.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+
+export default class Message extends React.Component {
+  render() {
+    const {
+      text,
+      onClick
+    } = this.props;
+    return (
+      &lt;div&gt;
+        &lt;div&gt;{text}&lt;/div&gt;
+        &lt;button onClick={onClick}&gt;UPDATE&lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre><p>UPDATEボタン押したら、propsで受け取った関数を実行するようにするのみ。</p>
+<h3 id="-06-app-jsx">/06/app.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+import { Container } from &#39;flux/utils&#39;;
+import ActionCreator from &quot;./action/ActionCreator&quot;;
+import Message from &quot;./message.jsx&quot;;
+import MessageStore from &quot;./stores/MessageStore&quot;;
+
+class App extends React.Component{
+  render (){
+    const { message } = this.state;
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;一番簡単なFlux&lt;/h1&gt;
+        &lt;Message text={message} onClick={ActionCreator.updateMessage}/&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+App.getStores = () =&gt; {
+  return [ MessageStore ];
+};
+
+App.calculateState = (_prevState) =&gt; {
+  return {
+    message: MessageStore.getMessage()
+  };
+};
+
+const app = Container.create(App);
+
+export default app;
+</code></pre><p>messageのpropsにUPDATEボタンクリック時に実行する処理「ActionCreator.updateMessage」を渡す。</p>
+<h3 id="-06-action-actioncreator-js">/06/action/ActionCreator.js</h3>
+<pre><code>import Dispatcher from &#39;../dispatcher/Dispatcher&#39;;
+
+class ActionCreator {}
+
+ActionCreator.updateMessage = () =&gt; {
+  const d = new Date();
+  const message = &#39;やっほー、&#39; + d.getHours() + &#39;時 &#39; + d.getMinutes() + &#39;分 &#39; + d.getSeconds() + &#39;秒 です。&#39;;
+  Dispatcher.dispatch({
+    type:  &#39;UPDATE_MESSAGE&#39;,
+    message: message
+  });
+};
+
+export default ActionCreator;
+</code></pre><p>ActionCreatorは単にActionを束ねた名前空間みたいなもの。Dispatcher.dispatchを利用しデータを操作するためのリクエストをStoreに渡す。</p>
+<h3 id="-06-stores-messagestore-js">/06/stores/MessageStore.js</h3>
+<pre><code>import { ReduceStore } from &#39;flux/utils&#39;;
+import Dispatcher from &#39;../dispatcher/Dispatcher&#39;;
+
+class MessageStore extends ReduceStore {
+  getInitialState() {
+    return { message: &#39;おす、おらFlux&#39; };
+  }
+
+  reduce(state, action) {
+    switch (action.type) {
+    case &#39;UPDATE_MESSAGE&#39;:
+      return Object.assign({}, state, {
+        message: action.message
+      });
+
+    default:
+      return state;
+    }
+  }
+
+  getMessage() {
+    return this.getState().message;
+  }
+
+}
+export default (new MessageStore(Dispatcher));
+</code></pre><p>Dispatcher.dispatchで投げられたActionはreduce(state, action)で受け取れる。
+受け取った値でstateを変更したら、必ず、Object.assign({}, state...して、新しstateを返す必要がある。</p>
+<p>これで以下のようになる。</p>
+<p><img src="https://lh3.googleusercontent.com/-BFNaGzVTCcM/V1vnHskyQPI/AAAAAAAAJ18/IW8LcaBMk1oPKZla9RF3Kth0H09mGP0gACCo/s800/flux2.gif" alt="一番簡単なfluxアクションつき"></p>
+<h2 id="todo-flux-">TODOアプリをFluxにする</h2>
+<p>前回作ったTODOアプリもFluxにしてみる。</p>
+<h3 id="-07-add_todo-jsx">/07/add_todo.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+
+export default class AddTodo extends React.Component {
+  render() {
+    const {
+      onChange,
+      onAdd,
+      value
+    } = this.props;
+
+    const _onSubmit = (ev) =&gt; {
+      ev.preventDefault();
+      onAdd(value);
+    };
+    const _onChange = (ev) =&gt; {
+      onChange(ev.target.value);
+    };
+    return (
+      &lt;form onSubmit={_onSubmit}&gt;
+        &lt;input type=&quot;text&quot; onChange={_onChange} value={value}/&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;add&quot;/&gt;
+      &lt;/form&gt;
+    );
+  }
+}
+
+AddTodo.propTypes = {
+  onChange: React.PropTypes.func.isRequired,
+  onAdd: React.PropTypes.func.isRequired,
+  value: React.PropTypes.string.isRequired
+};
+</code></pre><p>新規TODOの入力フィールドのコンポーネント。
+前回とほぼ同じ内容だけど、event.preventDefault()とかはコンポーネント側の役割かなということでこちらで実行。
+propsで渡されたコールバックには値のみを渡すようにする。</p>
+<h3 id="-07-todo_list-jsx">/07/todo_list.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+
+export default class TodoList extends React.Component {
+  render() {
+    const {
+      list,
+      onClose
+    } = this.props;
+
+    const getOnClick = (idx) =&gt; {
+      const _onClick = (ev) =&gt; {
+        ev.preventDefault();
+        onClose(idx);
+      };
+      return _onClick;
+    }
+    return (
+      &lt;ul&gt;
+        { list.map((d, idx) =&gt; {
+          return &lt;li key={idx}&gt;&lt;input type=&quot;checkbox&quot; onClick={getOnClick(idx)}/&gt;{d}&lt;/li&gt;
+        }) }
+      &lt;/ul&gt;
+    );
+  }
+}
+
+TodoList.propTypes = {
+  list: React.PropTypes.arrayOf(React.PropTypes.string),
+  onClose: React.PropTypes.func.isRequired
+};
+</code></pre><p>TODOの一覧リスト。
+こちらも同様にevent.preventDefault()の部分を調整。</p>
+<h3 id="-07-app-jsx">/07/app.jsx</h3>
+<pre><code>import React from &quot;react&quot;;
+import { Container } from &#39;flux/utils&#39;;
+import AddTodo from &quot;./add_todo.jsx&quot;;
+import TodoList from &quot;./todo_list.jsx&quot;;
+import TodoStore from &quot;./stores/TodoStore&quot;;
+import ActionCreator from &quot;./action/ActionCreator&quot;;
+
+class App extends React.Component{
+  render (){
+    const {
+      todo,
+      todoList
+    } = this.state;
+    return (
+      &lt;div&gt;
+        &lt;h1&gt;Flux TODO&lt;/h1&gt;
+        &lt;AddTodo onChange={ActionCreator.updateTodo} onAdd={ActionCreator.addTodo} value={todo}/&gt;
+        &lt;TodoList list={todoList} onClose={ActionCreator.closeTodo}/&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+
+App.getStores = () =&gt; {
+  return [ TodoStore ];
+};
+
+App.calculateState = (_prevState) =&gt; {
+  return {
+    todo: TodoStore.getTodo(),
+    todoList: TodoStore.getTodoList()
+  };
+};
+
+const app = Container.create(App);
+
+export default app;
+</code></pre><p>データ操作系のpropsにはActionCreatorのメソッドを渡す。
+storeは、新設するTodoStoreのみを使用し、新規TODOの入力フィールドに相当するtodoと、TODO一覧に相当するtodoListのゲッターを定義する。</p>
+<h3 id="-07-action-actioncreator-js">/07/action/ActionCreator.js</h3>
+<pre><code>import Dispatcher from &#39;../dispatcher/Dispatcher&#39;;
+
+class ActionCreator {}
+
+ActionCreator.updateTodo = (todo) =&gt; {
+  Dispatcher.dispatch({
+    type:  &#39;UPDATE_TODO&#39;,
+    todo: todo
+  });
+};
+
+ActionCreator.addTodo = (todo) =&gt; {
+  Dispatcher.dispatch({
+    type:  &#39;ADD_TODO&#39;,
+    todo: todo
+  });
+};
+
+ActionCreator.closeTodo = (index) =&gt; {
+  Dispatcher.dispatch({
+    type:  &#39;CLOSE_TODO&#39;,
+    index: index
+  });
+};
+
+export default ActionCreator;
+</code></pre><p>各アクションを定義して、Dispatcherにアクションを投げる。</p>
+<h3 id="-07-stores-todostore-js">/07/stores/TodoStore.js</h3>
+<pre><code>import { ReduceStore } from &#39;flux/utils&#39;;
+import Dispatcher from &#39;../dispatcher/Dispatcher&#39;;
+
+class TodoStore extends ReduceStore {
+  getInitialState() {
+    return {
+      todo: &#39;おす、おらFlux&#39;,
+      todoList: [&#39;寝る&#39;,&#39;起きる&#39;,&#39;休む&#39;,&#39;食べる&#39;]
+    };
+  }
+
+  reduce(state, action) {
+    switch (action.type) {
+    case &#39;UPDATE_TODO&#39;:
+      return Object.assign({}, state, {
+        todo: action.todo
+      });
+
+    case &#39;ADD_TODO&#39;:
+      if( !action.todo ) return state;
+
+      const list = state.todoList.slice();
+      list.push(action.todo);
+      return Object.assign({}, state, {
+        todo: &#39;&#39;,
+        todoList: list
+      });
+
+    case &#39;CLOSE_TODO&#39;:
+      state.todoList = state.todoList.filter((item, index)=&gt;{
+        return index !== action.index;
+      });
+      return Object.assign({}, state);
+
+    default:
+      return state;
+    }
+  }
+
+  getTodo() {
+    return this.getState().todo;
+  }
+
+  getTodoList() {
+    return this.getState().todoList;
+  }
+
+}
+export default (new TodoStore(Dispatcher));
+</code></pre><p>reduce(state, action)に各アクションに相当する処理を定義する。</p>
+<p>これでこうなる。</p>
+<p><img src="https://lh3.googleusercontent.com/-gAH1NFZr6OM/V1vnH37FrhI/AAAAAAAAJ2I/uLKuSYgIJEEow2xg2UggolmIlIoK1I16gCCo/s800/flux3.gif" alt="TODOでflux"></p>
+<h2 id="-">感想</h2>
+<p>ライブラリ使ってる割にはめんどくさいｗ、命名規約ありでもいいから記述をもっと楽させてほしい。</p>
+
     </div>
 
-
-
-
+  </article>
+</div>
 
   <div class="l-page-nav">
     <div class="l-page-nav__body">
