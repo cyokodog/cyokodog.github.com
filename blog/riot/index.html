@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した | CYOKODOG</title>
+	<title>はじめてのRiot.js | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,67 +72,305 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/sk8-bs-bordslide/" title="うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+        <a href="/blog/riot/" title="はじめてのRiot.js">はじめてのRiot.js</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2014-10-26</li>
+        <li class="article__info__date">2016-06-14</li>
 <!--
         <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
       </ul>
     </div>
     <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/sk8-bs-bordslide/"><img src="https://lh5.googleusercontent.com/-_3ab5t_9ZGg/VEKFM-n_-cI/AAAAAAAAIIM/dNI0f5MCLeE/s800/IMG_2618c.jpg"></a>
-</div></p>
-<p>うちの小３男子はスケボーが趣味なのですが、この度念願の「ダウンレールでのバックサイドボードスライド」という技を習得することができました！
-開発者ブログをうたっときながら、相変わらず興味のない人にはなんのことやらという内容ですが、ついにきた！という思いがあまりに強かったので記念に動画を載せさせて頂きます。
-親バカと思って許してください（笑）</p>
+    <div class="article__eyecatch">
+  <a href="/blog/riot/"><img src="https://lh3.googleusercontent.com/-BcscRN4Yx2w/V1-PEd_2_1I/AAAAAAAAJ4U/hCXKVJK2BAoUcEIABI2itXxS9x-_H3pFQCCo/s144/riot.png"></a>
+</div>
 
-
+<p>手抜きタイトルのはじめてシリーズ３つ目。近頃、耳にすることの多いRiot.jsをさわってみました。</p>
 <!--more-->
-<h2>B/S Boardslide Down-Rail !!</h2>
+<h2 id="riot-js-">Riot.jsとは</h2>
+<p><a href="http://riotjs.com/">Riot.js — A React-like user interface micro-library</a>（<a href="http://riotjs.com/ja/">日本語訳</a>）</p>
+<ul>
+<li>Reactを意識して作られた超軽量のUIライブラリ、ビュー部分(コンポーネント)に特化</li>
+<li>Web componentsのように利用できる<ul>
+<li>HTMLの中に、JavaScriptやCSSを書く</li>
+</ul>
+</li>
+<li>軽量、5.7KB</li>
+<li>インブラウザ・コンパイルを利用することで、CDNを読み込むだけで手軽に利用できる</li>
+<li>開発元：<a href="https://muut.com/">MUUT</a></li>
+</ul>
+<h2 id="-">簡単な利用例</h2>
+<p>今回試した内容のブランチ。</p>
+<ul>
+<li><a href="https://github.com/cyokodog/riot_study">cyokodog/riot_study</a></li>
+</ul>
+<p>以下手順で利用可能。</p>
+<ul>
+<li>CDNの読み込み</li>
+<li>コンポーネントの定義と読み込み</li>
+<li>コンポーネントのマウント</li>
+</ul>
+<h3 id="-01-index-html">/01/index.html</h3>
+<pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    &lt;title&gt;一番かんたんなRiot.js&lt;/title&gt;
+    &lt;!-- include riot.js --&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/riot/2.4/riot+compiler.min.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;一番かんたんなRiot.js&lt;/h1&gt;
+    &lt;!-- place the custom tag anywhere inside the body --&gt;
+    &lt;sample&gt;&lt;/sample&gt;
+    &lt;!-- include the tag --&gt;
+    &lt;script type=&quot;riot/tag&quot; src=&quot;sample.tag&quot;&gt;&lt;/script&gt;
 
-<p>ちなみにこちらが始めて挑戦した時のダウンレールの gif アニメです。危険すぎますね、これ・・・^^;</p>
+    &lt;!-- mount the tag --&gt;
+    &lt;script&gt;
+    riot.mount(&#39;sample&#39;, {
+      who: &#39;Riot&#39;
+    })
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>インブラウザ・コンパイルをする場合は、riot+compiler.min.jsを読み込む。</p>
+<h3 id="-">コンポーネントの定義</h3>
+<h3 id="-01-sample-tag">/01/sample.tag</h3>
+<pre><code>&lt;sample&gt;
+  &lt;h3&gt;{ message }, {opts.who} !&lt;/h3&gt;
+  &lt;ul&gt;
+    &lt;li each={ techs }&gt;{ name }&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;script&gt;
+    this.message = &#39;Hello&#39;;
+    this.techs = [
+      { name: &#39;HTML&#39; },
+      { name: &#39;JavaScript&#39; },
+      { name: &#39;CSS&#39; }
+    ]
+  &lt;/script&gt;
+  &lt;style scoped&gt;
+    :scope { font-size: 2rem }
+    h3 { color: #0055aa }
+    ul { color: #ff5577 }
+  &lt;/style&gt;
+&lt;/sample&gt;
+</code></pre><p>上記でh3やulのstyleを変更してるが、styleタグにscopedを指定してるため、コンポーネント外には適用されない。（Web componentsやAngular2と同じ感じ）</p>
+<p>セミコロンを省略してるのは<a href="http://riotjs.com/ja/faq/#section-2">意図的</a>らしい。（書いても問題なし）</p>
+<p>こうなる</p>
+<p><img src="https://lh3.googleusercontent.com/-2NVvVjiSIYM/V1-MJW_joQI/AAAAAAAAJ3g/_RCP1HKhneMywFpb5ZXsaJGencchTK4KQCCo/s640/riot01.png" alt="一番簡単なRiot.js"></p>
+<h2 id="script-">scriptタグの省略</h2>
+<ul>
+<li>scriptタグの記述は省略できる。</li>
+<li>エディタの対応を考慮してscriptタグを記述してもよいようになっている。</li>
+<li>逆にコンポーネントをhtmlファイル内に直書きする場合は、scriptタグが入れ子になってしまうので省略する必要がある。(以下参照)</li>
+</ul>
+<pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    &lt;title&gt;HTML内でコンポーネントを定義する&lt;/title&gt;
+    &lt;!-- include riot.js --&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/riot/2.4/riot+compiler.min.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;HTML内でコンポーネントを定義する&lt;/h1&gt;
+    &lt;sample&gt;&lt;/sample&gt;
+    &lt;script type=&quot;riot/tag&quot;&gt;
+      &lt;sample&gt;
+        &lt;h3&gt;{ message }, {opts.who} !&lt;/h3&gt;
+        &lt;ul&gt;
+          &lt;li each={ techs }&gt;{ name }&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;style scoped&gt;
+          :scope { font-size: 2rem }
+          h3 { color: #0055aa }
+          ul { color: #ff5577 }
+        &lt;/style&gt;
+        this.message = &#39;Hello&#39;
+        this.techs = [
+          { name: &#39;HTML&#39; },
+          { name: &#39;JavaScript&#39; },
+          { name: &#39;CSS&#39; }
+        ]
+      &lt;/sample&gt;
+    &lt;/script&gt;
+    &lt;script&gt;
+    riot.mount(&#39;sample&#39;, {
+      who: &#39;Riot&#39;
+    })
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h3 id="-">疑問点</h3>
+<ul>
+<li>li内でプレフィックスなしでいきなり { name } とか書いてるけど、入れ子の場合とかでnameの所在オブジェクトを明示したい時とかどうするんだろう。</li>
+</ul>
+<h2 id="script-">scriptで利用できるプリプロセッサ</h2>
+<p>type属性に以下の指定が使用できる。</p>
+<ul>
+<li>es6</li>
+<li>babel</li>
+<li>coffee</li>
+<li>livescript</li>
+<li>typescript</li>
+<li>vanilla</li>
+</ul>
+<p>これらを利用する場合は、riot コマンドによるプリコンパイルが必要なので、riotをグローバルにインストールする必要あり。</p>
+<pre><code>sudo npm i -g riot
+riot --help
+</code></pre><h2 id="es2015-">ES2015で書いてみる</h2>
+<h3 id="-03-index-html">/03/index.html</h3>
+<pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    &lt;title&gt;babel+es6で書いてみる&lt;/title&gt;
+    &lt;!-- プリコンパイルしてるのでriot.jsのみの読み込みでOK --&gt;
+    &lt;!--&lt;script src=&quot;https://cdn.jsdelivr.net/riot/2.4/riot+compiler.min.js&quot;&gt;&lt;/script&gt;--&gt;
+    &lt;script src=&quot;//cdn.jsdelivr.net/riot/2.4/riot.min.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;babel+es6で書いてみる&lt;/h1&gt;
+    &lt;es6test&gt;&lt;/es6test&gt;
+    &lt;!-- babelでプリコンパイルしたjsファイルを読む --&gt;
+    &lt;script src=&quot;es6test.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+    riot.mount(&#39;*&#39;);
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>プリコンパイルするのでriot.min.jsのみを読み込めばOK.</p>
+<h3 id="-03-es6test-tag">/03/es6test.tag</h3>
+<pre><code>&lt;es6test&gt;
+  &lt;h3&gt;{ test }&lt;/h3&gt;
+  var type = &#39;ES2015&#39;
+  this.test = `This is ${type}`
+&lt;/es6test&gt;
+</code></pre><p>コンパイルするにはグローバルにbabelをインストールする必要があるっぽい</p>
+<pre><code>sudo npm i -g babel
+</code></pre><p>コンパイル。</p>
+<pre><code>riot 03/es6test.tag
+</code></pre><p>出力先を指定する場合は以下のようにする。</p>
+<pre><code>riot 03/es6test.tag dist
+</code></pre><p>これで03/es6test.jsが生成され、以下のよう表示される。</p>
+<p><img src="https://lh3.googleusercontent.com/-xgqPJRpl_9A/V1-MJTRu9EI/AAAAAAAAJ3g/9l3BsXOZpI8w0lMh11yNJiL45Z3nRN1CACCo/s640/riot02.png" alt="es6でRiot.js"></p>
+<p>ソースの変更を監視するには -w を指定する</p>
+<pre><code>riot -w src dist
+</code></pre><p>gulpやbrowserifyやwebpackへの組み込無場合は以下参照。</p>
+<ul>
+<li><a href="https://github.com/e-jigsaw/gulp-riot">e-jigsaw/gulp-riot: gulp plugin for riot</a></li>
+<li><a href="https://github.com/jhthorsen/riotify">jhthorsen/riotify: browserify plugin for riot tag files</a></li>
+<li><a href="https://github.com/esnunes/riotjs-loader">esnunes/riotjs-loader: riotjs module loader for webpack</a></li>
+</ul>
+<h3 id="html-css-">htmlやcssは...</h3>
+<ul>
+<li>htmlにテンプレートエンジンのjadeとpugが利用できる</li>
+<li>cssにlessが利用できる</li>
+</ul>
+<pre><code>&lt;script type=&quot;riot/tag&quot;&gt;  
+  ...
 
-<p><img src="http://i.giphy.com/5xtDarrMExR3PJ0G2zK.gif" alt=""></p>
+  &lt;style type=&#39;less&#39;&gt;
+  &lt;/style&gt;
+&lt;/sctipt&gt;  
+</code></pre><h2 id="-">お手軽ルーター</h2>
+<p>ルーターをお手軽に利用できる。</p>
+<p>/04/index.html</p>
+<pre><code>&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    &lt;title&gt;お手軽ルーター&lt;/title&gt;
+    &lt;style&gt;
+      body{
+        margin: 0 16px;
+      }
+    &lt;/style&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/riot/2.4/riot+compiler.min.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;app&gt;&lt;/app&gt;
+    &lt;script type=&quot;riot/tag&quot;&gt;
+      &lt;app title=&quot;hoge&quot;&gt;
+        &lt;style scoped&gt;
+        ul{
+          margin: 0 -16px;
+          background-color: #000;
+        }
+        li{
+          padding: 8px 16px;
+          list-style: none;
+          display: inline-block;
+        }
+        a:visited,
+        a{
+          color: #fff;
+        }
+        &lt;/style&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&#39;#home&#39;&gt;home&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&#39;#blog&#39;&gt;blog&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&#39;#contact&#39;&gt;contact&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;content&gt;&lt;/content&gt;
+        riot.route(function(tagName) {
+          tagName = tagName || &#39;home&#39;;
+          riot.mount(&#39;content&#39;, tagName);
+        });
+        riot.route.start(true);
+      &lt;/app&gt;
 
-<p><br>
-その後、傾斜の弱い上の画像のダウンレールはマスターしたのですが、次の目標はこちらの備え付けの手すりでのメイク！</p>
-
-<p><img src="https://lh5.googleusercontent.com/-_3ab5t_9ZGg/VEKFM-n_-cI/AAAAAAAAIIM/dNI0f5MCLeE/s800/IMG_2618c.jpg" alt=""></p>
-
-<p>最初は恐怖心が相当なようで中途半端な入り方をして、危険な落ち方して悶絶してましたが、次第に慣れて２日でマスターすることができました！
-こちらがその時の記録です。</p>
-
-<iframe width="640" height="480" src="http://www.youtube.com/embed/VKWWFvWsPUg?rel=0" frameborder="0" allowfullscreen=""></iframe>
-
-<p><strong>おめでとう！！</strong></p>
-
-<h2>これまでの軌跡</h2>
-
-<p>ついでなんで過去の動画も・・保育園の頃のなつかしい・・</p>
-
-<p>小２夏、スパイン超え</p>
-
-<iframe width="640" height="480" src="http://www.youtube.com/embed/BDJ1cfjCG08?rel=0" frameborder="0" allowfullscreen=""></iframe>
-
-<p><br>バンクでオーリー</p>
-
-<iframe width="640" height="480" src="http://www.youtube.com/embed/ZZNwixIU6ac?rel=0" frameborder="0" allowfullscreen=""></iframe>
-
-<p><br>保育園～小１夏(PV風)</p>
-
-<iframe width="640" height="480" src="http://www.youtube.com/embed/Qe20M66W84g?rel=0" frameborder="0" allowfullscreen=""></iframe>
-
-<p><br>スケボー購入</p>
-
-<iframe width="640" height="480" src="http://www.youtube.com/embed/Q266P78fQAk" frameborder="0" allowfullscreen=""></iframe>
-
-<p><br>スケボーにあこがれる</p>
-
-<iframe width="640" height="480" src="http://www.youtube.com/embed/HajDknQAH-8" frameborder="0" allowfullscreen=""></iframe>
-
+      &lt;home&gt;
+        &lt;h2&gt;Home&lt;/h2&gt;
+        &lt;p&gt;Lorem Ipsum is simply dummy text of the printing and typesetting industry. &lt;/p&gt;
+      &lt;/home&gt;
+      &lt;blog&gt;
+        &lt;h2&gt;blog&lt;/h2&gt;
+        &lt;p&gt;It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. &lt;/p&gt;
+      &lt;/blog&gt;
+      &lt;contact&gt;
+        &lt;h2&gt;contact&lt;/h2&gt;
+        &lt;p&gt;Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. &lt;/p&gt;
+      &lt;/contact&gt;
+    &lt;/script&gt;
+    &lt;script&gt;
+      riot.mount(&#39;*&#39;)
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p><img src="https://lh3.googleusercontent.com/-ZgwSJz1eRGs/V1-Njh8N2JI/AAAAAAAAJ4I/6Qi1cVQ3j2AAchug3SS-dBkJsoUF2P7swCCo/s800/riot03.gif" alt="お手軽ルーター"></p>
+<p>上記構成をシンプルに書くとこんな感じ。</p>
+<pre><code>&lt;app&gt;&lt;/app&gt;
+&lt;script type=&quot;riot/tag&quot;&gt;
+  &lt;app&gt;
+    &lt;a href=&#39;#home&#39;&gt;home&lt;/a&gt;
+    &lt;a href=&#39;#blog&#39;&gt;blog&lt;/a&gt;
+    &lt;a href=&#39;#contact&#39;&gt;contact&lt;/a&gt;
+    &lt;content&gt;&lt;/content&gt;
+    riot.route(function(tagName) {
+      tagName = tagName || &#39;home&#39;;
+      riot.mount(&#39;content&#39;, tagName);
+    });
+    riot.route.start(true);
+  &lt;/app&gt;
+  &lt;home&gt;&lt;/home&gt;
+  &lt;blog&gt;&lt;/blog&gt;
+  &lt;contact&gt;&lt;/contact&gt;
+&lt;/script&gt;
+</code></pre><ol>
+<li>riot.route(function(tagName){ ... で、hashchangeした時の処理を定義</li>
+<li>riot.mount(A, B) で、AにBの内容を割り当てる</li>
+<li>riot.route.start(true) で、hashchangeの監視開始</li>
+</ol>
+<h2 id="-">参考サイト</h2>
+<ul>
+<li><a href="http://riotjs.com/ja/">Riot.js — A React-like user interface micro-library · Riot.js</a></li>
+<li><a href="http://phiary.me/frontend-riot-js-no1/">フロント界隈で一番イケてるのは AngularJS でも React でもなく Riot.js だという話 | phiary</a></li>
+<li><a href="http://qiita.com/cognitom/items/54ae38c9a50dbbe28367">Riot.js 2.2 情報まとめ - Qiita</a></li>
+<li><a href="http://qiita.com/cognitom/items/fb1295f3f93911e9e92d">Riot.js 2.0 を触ってみた — まだReactで消耗しているの? - Qiita</a></li>
+</ul>
+<h2 id="-">感想</h2>
+<p>Web components的な管理とかルーター機能が手軽に使えるインブラウザ・コンパイルはいいかも。
+さくっと書きたい時に使いたい。</p>
 
     </div>
 
