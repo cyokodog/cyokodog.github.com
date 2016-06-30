@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン | CYOKODOG</title>
+	<title>Angular CLI を試してみる | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,10 +72,10 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/parse-url-doc/" title="URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+        <a href="/blog/angular-cli/" title="Angular CLI を試してみる">Angular CLI を試してみる</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2013-11-05</li>
+        <li class="article__info__date">2016-06-30</li>
 <!--
         <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
@@ -83,35 +83,403 @@
     </div>
     <div class="article__body">
     <div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/parse-url-doc/"><img src="http://lh6.googleusercontent.com/-chMPdwaAr4Q/UnkMsrtSv7I/AAAAAAAAFc0/pBlboJSwJcc/s144/parse-url.png"></a>
+  <a href="/blog/angular-cli/"><img src="https://lh3.googleusercontent.com/-HJbW96OBTmU/V3UI2OO9hII/AAAAAAAAJ5g/KvsbK5vW0AE-ydRbK7GV95e7eSCe46brACCo/s288/ng00.png"></a>
 </div>
-<p>
-Parse URL は、指定した URL の構成要素を解析し、ホスト名や QueryString の個々の値を簡単に取得することができる jQuery プラグインです。
-<a href="https://github.com/cyokodog/jquery.utility-kit">jQuery Utility Kit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。
-</p>
 
-<span id="more-92"></span>
+<p>ちょっと前の社内勉強会で紹介されてた Angular CLI を試してみた。</p>
+<!--more-->
+<h2 id="ng-">ngコマンドのインストール</h2>
+<p>まずは、angular-cliをグローバルにインストール。</p>
+<pre><code>sudo npm install -g angular-cli
+ng --help
+</code></pre><p>ndenv や anyenv の利用環境下で「ng コマンドなんてないよ」ってなっちゃう場合は、「ndenv rehash」してみる</p>
+<h2 id="-">プロジェクトの生成とサーバの起動</h2>
+<p>事前にtypings（<a href="http://qiita.com/literalice/items/d83249a5646abcb0bec6">TypeScriptの型定義管理ツールTypingsについて - Qiita</a>）をグローバルにインストールしておく。</p>
+<pre><code>npm install typings -g
+</code></pre><p>サーバ起動時おこられないようにするため、watchmanもインストールしておく。</p>
+<pre><code>brew install watchman
+</code></pre><p>プロジェクトの作成とサーバの起動。</p>
+<pre><code>ng new myproj
+cd myproj
+ng serve
+</code></pre><p>こんな感じでサーバが起動する。</p>
+<pre><code>Livereload server on http://localhost:49153
+Serving on http://localhost:4200/
 
-<h2>使い方</h2>
+Build successful - 1095ms.
 
-<p class="for-bottom">jQuery、jQuery Utility Kit（または Parse URL）の JS ファイルを読み込みます。</p>
+Slowest Trees                                 | Total               
+----------------------------------------------+---------------------
+BroccoliTypeScriptCompiler                    | 662ms               
+vendor                                        | 336ms               
 
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L1"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"jquery.utility-kit.js"</span><span class="tag">&gt;&lt;/script&gt;</span><span class="com">&lt;!-- または jquery.parse-url.js --&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
+Slowest Trees (cumulative)                    | Total (avg)         
+----------------------------------------------+---------------------
+BroccoliTypeScriptCompiler (1)                | 662ms               
+vendor (1)                                    | 336ms               
+</code></pre><p>localhost:4200/にアクセス。ソースを変更すればライブリロードしてくれる。</p>
+<p><img src="https://lh3.googleusercontent.com/-NGXqhNyL-gk/V3UI15rnc8I/AAAAAAAAJ5Y/Wfp0jVhDyxIQJzFjfD6NC1IZ5_qcJynvQCCo/s800/ng01.gif" alt="sample01"></p>
+<p>ポートを変えたい場合は以下のように起動する。</p>
+<pre><code>ng serve --port 4201 --live-reload-port 49153
+</code></pre><p>画面に表示されてる部分のソースは以下。</p>
+<h3 id="-app-app-component-ts">/app/app.component.ts</h3>
+<pre><code>import { Component } from &#39;@angular/core&#39;;
 
-<p class="for-bottom">以下いずれかの方法で、$.parseURL() メソッドを実行すると、json 形式で解析結果を返します。</p>
+@Component({
+  moduleId: module.id,
+  selector: &#39;app-root&#39;,
+  templateUrl: &#39;app.component.html&#39;,
+  styleUrls: [&#39;app.component.css&#39;]
+})
+export class AppComponent {
+  title = &#39;app works!&#39;;
+}
+</code></pre><h3 id="-app-app-component-html">/app/app.component.html</h3>
+<pre><code>&lt;h1&gt;
+  {{title}}
+&lt;/h1&gt;
+</code></pre><h2 id="-">コンポーネントの雛形を作る</h2>
+<p>コンポーネントやらサービスの雛形が以下のコマンドで作れる。</p>
+<table><thead>
+<tr>
+<th>Scaffold</th>
+<th>Usage</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Component</td>
+<td><code>ng g component my-new-component</code></td>
+</tr>
+<tr>
+<td>Directive</td>
+<td><code>ng g directive my-new-directive</code></td>
+</tr>
+<tr>
+<td>Pipe</td>
+<td><code>ng g pipe my-new-pipe</code></td>
+</tr>
+<tr>
+<td>Service</td>
+<td><code>ng g service my-new-service</code></td>
+</tr>
+<tr>
+<td>Class</td>
+<td><code>ng g class my-new-class</code></td>
+</tr>
+<tr>
+<td>Interface</td>
+<td><code>ng g interface my-new-interface</code></td>
+</tr>
+<tr>
+<td>Enum</td>
+<td><code>ng g enum my-new-enum</code></td>
+</tr>
+</tbody></table>
 
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">// 表示してるページの URL (location.href) の解析結果を返します</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> json </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">parseURL</span><span class="pun">();</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="com">// img や a 要素のように href 又は src 属性を持つ要素に対して適用</span></li><li class="L4"><span class="kwd">var</span><span class="pln"> json </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">(</span><span class="str">'a.link'</span><span class="pun">).</span><span class="pln">parseURL</span><span class="pun">();</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="com">// 直接 URL を指定し実行</span></li><li class="L7"><span class="kwd">var</span><span class="pln"> json </span><span class="pun">=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">parseURL</span><span class="pun">(</span><span class="str">'http://domain/app/page.html?p1=aaa&amp;p2=bbb#ccc'</span><span class="pun">);</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">href </span><span class="pun">);</span><span class="pln"> </span><span class="com">// http://domain/app/page.html?p1=aaa&amp;p2=bbb#ccc</span></li><li class="L0"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">protocol </span><span class="pun">);</span><span class="pln"> </span><span class="com">// http:</span></li><li class="L1"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">host </span><span class="pun">);</span><span class="pln"> </span><span class="com">// domain:80</span></li><li class="L2"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">hostname </span><span class="pun">);</span><span class="pln"> </span><span class="com">// domain</span></li><li class="L3"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">port </span><span class="pun">);</span><span class="pln"> </span><span class="com">// 80</span></li><li class="L4"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">pathname </span><span class="pun">);</span><span class="pln"> </span><span class="com">// app/page.html</span></li><li class="L5"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">hash </span><span class="pun">);</span><span class="pln"> </span><span class="com">// #ccc</span></li><li class="L6"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">search </span><span class="pun">);</span><span class="pln"> </span><span class="com">// ?p1=aaa&amp;p2=bbb</span></li><li class="L7"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">query </span><span class="pun">);</span><span class="pln"> </span><span class="com">// json オブジェクト</span></li><li class="L8"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">query</span><span class="pun">.</span><span class="pln">p1 </span><span class="pun">);</span><span class="pln"> </span><span class="com">// aaa</span></li><li class="L9"><span class="pln">alert</span><span class="pun">(</span><span class="pln"> json</span><span class="pun">.</span><span class="pln">query</span><span class="pun">.</span><span class="pln">p2 </span><span class="pun">);</span><span class="pln"> </span><span class="com">// bbb</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 414px;"></textarea></div></div></div>
 
-<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.utility-kit/parse-url/demo.html" class="demo external" target="_blank">Demo</a></div></p>
+<p>コンポーネントを作ってみる</p>
+<pre><code>ng g component hoge-component
+</code></pre><p>こんなふうに生成される。</p>
+<pre><code>installing component
+  create src/app/hoge-component/hoge-component.component.css
+  create src/app/hoge-component/hoge-component.component.html
+  create src/app/hoge-component/hoge-component.component.spec.ts
+  create src/app/hoge-component/hoge-component.component.ts
+  create src/app/hoge-component/index.ts
+</code></pre><p>中身はこんな感じ。</p>
+<h3 id="index-ts">index.ts</h3>
+<pre><code>export * from &#39;./hoge-component.component&#39;;
+</code></pre><h3 id="hoge-component-component-ts">hoge-component.component.ts</h3>
+<pre><code>import { Component, OnInit } from &#39;@angular/core&#39;;
 
-<h2>ダウンロード</h2>
+@Component({
+  moduleId: module.id,
+  selector: &#39;app-hoge-component&#39;,
+  templateUrl: &#39;hoge-component.component.html&#39;,
+  styleUrls: [&#39;hoge-component.component.css&#39;]
+})
+export class HogeComponentComponent implements OnInit {
 
-<p>こちらからどうぞ。</p>
+  constructor() {}
 
+  ngOnInit() {
+  }
+
+}
+</code></pre><h3 id="hoge-component-component-html">hoge-component.component.html</h3>
+<pre><code>&lt;p&gt;
+  hoge-component works!
+&lt;/p&gt;
+</code></pre><h3 id="hoge-component-component-spec-ts">hoge-component.component.spec.ts</h3>
+<pre><code>/* tslint:disable:no-unused-variable */
+
+import { By }           from &#39;@angular/platform-browser&#39;;
+import { DebugElement } from &#39;@angular/core&#39;;
+
+import {
+  beforeEach, beforeEachProviders,
+  describe, xdescribe,
+  expect, it, xit,
+  async, inject
+} from &#39;@angular/core/testing&#39;;
+
+import { HogeComponentComponent } from &#39;./hoge-component.component&#39;;
+
+describe(&#39;Component: HogeComponent&#39;, () =&gt; {
+  it(&#39;should create an instance&#39;, () =&gt; {
+    let component = new HogeComponentComponent();
+    expect(component).toBeTruthy();
+  });
+});
+</code></pre><p>hoge-component.component.css の中身は空。</p>
+<h2 id="-">生成したコンポーネントを使ってみる</h2>
+<h3 id="-app-app-component-ts">/app/app.component.ts</h3>
+<pre><code>import { Component } from &#39;@angular/core&#39;;
+
+// 追加
+import { HogeComponentComponent } from &#39;./hoge-component&#39;;
+
+@Component({
+  moduleId: module.id,
+  selector: &#39;app-root&#39;,
+  templateUrl: &#39;app.component.html&#39;,
+  styleUrls: [&#39;app.component.css&#39;],
+
+  // 追加
+  directives: [HogeComponentComponent],
+})
+export class AppComponent {
+  title = &#39;app works!&#39;;
+}
+</code></pre><p>生成したコンポーネントをインポートして、directivesに定義。
+名前がHogeComponentComponentってなっちゃうのが気になるけど、そういうものとして受け入れるしかなさそう。</p>
+<h3 id="-app-app-component-html">/app/app.component.html</h3>
+<pre><code>&lt;h1&gt;
+  {{title}}
+&lt;/h1&gt;
+&lt;!-- 追加 --&gt;
+&lt;app-hoge-component&gt;&lt;/app-hoge-component&gt;
+</code></pre><p>app-hoge-componentを適当な場所に追加。
+こうなる。</p>
+<p><img src="https://lh3.googleusercontent.com/-wee0LskU-x8/V3UI11cDDvI/AAAAAAAAJ5U/g5gp69BldNo9HbL1CmPtclSMP7IuW6qUQCCo/s400/ng02.png" alt="sample02"></p>
+<h2 id="css-">CSSプリプロセッサを使う</h2>
+<p>以下のCSSプリプロセッサに対応。</p>
 <ul>
-<li><a href="https://github.com/cyokodog/jquery.utility-kit">jquery.utility-kit – GitHub</a></li>
+<li>sass (node-sass)</li>
+<li>less (less)</li>
+<li>compass (compass-importer + node-sass)</li>
+<li>stylus (stylus)</li>
 </ul>
+<p>sassを使ってみる。node-sassをインストール。  </p>
+<pre><code>npm i --save-dev node-sass
+</code></pre><p>これでcssファイルをscssに変えれば変換してくれる。
+例えば、hoge-component.component.css を .scss にして以下のようにしてみる。</p>
+<pre><code>$color: red;
+p {
+  color: $color;
+}
+</code></pre><h2 id="-">ビルドする</h2>
+<p>以下でdistディレクトリにビルド結果が出力される。</p>
+<pre><code>ng build
+</code></pre><p>-prod オプションでproductionモードで生成できるっぽい。</p>
+<pre><code>ng build -prod
+ng serve -prod
+</code></pre><h2 id="-">サードパーティー製ライブラリを組み込む</h2>
+<h3 id="moment-js-">moment.jsを組み込んでみる</h3>
+<p>npm でインストール。</p>
+<pre><code>npm install moment --save
+</code></pre><p>angular-cli-build.js の vendorNpmFiles に、node_modulesからみたmoment.jsのパスを追記する。</p>
+<pre><code>var Angular2App = require(&#39;angular-cli/lib/broccoli/angular2-app&#39;);
 
+module.exports = function(defaults) {
+  return new Angular2App(defaults, {
+    vendorNpmFiles: [
+      &#39;systemjs/dist/system-polyfills.js&#39;,
+      &#39;systemjs/dist/system.src.js&#39;,
+      &#39;zone.js/dist/**/*.+(js|js.map)&#39;,
+      &#39;es6-shim/es6-shim.js&#39;,
+      &#39;reflect-metadata/**/*.+(ts|js|js.map)&#39;,
+      &#39;rxjs/**/*.+(js|js.map)&#39;,
+      &#39;@angular/**/*.+(js|js.map)&#39;,
+
+      // 追加！
+      &#39;moment/moment.js&#39;
+    ]
+  });
+};
+</code></pre><p>src/system-config.ts の map と packages にも追記。</p>
+<pre><code>/** Map relative paths to URLs. */
+const map: any = {
+  // 追加
+  &#39;moment&#39;: &#39;vendor/moment/moment.js&#39;
+};
+
+/** User packages configuration. */
+const packages: any = {
+  // 追加
+  &#39;moment&#39;:{
+    format: &#39;cjs&#39;
+  }
+};
+</code></pre><p>これで import して moment.js が利用できるようになる。</p>
+<pre><code>import * as moment from &#39;moment&#39;;
+console.log(moment().format());
+</code></pre><h2 id="angular2-material-">angular2-material を組み込んでみる</h2>
+<p>npm でインストール。</p>
+<pre><code>npm install @angular2-material/core --save
+</code></pre><p>今回はチェックボックスを使用。</p>
+<pre><code>npm install @angular2-material/checkbox --save
+</code></pre><p>angular-cli-build.js の vendorNpmFilesに追加！</p>
+<pre><code>var Angular2App = require(&#39;angular-cli/lib/broccoli/angular2-app&#39;);
+
+module.exports = function(defaults) {
+  return new Angular2App(defaults, {
+    vendorNpmFiles: [
+      &#39;systemjs/dist/system-polyfills.js&#39;,
+      &#39;systemjs/dist/system.src.js&#39;,
+      &#39;zone.js/dist/**/*.+(js|js.map)&#39;,
+      &#39;es6-shim/es6-shim.js&#39;,
+      &#39;reflect-metadata/**/*.+(ts|js|js.map)&#39;,
+      &#39;rxjs/**/*.+(js|js.map)&#39;,
+      &#39;@angular/**/*.+(js|js.map)&#39;,
+      &#39;moment/moment.js&#39;,
+
+      // 追加！
+      &#39;@angular2-material/**/*.js&#39;
+    ]
+  });
+};
+</code></pre><p>src/system-config.ts の map と packages にも追記。</p>
+<pre><code>/** Map relative paths to URLs. */
+const map: any = {
+  &#39;moment&#39;: &#39;vendor/moment/moment.js&#39;,
+
+  // 追加
+  &#39;@angular2-material&#39;: &#39;vendor/@angular2-material&#39;
+};
+
+/** User packages configuration. */
+const packages: any = {
+  &#39;moment&#39;:{
+    format: &#39;cjs&#39;
+  },
+
+  // 追加
+  &#39;@angular2-material/core&#39;: {
+    format: &#39;cjs&#39;,
+    defaultExtension: &#39;js&#39;,
+    main: &#39;core.js&#39;
+  },
+  &#39;@angular2-material/checkbox&#39;: {
+    format: &#39;cjs&#39;,
+    defaultExtension: &#39;js&#39;,
+    main: &#39;checkbox.js&#39;
+  },
+};
+</code></pre><p>/app/app.component.ts</p>
+<pre><code>import { Component } from &#39;@angular/core&#39;;
+import { HogeComponentComponent } from &#39;./hoge-component&#39;;
+
+// 追加
+import { MdCheckbox } from &#39;@angular2-material/checkbox&#39;;
+
+@Component({
+  moduleId: module.id,
+  selector: &#39;app-root&#39;,
+  templateUrl: &#39;app.component.html&#39;,
+  styleUrls: [&#39;app.component.css&#39;],
+  directives: [
+    HogeComponentComponent,
+
+    // 追加
+    MdCheckbox
+  ],
+})
+export class AppComponent {
+  title = &#39;app works!&#39;;
+}
+</code></pre><p>/app/app.component.html</p>
+<pre><code>&lt;h1&gt;
+  {{title}}
+&lt;/h1&gt;
+&lt;app-hoge-component&gt;&lt;/app-hoge-component&gt;
+
+&lt;!-- 追加 --&gt;
+&lt;md-checkbox&gt;&lt;/md-checkbox&gt;
+</code></pre><p><img src="https://lh3.googleusercontent.com/-oZD2bLarea0/V3UI2aFhHrI/AAAAAAAAJ58/c0HEMs4xIWYx8DRLYfq-mztLjp5qyImmACCo/s800/ng03.gif" alt="sample03"></p>
+<h3 id="underscore-js-">underscore.js を組み込んでみる</h3>
+<p>npm でインストール。</p>
+<pre><code>npm install underscore --save
+</code></pre><p>型定義ファイルをインストール。
+ちなみに moment.js の場合は、npm installすると moment.d.ts も node_modules に配置されるので typings install 不要っぽい。</p>
+<pre><code>typings install dt~underscore --global --save
+</code></pre><p>angular-cli-build.js の vendorNpmFilesに追加。</p>
+<pre><code>var Angular2App = require(&#39;angular-cli/lib/broccoli/angular2-app&#39;);
+
+module.exports = function(defaults) {
+  return new Angular2App(defaults, {
+    vendorNpmFiles: [
+      &#39;systemjs/dist/system-polyfills.js&#39;,
+      &#39;systemjs/dist/system.src.js&#39;,
+      &#39;zone.js/dist/**/*.+(js|js.map)&#39;,
+      &#39;es6-shim/es6-shim.js&#39;,
+      &#39;reflect-metadata/**/*.+(ts|js|js.map)&#39;,
+      &#39;rxjs/**/*.+(js|js.map)&#39;,
+      &#39;@angular/**/*.+(js|js.map)&#39;,
+      &#39;moment/moment.js&#39;,
+      &#39;@angular2-material/**/*.js&#39;,
+
+      // 追加！
+      &#39;underscore/underscore.js&#39;
+    ]
+  });
+};
+</code></pre><p>src/system-config.ts の map と packages にも追記。</p>
+<pre><code>/** Map relative paths to URLs. */
+const map: any = {
+  &#39;moment&#39;: &#39;vendor/moment/moment.js&#39;,
+  &#39;@angular2-material&#39;: &#39;vendor/@angular2-material&#39;,
+
+  // 追加
+  &#39;underscore&#39;: &#39;vendor/underscore/underscore.js&#39;
+};
+
+/** User packages configuration. */
+const packages: any = {
+  &#39;moment&#39;:{
+    format: &#39;cjs&#39;
+  },
+  &#39;@angular2-material/core&#39;: {
+    format: &#39;cjs&#39;,
+    defaultExtension: &#39;js&#39;,
+    main: &#39;core.js&#39;
+  },
+  &#39;@angular2-material/checkbox&#39;: {
+    format: &#39;cjs&#39;,
+    defaultExtension: &#39;js&#39;,
+    main: &#39;checkbox.js&#39;
+  },
+
+  // 追加
+  &#39;underscore&#39;:{
+    format: &#39;cjs&#39;
+  }
+};
+</code></pre><p>これで &lt;reference path=&quot;../../typings/globals/underscore/index.d.ts&quot; で型定義を読めば import できるとのことだがうまくいかず...</p>
+<ul>
+<li><a href="https://github.com/angular/angular-cli/wiki/3rd-party-libs#4-importing-and-using-underscore-library-in-your-project-source-files">3rd party libs · angular/angular-cli Wiki</a></li>
+</ul>
+<p>なんでだろ... 余裕があったら調べる</p>
+<h2 id="github-pages-">GitHub Pages にデプロイする</h2>
+<p>AngularCLIで作成したプロジェクト名で、GitHubにリポジトリを作れば簡単にGitHub Pagesにデプロイできる。</p>
+<pre><code>git init
+git add .
+git commit -m &#39;first commit&#39;
+git remote add origin git@github.com:cyokodog/myproj.git
+ng github-pages:deploy --message &quot;Optional commit message&quot;
+</code></pre><p>これで <a href="https://cyokodog.github.io/myproj/">https://cyokodog.github.io/myproj/</a> にアクセスすると画面が表示される。</p>
+<h2 id="-">感想</h2>
+<p>大規模案件やってると強めな実装規約的な縛りがほしいなぁ、、、と思うことがしばしあるので良いかも。</p>
 
     </div>
 
