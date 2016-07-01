@@ -478,7 +478,9 @@ git commit -m &#39;first commit&#39;
 git remote add origin git@github.com:cyokodog/myproj.git
 ng github-pages:deploy --message &quot;Optional commit message&quot;
 </code></pre><p>これで <a href="https://cyokodog.github.io/myproj/">https://cyokodog.github.io/myproj/</a> にアクセスすると画面が表示される。</p>
-<h2 id="-">感想</h2>
+<p>GitHub上には gh-pages のブランチのみができてて実行用のモジュールのみがのる感じになるので、ソースコードを管理したい場合は以下のように別ブランチ（master）で push すればよい。</p>
+<pre><code>git push origin master
+</code></pre><h2 id="-">感想</h2>
 <p>大規模案件やってると強めな実装規約的な縛りがほしいなぁ、、、と思うことがしばしあるので良いかも。</p>
 
     </div>
