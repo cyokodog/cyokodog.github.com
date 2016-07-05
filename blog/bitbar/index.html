@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>Ex Code Prettify をバージョンアップしました【追記あり】 | CYOKODOG</title>
+	<title>BitBar を試してみる | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,10 +72,10 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/ex-code-prettify-v05/" title="Ex Code Prettify をバージョンアップしました【追記あり】">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+        <a href="/blog/bitbar/" title="BitBar を試してみる">BitBar を試してみる</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2014-11-06</li>
+        <li class="article__info__date">2016-07-05</li>
 <!--
         <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
@@ -83,58 +83,150 @@
     </div>
     <div class="article__body">
     <div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/ex-code-prettify-v05/"><img src="https://lh4.googleusercontent.com/-3exvGUhfP0A/UkBVHV--XgI/AAAAAAAAFZs/iqBAvKfjyLc/s800/logo.png"></a>
+  <a href="/blog/bitbar/"><img src="https://lh3.googleusercontent.com/-sfbDveye2Bw/V3udWdwYgJI/AAAAAAAAJ6M/tQVYrODpDcYtduhJhlBpuew8cSy5kQRZQCCo/s144/bitbar.png"></a>
 </div>
-<p>その場で編集／実行できるシンタックスハイライター jQuery プラグイン <a href="http://www.cyokodog.net/blog/ex-code-prettify-doc/">Ex Code Prettify</a> をバージョンアップしました。</p>
 
+<p>任意のスクリプトを定期実行して、標準出力結果を Mac OS Xのメニューバーに表示してくれるアプリ「BitBar」を試してみました。</p>
 <!--more-->
-
-<h2>【追記】</h2>
-
-<p>外部 css, js ファイルの読み込み指定時、それらファイルが読み込まれた後にコードが実行されるように修正しました。</p>
-
-<h2>追加された機能</h2>
-
-<p>以下の機能を追加しました。</p>
-
+<h2 id="-">公式サイト</h2>
 <ul>
-<li>JavaScript のコード内で 自身のデモエリアを格納した$DEMO、API オブジェクトを格納した API という変数を参照できるようにしました。</li>
-<li>code / demo を横並びレイアウトで表示した際、画面幅に応じたレスポンシブレイアウトになるようにしました。</li>
+<li><a href="https://github.com/matryer/bitbar">matryer/bitbar: Put the output from any script or program in your Mac OS X Menu Bar</a></li>
+<li><a href="https://getbitbar.com/">BitBar - Put anything in your Mac OS X menu bar</a></li>
 </ul>
+<h2 id="-">活用事例</h2>
+<ul>
+<li><a href="http://tbpgr.hatenablog.com/entry/2016/06/03/010320">BitBarとesaを連携してニッポーのタスクリストをOS Xのメニューバーに表示する - Tbpgr Blog</a></li>
+<li><a href="http://hisasann.github.io/2016/05/18/bitbar-connect-trello/">BitBarにtrelloのcardを表示してタスク管理する - DJレモンサワーのレモン日記</a></li>
+<li><a href="http://qiita.com/saboyutaka/items/914e4b373c13b10f1a53">BitbarでSplatoonのフレンド状況をメニューバーに表示する - Qiita</a></li>
+<li><a href="http://qiita.com/hikouki/items/f0bcaabd46b0e26acbe6">BitBarでRedmineのプラグインを作りました - Qiita</a></li>
+<li><a href="http://kakakakakku.hatenablog.com/entry/2016/03/15/231045">BitBar と Togoo を連携して残タスク数をメニューバーに表示してみた - kakakakakku blog</a></li>
+</ul>
+<h2 id="-">対応言語</h2>
+<ul>
+<li>bash</li>
+<li>zsh</li>
+<li>Ruby</li>
+<li>Python</li>
+<li>JavaScript (node)</li>
+<li>CoffeeScript</li>
+<li>Swift</li>
+<li>Go</li>
+<li>Lisp</li>
+<li>Perl5</li>
+<li>PHP</li>
+</ul>
+<h2 id="-">インストールと使い方</h2>
+<ul>
+<li><a href="https://github.com/matryer/bitbar/releases">GitHubのリリースページ</a>からzipファイルをダウンロードし、解凍後Applicationsフォルダに配置。</li>
+<li>実行時に求められるプラグインフォルダの場所を適当に指定</li>
+<li>実行したいスクリプトを書いてプラグインフォルダに保存、または、公開プラグインを利用。</li>
+</ul>
+<h2 id="-">公開プラグインを利用してみる</h2>
+<p>以下、プラグイン公開ページに行き利用したいプラグインを選んで「Add to BitBar」ボタンを押すと、プラグインフォルダにダウンロードされ実行される。</p>
+<ul>
+<li><a href="https://getbitbar.com/">BitBar - Put anything in your Mac OS X menu bar</a></li>
+</ul>
+<p>「<a href="https://getbitbar.com/plugins/System/real-cpu-usage.10s.sh">Real CPU Usage</a>」プラグインを使用してみる。</p>
+<p><img src="https://lh3.googleusercontent.com/-bhACpUZYysU/V3udWVzNz7I/AAAAAAAAJ6s/s4wfXoWRDBcgPJnagLFRGvSl5zwyxi1vgCCo/s400/install_plugin.gif" alt="install plugin"></p>
+<p>ツールバーにプラグインの実行結果が表示される。</p>
+<p><img src="https://lh3.googleusercontent.com/-rBRjGFTTjCI/V3udW-f8AUI/AAAAAAAAJ6s/-CuFWj9wM0IYXVYI7aDZlEDq1qBR0YaiwCCo/s400/run_plugin.png" alt="run plugin"></p>
+<h2 id="-real-cpu-usage-">「Real CPU Usage」プラグインの中身</h2>
+<p>ファイル名：real-cpu-usage.10s.sh</p>
+<pre><code>#!/bin/bash
 
-<h2>$DEMO で自身のデモエリアを参照する</h2>
+# &lt;bitbar.title&gt;Real CPU Usage&lt;/bitbar.title&gt;
+# &lt;bitbar.author&gt;Mat Ryer and Tyler Bunnell&lt;/bitbar.author&gt;
+# &lt;bitbar.author.github&gt;matryer&lt;/bitbar.author.github&gt;
+# &lt;bitbar.desc&gt;Calcualtes and displays real CPU usage stats.&lt;/bitbar.desc&gt;
+# &lt;bitbar.version&gt;1.0&lt;/bitbar.version&gt;
 
-<p>１つのページに複数のデモエリアがある場合、自身のデモエリアの要素を取得するようにする配慮が必要です。</p>
+IDLE=$(top -F -R -l3 | grep &quot;CPU usage&quot; | tail -1 | egrep -o &#39;[0-9]{0,3}\.[0-9]{0,2}% idle&#39; | sed &#39;s/% idle//&#39;)
 
-<p><img src="https://lh5.googleusercontent.com/-NEPE1q1Q1TU/VFugx7maUyI/AAAAAAAAITQ/klPFWo6EAhs/s800/demo1.png" alt="demo1"></p>
+USED=$(echo 100 - &quot;$IDLE&quot; | bc)
 
-<p>$DEMO.find( element ) と記述することで自身のデモエリアの要素を参照できるようになります。（グローバル空間は汚染されてません）</p>
+echo &quot;CPU: $USED%&quot;
+</code></pre><h2 id="-">プラグインを書いてみる</h2>
+<p>今回書いたプラグイン置き場。</p>
+<ul>
+<li><a href="https://github.com/cyokodog/bitbar_plugins">cyokodog/bitbar_plugins</a></li>
+</ul>
+<p>ファイル名：myplugin.10s.sh</p>
+<pre><code>#!/bin/bash
 
-<p><img src="https://lh4.googleusercontent.com/-olxGn2Zth5o/VFugx6AlVlI/AAAAAAAAITU/TKpmTOCG6oE/s800/demo2.png" alt="demo2"></p>
+disp1=&quot;:smile: 1つ目 | color=red&quot;
+disp2=&quot;:zzz: 2つ目 | color=green&quot;
+echo &quot;$disp1&quot;
+echo &quot;$disp2&quot;
+echo &quot;---&quot; # 以下はプルダウンで表示される
+echo &quot;CodeGrid | href=https://app.codegrid.net/&quot;
+echo &quot;---&quot; # これはセパレートになる
+echo &quot;絵文字 | href=http://qiita.com/koukun/items/ae673f2bae8f1525b6af&quot;
+</code></pre><p>echo &quot;---&quot; より上に書いた echo がツールバー部分に出力され、複数行の出力がある場合は、定期実行のタイミングで順番に切り替わる。</p>
+<pre><code>chmod +x myplugin.10s.sh
+</code></pre><p><img src="https://lh3.googleusercontent.com/-iHPGs_9-7H4/V3udW4aegVI/AAAAAAAAJ6s/2x1tpsrcxuAXhAz7QlwgCXcCABYNkMIKwCCo/s400/my_plugin.png" alt="my plugin"></p>
+<h2 id="-">定期実行のタイミング</h2>
+<p>定期実行のタイミングはプラグインファイルのファイル名で指定する。</p>
+<ul>
+<li>{ファイル名}.{実行間隔}.{拡張子}</li>
+</ul>
+<p>実行間隔</p>
+<ul>
+<li>10s 10秒おき</li>
+<li>1m 1分おき</li>
+<li>2h 2時間おき</li>
+<li>1d 1日おき</li>
+</ul>
+<h2 id="javascript-">JavaScriptで書いてみる</h2>
+<p>ファイル名：jsplugin.10s.js</p>
+<pre><code>#!/usr/bin/env /Users/cyokodog/.anyenv/envs/ndenv/versions/v4.2.4/bin/node
 
-<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo14" class="demo external" target="_blank">Demo | $DEMO で自身のデモエリアを参照する</a></div></p>
+console.log(&quot;JSもOK! | color=#00aaff&quot;);
+console.log(&quot;anyenvもOK! | color=#ff5577&quot;);
+</code></pre><p>１行目で node の実行ファイルを指定する。上記は anyenv 環境の記述。</p>
+<p><img src="https://lh3.googleusercontent.com/-Xetpc1HIg3w/V3udWUyXURI/AAAAAAAAJ6s/Pw3MI-DC2WseUS9esKVL4vDvpDwhJSldwCCo/s400/js_plugin.png" alt="JSで書いたプラグイン"></p>
+<h2 id="node-bitbar-">node 用の bitbar モジュールを使ってみる</h2>
+<ul>
+<li><a href="https://github.com/sindresorhus/bitbar">sindresorhus/bitbar: Simplifies BitBar app plugin creation</a></li>
+</ul>
+<p>npm でインストール</p>
+<pre><code>npm install --save bitbar
+</code></pre><p>ファイル名：myplugin2.10s.js</p>
+<pre><code>#!/usr/bin/env /Users/cyokodog/.anyenv/envs/ndenv/versions/v4.2.4/bin/node
 
-<h2>API を参照する</h2>
+var bitbar = require(&#39;bitbar&#39;);
 
-<p>API という変数名で API オブジェクトを参照することができます。（グローバル空間は汚染されてません）</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">//自身のコードを取得</span></li><li class="L1"><span class="kwd">var</span><span class="pln"> code </span><span class="pun">=</span><span class="pln"> API</span><span class="pun">.</span><span class="pln">getCode</span><span class="pun">();</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="com">//デモエリアに pre を生成</span></li><li class="L4"><span class="kwd">var</span><span class="pln"> pre </span><span class="pun">=</span><span class="pln"> $DEMO</span><span class="pun">.</span><span class="pln">html</span><span class="pun">(</span><span class="str">'&lt;pre/&gt;'</span><span class="pun">).</span><span class="pln">find</span><span class="pun">(</span><span class="str">'pre'</span><span class="pun">);</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="com">//pre にコードをセットし fade で表示</span></li><li class="L7"><span class="pln">pre</span><span class="pun">.</span><span class="pln">text</span><span class="pun">(</span><span class="pln">code</span><span class="pun">).</span><span class="pln">hide</span><span class="pun">().</span><span class="pln">fadeIn</span><span class="pun">(</span><span class="lit">3000</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="pln">    </span><span class="com">// fade が完了したらデモを再実行</span></li><li class="L0"><span class="pln">    API</span><span class="pun">.</span><span class="pln">runDemo</span><span class="pun">();</span></li><li class="L1"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 270px;"></textarea></div></div></div>
-
-<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo15" class="demo external" target="_blank">Demo | API を参照する</a></div></p>
-
-<h2>code / demo を横並びレイアウト時のレスポンシブ表示</h2>
-
-<p>以下デモにて画面幅を縮めてご確認ください。</p>
-
-<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo7" class="demo external" target="_blank">Demo | デモを右側に表示する(幅768px以上時)</a></div></p>
-
-<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.ex-code-prettify/demo.html#Demo8" class="demo external" target="_blank">Demo | デモを左側に表示する(幅768px以上時)</a></div></p>
-
-<p><br>
-以上です。本プラグインの詳細は以下をご覧ください。</p>
-
-<p><a href="http://www.cyokodog.net/blog/ex-code-prettify-doc/">[Ex Code Prettify] その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></p>
-
+bitbar([
+  {
+    text: &#39;❤&#39;,
+    color: bitbar.darkMode ? &#39;white&#39; : &#39;red&#39;,
+    dropdown: false
+  },
+  bitbar.sep,
+  {
+    text: &#39;Unicorns&#39;,
+    color: &#39;#ff79d7&#39;,
+    submenu: [
+      {
+          text: &#39;:tv: Video&#39;,
+          href: &#39;https://www.youtube.com/watch?v=9auOCbH5Ns4&#39;
+      },
+      {
+          text: &#39;:book: Wiki&#39;,
+          href: &#39;https://en.wikipedia.org/wiki/Unicorn&#39;
+      }
+    ]
+  },
+  bitbar.sep,
+  &#39;Ponies&#39;
+]);
+</code></pre><p>JSON 形式で書けて楽。</p>
+<p><img src="https://lh3.googleusercontent.com/-nw_tqlJCp8A/V3udW7PZV0I/AAAAAAAAJ6s/VVsBcOMVsjwEy9BTdjXoyWzTia1hqeKJQCCo/s400/js_plugin2.png" alt="JSで書いたプラグイン"></p>
+<h2 id="-">感想</h2>
+<ul>
+<li>Alfred だと有料パックじゃないとできないことができてうれしいかも</li>
+<li>ツールバーに実行結果がでるのがうれしいけど、全画面表示多用してるとあんまり見ず...</li>
+<li>npm が使えるんで楽していろいろ作れそう</li>
+</ul>
 
     </div>
 
