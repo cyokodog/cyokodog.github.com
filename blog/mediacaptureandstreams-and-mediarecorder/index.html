@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>Google Feed API を手軽に利用できるようにする jQuery プラグイン | CYOKODOG</title>
+	<title>Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,10 +72,10 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/easy-feed-doc/" title="Google Feed API を手軽に利用できるようにする jQuery プラグイン">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+        <a href="/blog/mediacaptureandstreams-and-mediarecorder/" title="Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2014-01-28</li>
+        <li class="article__info__date">2016-08-23</li>
 <!--
         <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
@@ -83,66 +83,208 @@
     </div>
     <div class="article__body">
     <div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/easy-feed-doc/"><img src="https://lh4.googleusercontent.com/-nw7v3toLSeE/UuffsRSXxHI/AAAAAAAAGFk/gTaAzkUJpSc/s144/FireShot%2520Screen%2520Capture%2520%2523023%2520-%2520%2527Easy%2520Editor%2527%2520-%2520cyokodog_github_io_easy-editor.png"></a>
+  <a href="/blog/mediacaptureandstreams-and-mediarecorder/"><img src="http://lh5.googleusercontent.com/-jdxrmNzSfRY/VSVJoOgrExI/AAAAAAAAI7o/afEKypy4JdU/s288/capture.jpg"></a>
 </div>
-<p>Easy Feed は、外部ドメインの RSS フィードの読み込みを可能にする Google Feed API を手軽に利用できるようにする jQuery プラグインです。
-<a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。
 
+<p>入社面接の LT で使った Media Capture and Streams と Web Audio API を連動させたデモが動かなくなってたので調整してみた。その時に必要になった GitHub を複数アカウントで利用する方法をメモっとく。</p>
 <!--more-->
-
-<h2>Google Feed API とは</h2>
-
-<p>Google Feed API は、よそ様のサイトの RSS フィードを JavaScript で取得し簡単に扱うことをできるようにする Google のサービスです。
-通常、外部ドメインの RSS を取得するにはサーバで一旦受信し、ATOM, RSS1.0, RSS2.0 等の異なるデータフォーマットを JSON 形式に加工しクライアントに返す等の工夫が必要になりますが、Google Feed API を使用するとこれらの処理を Google がやってくれます。</p>
-
-<p>以下のように使います。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">&lt;!-- API 読み込み --&gt;</span></li><li class="L1"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text/javascript"</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"https://www.google.com/jsapi"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L2"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text/javascript"</span><span class="tag">&gt;</span></li><li class="L3"><span class="pln">google</span><span class="pun">.</span><span class="pln">load</span><span class="pun">(</span><span class="str">'feeds'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'1'</span><span class="pun">);</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="com">//API 読み込みのコールバック</span></li><li class="L6"><span class="pln">google</span><span class="pun">.</span><span class="pln">setOnLoadCallback</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L7"><span class="pln">&nbsp;</span></li><li class="L8"><span class="pln">    </span><span class="com">// フィード URI の指定</span></li><li class="L9"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> feed </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> google</span><span class="pun">.</span><span class="pln">feeds</span><span class="pun">.</span><span class="typ">Feed</span><span class="pun">(</span><span class="str">'http://www.cyokodog.net/feed'</span><span class="pun">);</span></li><li class="L0"><span class="pln">&nbsp;</span></li><li class="L1"><span class="pln">    </span><span class="com">// 読み込む件数</span></li><li class="L2"><span class="pln">    feed</span><span class="pun">.</span><span class="pln">setNumEntries</span><span class="pun">(</span><span class="lit">10</span><span class="pun">);</span></li><li class="L3"><span class="pln">&nbsp;</span></li><li class="L4"><span class="pln">    </span><span class="com">// フィード読み込みのコールバック</span></li><li class="L5"><span class="pln">    feed</span><span class="pun">.</span><span class="pln">load</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">(</span><span class="pln"> result </span><span class="pun">){</span></li><li class="L6"><span class="pln">&nbsp;</span></li><li class="L7"><span class="pln">        </span><span class="com">// 投稿データを１件づつ読み込む</span></li><li class="L8"><span class="pln">        </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;</span><span class="pln"> result</span><span class="pun">.</span><span class="pln">feed</span><span class="pun">.</span><span class="pln">entries</span><span class="pun">.</span><span class="pln">length</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L9"><span class="pln">&nbsp;</span></li><li class="L0"><span class="pln">            </span><span class="kwd">var</span><span class="pln"> entry </span><span class="pun">=</span><span class="pln"> result</span><span class="pun">.</span><span class="pln">feed</span><span class="pun">.</span><span class="pln">entries</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="pln">            </span><span class="com">// 投稿 URL</span></li><li class="L3"><span class="pln">            entry</span><span class="pun">.</span><span class="pln">link</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="pln">            </span><span class="com">// 投稿 タイトル</span></li><li class="L6"><span class="pln">            entry</span><span class="pun">.</span><span class="pln">title</span></li><li class="L7"><span class="pln">        </span><span class="pun">}</span></li><li class="L8"><span class="pln">    </span><span class="pun">});</span></li><li class="L9"><span class="pun">});</span></li><li class="L0"><span class="tag">&lt;/script&gt;</span></li></ol></pre><textarea readonly="" style="font-family: Menlo, 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Consolas, monospace; font-size: 12px; line-height: 18px; height: 752px;"></textarea></div></div></div>
-
-<p>単純に、2ch 系まとめサイトのヘッダにあるような外部サイトの新着一覧を出力したいような場合、上記のようなコードをいちいち書くのはちょっと面倒な気がします。
-Easy Feed を使用すると以下のような記述で一覧リストを出力することができます。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'#feed-area'</span><span class="pun">).</span><span class="pln">easyFeed</span><span class="pun">({</span><span class="pln">feed </span><span class="pun">:</span><span class="pln"> </span><span class="str">'http://www.cyokodog.net/feed'</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: Menlo, 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Consolas, monospace; font-size: 12px; line-height: 18px; height: 92px;"></textarea></div></div></div>
-
-<h2>使い方</h2>
-
-<p class="for-bottom">Google Feed API、jQuery、jQuery Sitekit（または Easy Feed）の JS ファイルを読み込みます。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"http://www.google.com/jsapi"</span><span class="pln"> </span><span class="atn">type</span><span class="pun">=</span><span class="atv">"text/javascript"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L1"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L2"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"jquery.easy-feed.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li></ol></pre><textarea readonly="" style="font-family: Menlo, 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Consolas, monospace; font-size: 12px; line-height: 18px; height: 136px;"></textarea></div></div></div>
-
-<p class="for-bottom">フィードリストを表示したい場所に対し、easyFeed() メソッドを実行します。その際、feed パラメータに表示したいフィード URI を指定します。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'#feed-area'</span><span class="pun">).</span><span class="pln">easyFeed</span><span class="pun">({</span><span class="pln">feed </span><span class="pun">:</span><span class="pln"> </span><span class="str">'http://www.cyokodog.net/feed'</span><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: Menlo, 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Consolas, monospace; font-size: 12px; line-height: 18px; height: 92px;"></textarea></div></div></div>
-
-<p>リンク形式でリストが表示されます。</p>
-
-<p><div class="for-top"><a href="http://cyokodog.github.io/jquery.sitekit/easy-feed/demo.html" class="demo external" target="_blank">Demo</a></div></p>
-
-<p>自前でリストを生成したり、単にフィードを参照したい場合は以下のように callback パラメータに処理を記述します。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">.</span><span class="pln">easyFeed</span><span class="pun">({</span></li><li class="L1"><span class="pln">    feed </span><span class="pun">:</span><span class="pln"> </span><span class="str">'http://www.cyokodog.net/feed'</span><span class="pun">,</span></li><li class="L2"><span class="pln">    callback </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){</span></li><li class="L3"><span class="pln">        </span><span class="kwd">var</span><span class="pln"> r </span><span class="pun">=</span><span class="pln"> api</span><span class="pun">.</span><span class="pln">getResult</span><span class="pun">();</span><span class="pln"> </span><span class="com">//Google Feed API が返す取得結果</span></li><li class="L4"><span class="pln">        $</span><span class="pun">.</span><span class="pln">each</span><span class="pun">(</span><span class="pln">r</span><span class="pun">.</span><span class="pln">feed</span><span class="pun">.</span><span class="pln">entries</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">i</span><span class="pun">){</span></li><li class="L5"><span class="pln">            </span><span class="kwd">var</span><span class="pln"> entry </span><span class="pun">=</span><span class="pln"> r</span><span class="pun">.</span><span class="pln">feed</span><span class="pun">.</span><span class="pln">entries</span><span class="pun">[</span><span class="pln">i</span><span class="pun">];</span></li><li class="L6"><span class="pln">&nbsp;</span></li><li class="L7"><span class="pln">            </span><span class="com">// タイトル</span></li><li class="L8"><span class="pln">            entry</span><span class="pun">.</span><span class="pln">title</span></li><li class="L9"><span class="pln">&nbsp;</span></li><li class="L0"><span class="pln">            </span><span class="com">// URL</span></li><li class="L1"><span class="pln">            entry</span><span class="pun">.</span><span class="pln">link</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="pln">            </span><span class="com">// 本文</span></li><li class="L4"><span class="pln">            entry</span><span class="pun">.</span><span class="pln">content</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="pln">            </span><span class="com">// 概要</span></li><li class="L7"><span class="pln">            entry</span><span class="pun">.</span><span class="pln">contentSnippet</span></li><li class="L8"><span class="pln">&nbsp;</span></li><li class="L9"><span class="pln">            </span><span class="com">// 日付</span></li><li class="L0"><span class="pln">            entry</span><span class="pun">.</span><span class="pln">publishedDate</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="pln">            </span><span class="com">// カテゴリ</span></li><li class="L3"><span class="pln">            entry</span><span class="pun">.</span><span class="pln">categories</span></li><li class="L4"><span class="pln">&nbsp;</span></li><li class="L5"><span class="pln">        </span><span class="pun">});</span></li><li class="L6"><span class="pln">    </span><span class="pun">}</span></li><li class="L7"><span class="pun">})</span></li></ol></pre><textarea readonly="" style="font-family: Menlo, 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Consolas, monospace; font-size: 12px; line-height: 18px; height: 686px;"></textarea></div></div></div>
-
-<h2>パラメータ</h2>
-
-<p>プラグイン実行時、下記パラメータを指定できます。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">.</span><span class="pln">easyFeed</span><span class="pun">.</span><span class="pln">defaults </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">    feed </span><span class="pun">:</span><span class="pln"> </span><span class="str">''</span><span class="pun">,</span><span class="pln"> </span><span class="com">// feed URI</span></li><li class="L2"><span class="pln">    numEntries </span><span class="pun">:</span><span class="pln"> </span><span class="lit">10</span><span class="pun">,</span><span class="pln"> </span><span class="com">// 読み込み件数</span></li><li class="L3"><span class="pln">    callback </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">){},</span><span class="pln"> </span><span class="com">// フィード取得後のコールバック処理</span></li><li class="L4"><span class="pln">    linkTarget </span><span class="pun">:</span><span class="pln"> </span><span class="str">'_blank'</span><span class="pun">,</span><span class="pln"> </span><span class="com">// 生成するリンクの target 属性値</span></li><li class="L5"><span class="pln">    onBuildUL </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">,</span><span class="pln"> ul</span><span class="pun">){},</span><span class="pln"> </span><span class="com">// UL 要素生成時のコールバック処理</span></li><li class="L6"><span class="pln">    onBuildLI </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">api</span><span class="pun">,</span><span class="pln"> li</span><span class="pun">){}</span><span class="pln"> </span><span class="com">// LI 要素生成時のコールバック処理</span></li><li class="L7"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: Menlo, 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Consolas, monospace; font-size: 12px; line-height: 18px; height: 246px;"></textarea></div></div></div>
-
-<h2>API</h2>
-
-<p>API オブジェクトを使用し、下記メソッドを実行できます。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="com">// Google Feed API の取得結果を返す</span></li><li class="L1"><span class="pln">getResult </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li><li class="L2"><span class="pln">&nbsp;</span></li><li class="L3"><span class="com">// リスト生成時のカレントエントリを返す</span></li><li class="L4"><span class="pln">getEntry </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(){</span></li></ol></pre><textarea readonly="" style="font-family: Menlo, 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Consolas, monospace; font-size: 12px; line-height: 18px; height: 180px;"></textarea></div></div></div>
-
-<h2>ダウンロード</h2>
-
-<p>こちらからどうぞ。</p>
-
+<h2 id="-">だいぶ前に作ったやつ</h2>
+<p>Web Audio API のアプリにありがちなリズムマシンに、Media Capture and Streams で録音機能をつけてボイスパーカッションみたいにもできるやつ。</p>
 <ul>
-<li><a href="https://github.com/cyokodog/jquery.sitekit">jquery.sitekit – GitHub</a></li>
+<li>修正前（ちゃんと動かない）<ul>
+<li><a href="https://cyokodog.github.io/web-audio-rythem/">https://cyokodog.github.io/web-audio-rythem</a></li>
 </ul>
+</li>
+<li>修正後<ul>
+<li><a href="https://cyokosaturn.github.io/web-audio-rythem/">https://cyokosaturn.github.io/web-audio-rythem</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="media-capture-and-streams-">Media Capture and Streams まわりの仕様変更</h2>
+<p>デモを作った１年半前は問題なく動作してたけど以下の仕様が変わったようで動かなくなってた（Chromeで確認）。</p>
+<ul>
+<li>MediaStream.stop() が廃止になった（<a href="https://www.fxsitecompat.com/ja/docs/2015/mediastream-stop-has-been-deprecated/">参考</a>）</li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/f3prTAel360UdboJKYbi_gAdjMcC85YxnYubPMWNn19lqh7rrtKxEoR1v94OjjzwujyZuloAa6_kfA=w6720-h4200-rw-no" alt="Mdeia Capture and Streams error"></p>
+<ul>
+<li>Media Capture and Streams まわりが https でないと動作しない（localhostの場合は大丈夫）</li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/3rbD_7TRySkL0tIgDp1szBQ70x9XK2HfsAlJ0AcpiSAjh76NjqnzlObzK7wbO-rBhOXSxEi34q0zWw=w6720-h4200-rw-no" alt="Mdeia Capture and Streams error"></p>
+<p>以前書いた記事（<a href="http://www.cyokodog.net/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成 | CYOKODOG</a>）のデモもほとんど動かなくなってた。（iframe使って動くようにしないと...）</p>
+<h2 id="-github-">複数アカウントで GitHub を使用する</h2>
+<p>gh-pages で https は以下がチェックオンになってれば使えるんだけど、gh-pages に www.cyokodog.net の独自ドメインを割り当ててるので http になってしまう。
+なので GitHub に別アカウント作ってそっちの gh-pages を利用する。</p>
+<p><img src="https://lh3.googleusercontent.com/UwG-VUaO8v0rur9EdvJkKMpwQaYVLu5jJ5mN0Lqab73oUPtoqjh_c25IgsqtKDddvj7L7LXaeml5OLQyoOCKWbFQ6E4Z-DFatE5t-A5ADHh8H5dPr-DeYTJSx-Tnbdn9Av3yJ5NkbgBnZ7Sp-RkDOlWCHZ-t_rAspgskVjF9ueXwUMWuzvN5ijf8iUwaFH_eyOohMyxSHeWf6_NHKbcytoK5L2E598xznGRENG6zdzBwY_HC0idxUtAiDC1OyIZvR5TNQZoMQ2jpo10izeylXssiEZG91EMDOXHtdY6omS8j1bCUVn1UVmfrAoLArzA2TvvC-Miqp20sNIVhBiwcZQXHUWF1wzGh-K2zJK2ULSCHxfsCK-38KjcD_YIZ1v4MIv8FdU8WpqHUpK04ejL79oVDdOmwyqBM8EqNxB6F8HY0YVsKFnQ73RMSXBqEf4jDn5cpF_ffYea9MyY6AU0ne1yQX8yoASNN-uUIB37tOfFL-7hop0dtvhdKUATGTnbOHQcUNRU0JARden8BjMufYvG17pAcvsy_rT1qgQR_RKSMIgUe_0OnLufSbNIeblkZjhfe-RGJwDkFvMNFdXBJWWexJpTHfMI=w1582-h394-no" alt="github https"></p>
+<p>ssh-keygen でサブアカウント用の SSH認証キー（id_rsa.subaccont、id_rsa.subaccont.pub）を作る。-f でファイル名を指定できる。</p>
+<pre><code>ssh-keygen -t rsa -f id_rsa.subname
+</code></pre><p>~/.ssh/config にサブアカウントの SSH認証キーとホストの紐付けを追記する。</p>
+<pre><code>Host github
+  HostName github.com
+  IdentityFile ~/.ssh/id_rsa
+  User git
+Host subname.github.com
+  HostName github.com
+  IdentityFile ~/.ssh/id_rsa.subname
+  User git
+</code></pre><p>最後に公開鍵を GitHub に設定して、git clone や git remote add する時にホスト名を以下のように github.com を subname.github.com に変えれば利用できる。</p>
+<pre><code>git clone git@subname.github.com:subname/hoge.git 
+</code></pre><h2 id="media-capture-and-streams-">Media Capture and Streams の停止処理</h2>
+<p>Media Capture and Streams のストリーム取得と停止処理ロジックはこんなかんじ。</p>
+<pre><code>var stream;
+function startRec(){
+  navigator.getUserMedia(
+    {
+        video: false,
+        audio: true
+    },
+    function(s){
+        stream = s;
+        ...
+    }
+  );
+}
+function stopRec(){
+  if(stream){
+    stream.stop();
+    stream = null;
+  }
+}
+</code></pre><p>で、上記の stream.stop() が使えなくなってしまったので、以下のように修正すればオーケー。</p>
+<pre><code>stream.getAudioTracks()[0].stop();
+</code></pre><p>ちなみに Firefox の場合は、MediaStream.stop() も利用可能（v47.0では）。</p>
+<h2 id="chrome-mediarecorder-">Chrome で MediaRecorder が使えるようになってた</h2>
+<p>MediaRecorder は Media Capture and Streams と連動されることで、手軽に録音処理ができる便利なやつなんだけど、以前は Firefox でしか動かなかった。
+で、Chrome でも Firefox でも録音できるようにするには Web Audio API と連動される必要があって結構めんどくさい感じだった。詳しくは以下。</p>
+<ul>
+<li><a href="http://www.cyokodog.net/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成 | CYOKODOG</a></li>
+</ul>
+<p>Firefox で録音してその音声ファイルをダウンロードするには以下のようなロジックで実現できたけど、Chrome だとこのままではうまく動作しない・・・</p>
+<h4 id="code">code</h4>
+<h5 id="html">html</h5>
+<pre><code>&lt;h1&gt;MediaRecorder Demo for Firefox&lt;/h1&gt;
+&lt;button class=&quot;rec&quot;&gt;REC&lt;/button&gt;
+&lt;a class=&quot;download&quot;&gt;&lt;/a&gt;
+&lt;audio class=&quot;audio&quot;&gt;&lt;/audio&gt;
+</code></pre><h5 id="script">script</h5>
+<pre><code>navigator.getUserMedia =
+    navigator.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia;
+window.URL =
+    window.URL ||
+    window.webkitURL ||
+    window.mozURL ||
+    window.msURL;
+var stream;
+var recorder;
+var recControl = function(){
+    if(typeof MediaRecorder == &#39;undefined&#39;) return;
+    if(!stream){
+        el.rec.textContent = &#39;STOP&#39;;
+        navigator.getUserMedia(
+            {
+                video: false,
+                audio: true
+            },
+            function(s){
+                stream = s;
+                recorder = new MediaRecorder(stream);
+                recorder.start();
 
+                //Firefoxの場合、recorder.stop()されるとこれが動く
+                recorder.ondataavailable = function(event) {
+                    var blob = event.data;
+                    var url = el.audio.src = URL.createObjectURL(blob);
+                    el.audio.play();
+                    //download link
+                    el.download.href = url;
+                    el.download.textContent = &#39;download&#39;
+                    el.download.download = &#39;output.wav&#39;;
+                };
+            },
+            function(err){
+                console.log(err.name ? err.name : err);
+            }
+        );
+    }
+    else{
+        el.rec.textContent = &#39;REC&#39;;
+        recorder.stop();
+        stream.getAudioTracks()[0].stop();
+        stream = undefined;
+    }
+}
+var el = {
+    audio : $DEMO[0].querySelector(&#39;.audio&#39;),
+    rec : $DEMO[0].querySelector(&#39;.rec&#39;),
+    download: $DEMO[0].querySelector(&#39;.download&#39;)
+}
+el.rec.addEventListener(&#39;click&#39;, recControl, false);
+</code></pre><h4 id="demo">demo</h4>
+<h5 id="html">html</h5>
+<pre><code>&lt;iframe style=&quot;height:250px&quot; src=&quot;https://cyokosaturn.github.io/cyokodog_net_demo/media_recorder/demo01_for_firefox.html&quot;&gt;&lt;/iframe&gt;
+</code></pre><h2 id="chrome-">Chrome の場合挙動が異なる</h2>
+<p>Firefox では、MediaRecorder.stop() すると MediaRecorder.ondataavailable() が動いて、その中で音声データが取得できるという流れだったんだけど、Chrome の場合は、MediaRecorder.start() してストリームが流れだすと同時に MediaRecorder.ondataavailable() も動き出してしまう模様。
+なので Chrome の場合は、MediaRecorder.ondataavailable() 内で音声データをバッファして、MediaRecorder.stop() 直後にバッファデータから blob データを生成する必要がある。</p>
+<h4 id="code">code</h4>
+<h5 id="script">script</h5>
+<pre><code>var recordedChunks = [];
+var stream;
+var recorder;
+var recControl = function(){
+    if(typeof MediaRecorder == &#39;undefined&#39;) return;
+    if(!stream){
+        el.rec.textContent = &#39;STOP&#39;;
+        navigator.getUserMedia(
+            {
+                video: false,
+                audio: true
+            },
+            function(s){
+                stream = s;
+                recorder = new MediaRecorder(stream);
+                recorder.start();
 
+                //Chromeの場合、recorder.start()されるとこれが動く
+                recorder.ondataavailable = function(event) {
+                    if (event.data.size &gt; 0) {
+                      recordedChunks.push(event.data);
+                    }
+                };
+            },
+            function(err){
+                console.log(err.name ? err.name : err);
+            }
+        );
+    }
+    else{
+        el.rec.textContent = &#39;REC&#39;;
+        recorder.stop();
+        stream.getAudioTracks()[0].stop();
+        stream = undefined;
+
+        // 録音停止したらバッファした音声データをBlob変換する 
+        var superBuffer = new Blob(recordedChunks);
+        var url = el.audio.src = URL.createObjectURL(superBuffer);
+        el.audio.play();
+
+        //download link
+        el.download.href = url;
+        el.download.textContent = &#39;download&#39;
+        el.download.download = &#39;output.wav&#39;;
+    }
+}
+var el = {
+    audio : document.querySelector(&#39;.audio&#39;),
+    rec : document.querySelector(&#39;.rec&#39;),
+    download: document.querySelector(&#39;.download&#39;)
+}
+el.rec.addEventListener(&#39;click&#39;, recControl, false);
+</code></pre><h4 id="demo">demo</h4>
+<h5 id="html">html</h5>
+<pre><code>&lt;iframe style=&quot;height:250px&quot; src=&quot;https://cyokosaturn.github.io/cyokodog_net_demo/media_recorder/demo01_for_chrome.html&quot;&gt;&lt;/iframe&gt;
+</code></pre>
     </div>
 
   </article>
