@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>MVWフロントエンド・フレームワーク、AngularJS をはじめてみる | CYOKODOG</title>
+	<title>zone.js と async / await を併用してみる | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -31,7 +31,7 @@
             <span class="social-icons">
               <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
               <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
-              <a class="fa fa-facebook-square" href="https://www.facebook.com/cyokodog.net"></a>
+              <!--<a class="fa fa-facebook-square" href="https://www.facebook.com/"></a>-->
               <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
             </span>
           </h1>
@@ -72,443 +72,444 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/angular/" title="MVWフロントエンド・フレームワーク、AngularJS をはじめてみる">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+        <a href="/blog/zone-async-await/" title="zone.js と async / await を併用してみる">zone.js と async / await を併用してみる</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2015-01-17</li>
+        <li class="article__info__date">2017-05-06</li>
 <!--
-        <li class="article__info__category"><a href="/category/angular/" rel="category tag">Angular</a></li>
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
       </ul>
     </div>
     <div class="article__body">
-    <div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/angularjs/"><img src="http://lh5.googleusercontent.com/-xOoqk6kYWH0/VLgKgXtPmHI/AAAAAAAAIw4/4oUA1dpIcoc/s800/angular.png"></a>
-</div>
-<p>AngularJS は、クライアントサイド MVC フレームワークの１つですが、自身のことを MVW フレームワークと呼んでます。
-これは Model-View-Whatever の略で
-「MV＊について議論するなんて時間の無駄、そんな暇あるならコード書きなよ。MV＊の＊の部分なんて”Whatever”でいいんだよ。」
-という思いが込められてるそうです・・・いかしてますね！<br>
-という訳でコードを書きながら AngularJS を紹介したいと思います ^^;</p>
-
+    <p>zone.js と async / await を併用すると面倒な非同期処理を楽して書けそう... ということで、ここ最近これらについて試してたことをメモっておく。</p>
+<p>リポジトリ：<a href="https://github.com/cyokodog/zone_study">https://github.com/cyokodog/zone_study</a></p>
 <!--more-->
+<h2 id="async-await">async / await</h2>
+<p>async / await は、Promise による非同期処理を同期処理っぽく簡潔に書ける機能。なにがどう簡潔になったのかは以下の動画が分かりやすい。Callback -&gt; Promise -&gt; async / await 順でそれぞれの書き方がどう変化するかを表現してる。</p>
+<p><blockquote class="twitter-tweet" data-lang="ja"><p lang="en" dir="ltr">understanding async/await in 7 seconds <a href="https://t.co/IJOQJ2DR35">pic.twitter.com/IJOQJ2DR35</a></p>&mdash; Wassim Chegham (@manekinekko) <a href="https://twitter.com/manekinekko/status/855824609299636230">2017年4月22日</a></blockquote></p>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<h2>はじめに</h2>
+<p>async / await は、Chrome 55 から、Node.js では v7.6.0 から利用可能（ただしメモリリークが激しいとかいう噂がある？）で、これより古いバージョンで利用する場合は Babel による変換が必要。</p>
+<ul>
+<li>ref: <a href="https://developers.google.com/web/fundamentals/getting-started/primers/async-functions">非同期関数 - Promise をわかりやすくする | Google Developers</a></li>
+</ul>
+<p>以下設定で試してみた。</p>
+<p>package.json</p>
+<pre><code>{
+  &quot;devDependencies&quot;: {
+    &quot;babel-cli&quot;: &quot;6.24.1&quot;,
+    &quot;babel-plugin-transform-runtime&quot;: &quot;6.23.0&quot;,
+    &quot;babel-preset-es2015&quot;: &quot;6.24.1&quot;,
+    &quot;babel-preset-stage-3&quot;: &quot;6.24.1&quot;
+  }
+}
+</code></pre><p>.babelrc</p>
+<pre><code>{
+  &quot;presets&quot;: [&quot;es2015&quot;,&quot;stage-3&quot;],
+  &quot;plugins&quot;: [
+    [
+      &quot;transform-runtime&quot;,
+      {
+        &quot;polyfill&quot;: false,
+        &quot;regenerator&quot;: true
+      }
+    ]
+  ]
+}
+</code></pre><p>transform-runtime の指定をしないと実行時に「regeneratorRuntime is not defined」とかいうエラーがでる。この regeneratorRuntime とかいう関数は、Babel が生成するもので、Generator 相当の polyfill コードらしい。上記設定でこのコード変換が抑止され、Node.js の持っている Generator が使用されるようになる。</p>
+<h2 id="async-await-">async / await を使ってみる</h2>
+<p>後述の zone.js を併用した時の効果を確認するために、次のようなコードで async / await の動作を確認してみた。</p>
+<p>まず、日英の言語設定ファイルを定義する。</p>
+<p>settings_jp.js</p>
+<pre><code>export default {
+  users: {
+    taro: &#39;太郎&#39;,
+    jiro: &#39;次郎&#39;
+  },
+  messages: {
+    hello: &#39;こんにちわ&#39;,
+    bye: &#39;さようなら&#39;
+  }
+};
+</code></pre><p>settings_en.js</p>
+<pre><code>export default {
+  users: {
+    taro: &#39;Taro&#39;,
+    jiro: &#39;Jiro&#39;
+  },
+  messages: {
+    hello: &#39;Hello&#39;,
+    bye: &#39;Bye&#39;
+  }
+};
+</code></pre><p>それぞれの言語設定と、名前 ID、メッセージ ID を引数に、挨拶文の取得関数を呼ぶ。</p>
+<pre><code>import SETTINGS_JP from &#39;../data/settings_jp&#39;;
+import SETTINGS_EN from &#39;../data/settings_EN&#39;;
+import fetchGreetMessage from &#39;./fetchGreetMessage&#39;;
 
-<p>2000 年頃から「web アプリでいかにネイティブアプリに迫れるか」をテーマに半分趣味で JavaScript と向かい合ってきた身としましては、
-就活せまられる現状に乗じ、あわよくばフロントエンドエンジニアに転身できないかなぁ・・・などと思いを馳せつつ転職サイトを検索したりしております。</p>
+// JP
+fetchGreetMessage(SETTINGS_JP, &#39;taro&#39;, &#39;hello&#39;).then(msg =&gt; console.log(msg));
+fetchGreetMessage(SETTINGS_JP, &#39;jiro&#39;, &#39;bye&#39;).then(msg =&gt; console.log(msg));
 
-<p>そんな中、フロントエンドで採用されてる技術としてよく目につくのが AngularJS です。
-最近は賛否両論な意見をよく目にする AngularJS ですが、想像以上に世間では使われてるんだなぁ という印象をうけてます。</p>
+// EN
+fetchGreetMessage(SETTINGS_EN, &#39;taro&#39;, &#39;hello&#39;).then(msg =&gt; console.log(msg));
+fetchGreetMessage(SETTINGS_EN, &#39;jiro&#39;, &#39;bye&#39;).then(msg =&gt; console.log(msg));
+</code></pre><p>これを実行すると一定の間をおいて、次のように表示される。</p>
+<pre><code>こんにちわ, 太郎
+さようなら, 次郎
+Hello, Taro
+Bye, Jiro
+</code></pre><p>挨拶文は次のような非同期処理で取得している。</p>
+<p>fetchGreetMessage/index.js</p>
+<pre><code>import fetchMessage from &#39;./fetchMessage&#39;;
+import fetchName from &#39;./fetchName&#39;;
 
-<p><a href="http://www.buildinsider.net/web/popularjslib/2015">人気上昇中のJavaScriptライブラリを調べてみた【2015年版】</a> という記事でも
-MVC系フレームワーク部門で利用率はだんとつの１位のようです。</p>
+export default async (settings, userId, msgId) =&gt; {
+  const name = await fetchName(settings, userId);
+  const message = await fetchMessage(settings, msgId);
+  return `${message}, ${name}`;
+}
+</code></pre><p>fetchName、fetchMessage は Promise を返す関数のため本来、then(callback) による非同期的な記述が必要だが、ここではそれらの関数に await 構文を適用することで同期的な記述で直接値を得ている。await 構文を利用する場合は、以下例のように、必ずその処理を実行している関数が async 構文で書かれてる必要がある。</p>
+<pre><code>async f() =&gt; {
+  await doSomethingAsPromise();
+}
+</code></pre><p>Promise による「名前」と「メッセージ」の取得処理は次のとおり。</p>
+<p>fetchGreetMessage/fetchName</p>
+<pre><code>export default (settings, userId) =&gt; {
+  return new Promise(resolve =&gt; {
+    setTimeout(function(){
+      resolve(settings.users[userId]);
+    }, 1000);
+  });
+}
+</code></pre><p>fetchGreetMessage/fetchMessage</p>
+<pre><code>export default (settings, msgId) =&gt; {
+  return new Promise(resolve =&gt; {
+    setTimeout(function(){
+      resolve(settings.messages[msgId]);
+    }, 2000);
+  });
+}
+</code></pre><h2 id="async-await-">async / await と非同期処理のかゆいところ</h2>
+<p>await 構文は記述をシンプルにし処理の見通しをかなりよくすることができる一方、Promise().catch() で指定できたエラーハンドリングの記述ができない。これについては await を適用してる関数毎に try〜catch をするしかない。</p>
+<pre><code>let name;
+try {
+  name = await fetchName(settings, userId);
+} catch (e) {
+  // エラー時の処理
+}
 
-<p><img src="https://lh4.googleusercontent.com/-wjy7lRh8hfE/VLjRv4mQ0kI/AAAAAAAAIxQ/VbAYadrOARk/s640/js-mvc.png" alt="mvc"></p>
+let message;
+try {
+  message = await fetchMessage(settings, msgId);
+} catch (e) {
+  // エラー時の処理
+}
+</code></pre><p>また、上記の処理では言語設定情報を、引数として末端の関数まで運んでいるが、本来、これらの情報は１つのコンテキストデータとして、自由なタイミングで参照できるようにしたいところ。具体的には日本語設定を適用し処理してる間は、日本語の設定情報が取得でき、英語設定で処理してる間は、英語のそれが取得できる、といった具合にしたい。</p>
+<p>しかし、見た目上は await 構文により同期的に処理されてるように見えても、日英それぞれの設定で同時に非同期処理が動いている以上、上記のような細分化されたモジュール構成を前提とした場合、これを実現するのは難しい（クロージャを適用できないので）。</p>
+<p>そこで zone.js を使用し、これらの問題解決を試みてみる。</p>
+<h2 id="angular-zone-js">Angular のパフォーマンスを支える zone.js</h2>
+<p>zone.js といえば Angular...、Angular との関係をざっくりと。</p>
+<ul>
+<li>zone.js は Dart の言語仕様である Zone を JS で動くようにしたもの</li>
+<li>Angular のプロト的な位置づけとして Angular Dart が存在する</li>
+<li>Angular Dart は Zone ありきで設計されている</li>
+<li>Zone の JS における標準仕様化が提案されてる（現在 <a href="https://github.com/domenic/zones">stage0</a>）</li>
+<li>Zone はあらゆる非同期処理の開始と終了を傍受できる</li>
+<li>Zone は非同期処理に対してコンテキストを持たすことができる</li>
+<li>Zone は非同期処理内にて発生したエラーを検出できる</li>
+<li>Angular のパーフォーマンスにとって大事なことはデータの変更検出をどのように行うか</li>
+<li>データの変更は非同期処理の中でしか起こらない</li>
+<li>DOM に変更が必要な事態が発生してるかもしれないというタイミングを Zone が教えてくれる</li>
+<li>Angaulr は Change Detection という仕組みで親から子へ変更検知を伝え、末端の子まで伝わる１回分の処理をターンと呼ぶ</li>
+<li>１ターンの中で１回のダーティーチェッキング（オブジェクトの変更管理）を行う</li>
+<li>１系にあったような変更検知が変更検知を呼ぶダイジェストループは起きない</li>
+<li>Zone はアプリ内で発生する非同期処理の終了時にこのターンを走らせる</li>
+</ul>
+<p>aync / await と併用する上で大事なことは</p>
+<ul>
+<li>Zone はあらゆる非同期処理の開始と終了を傍受できる</li>
+<li>Zone は非同期処理に対してコンテキストを持たすことができる</li>
+<li>Zone は非同期処理内にて発生したエラーを検出できる</li>
+</ul>
+<p>の３点。</p>
+<h2 id="zone-js-">zone.js を使ってみる</h2>
+<p>まずは</p>
+<blockquote>
+<ul>
+<li>Zone は非同期処理に対してコンテキストを持たすことができる</li>
+<li>Zone は非同期処理内にて発生したエラーを検出できる</li>
+</ul>
+</blockquote>
+<p>について確認してみる。</p>
+<pre><code>require(&#39;zone.js&#39;);
 
-<p>そんなわけで AngularJS 体験のファーストステップをまとめてみたいと思います。必要となるライブラリは angular.js 本体のみです。</p>
+Zone.current.fork({
+  properties: {hoge: &#39;HOGE&#39;}
+}).run(function (){
+  setTimeout(function(){
+    console.log(Zone.current.get(&#39;hoge&#39;));
+  }, 1000);
+});
 
-<pre><code>https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js
-</code></pre>
+Zone.current.fork({
+  properties: {hoge: &#39;ほげ&#39;}
+}).run(function (){
+  setTimeout(function(){
+    console.log(Zone.current.get(&#39;hoge&#39;));
+  }, 500);
+});
 
-<p>今回も Backbone.js の時と同様（<a href="http://www.cyokodog.net/blog/backbone-js/">「Backbone.js ではじめるクライアントサイド MVC プログラミング – CYOKODOG」</a>）、最初に TODO アプリを作っていってみたいと思います。</p>
+Zone.current.fork({
+  onHandleError: function (delegate, current, target, error){
+    console.error(&#39;zoneAwareStack&#39;, error.zoneAwareStack);
+  }
+}).run(function (){
+  setTimeout(function(){
+    throw new Error(&#39;エラー！&#39;);
+  }, 750);
+});
+</code></pre><p>この例では 3 つの Zone を定義しており、最初の２つは、コンテキストに相当する properties に任意のデータを設定し、非同期処理内の get() メソッドにてこの設定データを正しく取得できるかを確認している。3 つ目は非同期処理内で発生したエラーを、Zone の定義元でハンドリングできるかの確認。</p>
+<p>次のように表示され、いずれも正しいタイミングで正常に処理されていることが分かる。</p>
+<pre><code>ほげ
+zoneAwareStack Error: エラー！
+    at new Error (native)
+    at null.&lt;anonymous&gt; (/Users/cyokodog/Dev/github/esnext/zone/dest/02/index.js:38:11) [unnamed]
+    at timer [as _onTimeout] (/Users/cyokodog/Dev/github/esnext/zone/node_modules/zone.js/dist/zone-node.js:1739:29) [&lt;root&gt;]
+    at Timer.listOnTimeout (timers.js:92:15) [&lt;root&gt;]
+HOGE
+</code></pre><h2 id="zone-js-async-await-">zone.js と async / await の併用</h2>
+<p>先の async / await のサンプルコードに zone.js を適用し、冗長だった言語設定情報の受け渡しを省き且つ、async / await のエラーハンドリングも zone.js で行うようにしてみる。</p>
+<p>index.js</p>
+<pre><code>import SETTINGS_JP from &#39;../data/settings_jp&#39;;
+import SETTINGS_EN from &#39;../data/settings_EN&#39;;
+import fetchGreetMessage from &#39;./fetchGreetMessage&#39;;
+import &#39;zone.js&#39;;
 
-<h2>モジュールの定義</h2>
+Zone.current.fork({
+  properties: {
+    SETTINGS: SETTINGS_JP
+  },
+  onHandleError: onHandleError
+}).run(() =&gt; {
+  fetchGreetMessage(&#39;taro&#39;, &#39;hello&#39;).then(msg =&gt; console.log(msg));
+  fetchGreetMessage(&#39;jiro&#39;, &#39;bye&#39;).then(msg =&gt; console.log(msg));
+});
 
-<p>AngularJS でアプリケーションを作成する際、最初にモジュールの定義を行います。
-今回作成するのは TODO アプリなので taskApp という名前でモジュールを定義してみます。</p>
+Zone.current.fork({
+  properties: {
+    SETTINGS: SETTINGS_EN
+  },
+  onHandleError: onHandleError
+}).run(() =&gt; {
+  fetchGreetMessage(&#39;taro&#39;, &#39;hello&#39;).then(msg =&gt; console.log(msg));
+  fetchGreetMessage(&#39;jiro&#39;, &#39;bye&#39;).then(msg =&gt; console.log(msg));
+});
 
-<pre><code>var app = angular.module('taskApp', []);
-</code></pre>
+function onHandleError(delegate, current, target, error){
+  console.error(&#39;エラー発生&#39;, error.rejection.stack);
+  return false;
+};
+</code></pre><p>fetchGreetMessage/index.js</p>
+<pre><code>import fetchMessage from &#39;./fetchMessage&#39;;
+import fetchName from &#39;./fetchName&#39;;
 
-<p><br>
-このモジュールを適用する場所、つまり HTML 上の TODO アプリを出力する要素に ng-app 属性を記述し、モジュール名である taskApp を指定します。</p>
+export default async (userId, msgId) =&gt; {
+  const name = await fetchName(userId) || &#39;&#39;;
+  const message = await fetchMessage(msgId) || &#39;&#39;;
+  return `${message}, ${name}`;
+}
+</code></pre><p>fetchGreetMessage/fetchName.js</p>
+<pre><code>export default userId =&gt; {
+  const settings = Zone.current.get(&#39;SETTINGS&#39;);
+  if(!settings){
+    throw new Error(&#39;ZoneからSETTINGSが取得できない...！&#39;);
+  }
+  return new Promise(resolve =&gt; {
+    setTimeout(function(){
+      resolve(settings.users[userId]);
+    }, 1000);
+  });
+}
+</code></pre><p>fetchGreetMessage/fetchMessage.js</p>
+<pre><code>export default msgId =&gt; {
+  const settings = Zone.current.get(&#39;SETTINGS&#39;);
+  if(!settings){
+    throw new Error(&#39;ZoneからSETTINGSが取得できない...！&#39;);
+  }
+  return new Promise(resolve =&gt; {
+    setTimeout(function(){
+      resolve(settings.messages[msgId]);
+    }, 2000);
+  });
+}
+</code></pre><p>実行すると次のように表示される。</p>
+<pre><code>こんにちわ, 太郎
+さようなら, 次郎
+こんにちわ, Taro
+さようなら, Jiro
+</code></pre><p>名前は日英とも正しく取得されてるが、挨拶がすべて日本語で取得されてしまっている。名前取得、挨拶取得の順で await 指定で実行しているが、後発の非同期処理に正しいコンテキストが適用されないっぽい。</p>
+<p>以下のように素直に Promise を使えば正常に処理される。</p>
+<pre><code>return Promise.all([
+  fetchName(userId),
+  fetchMessage(msgId)
+]).then(result =&gt; {
+  return `${result[1]}, ${result[0]}`
+});
 
-<pre><code>&lt;div ng-app="taskApp"&gt;
-    &lt;!-- ここに TODO アプリを出力する --&gt;
-&lt;/div&gt;
-</code></pre>
+/**
+以下のように表示される
 
-<h2>コントローラの定義</h2>
+こんにちわ, 太郎
+さようなら, 次郎
+Hello, Taro
+Bye, Jiro
+*/
+</code></pre><p><strong>コンテキストデータの共有目的で、zone.js と async / await を併用するのはやめたほうがよさそう。</strong>
+エラー処理については強制的に非同期処理内でエラーを発生させたところ、正常にハンドリングされることが確認できた。</p>
+<p>ちなみに require(&#39;zone.js&#39;) はルートモジュールで一回読み込めば、以降どの子モジュールからでも Zone が参照可能になる。</p>
+<h2 id="-zone-js-">フロントエンドで zone.js を使ってみる</h2>
+<blockquote>
+<p>Zone はあらゆる非同期処理の開始と終了を傍受できる</p>
+</blockquote>
+<p>これについてはフロントエンドの実装で試してみる。得に「こう使ったらうれしいな」って事例が思い浮かばなかったので、以下のように非同期処理の終了を、モデル変更検出のタイミングとして活用してみる。</p>
+<ol>
+<li>なにかしらの非同期処理が完了した場合、</li>
+<li>未完了の非同期処理（タスク）が存在しなかったら</li>
+<li>「モデルが変更されてるかもしれないよ！」emitterを投げる</li>
+</ol>
+<p>ここまでを zone.js 側の裏の処理として実行させ、アプリ側は 3 の emitter を受けとたら、モデルの状態をチェックして変更されていた場合はビューを更新する。</p>
+<h4 id="demo">demo</h4>
+<h5 id="html">html</h5>
+<pre><code>&lt;iframe src=&quot;http://www.cyokodog.net/zone_study/demo/03/&quot; style=&quot;height:400px&quot;&gt;&lt;/iframe&gt;
+</code></pre><p>「GET TIME」ボタンを押すと非同期で現在時間を取得し表示するという単純なもの。コンパイルは browserify と babelify で行っている。</p>
+<pre><code>browserify ./demo/03/index.js -t babelify -o ./demo/03/bundle.js
+</code></pre><p>実装は次のとおり。</p>
+<p>index.js</p>
+<pre><code class="lang-JavaScript">// 何故か import だと Promise.then がスケジュールされないので、requireで読み込む
+// import &#39;zone.js&#39;;
+require(&#39;zone.js&#39;);
+import {EventEmitter} from &#39;events&#39;;
+import TimeStacker from &#39;./TimeStacker&#39;;
+import zoneSettings from &#39;./zoneSettings&#39;;
 
-<p>次にモデルの操作を行うコントローラを定義します。
-AngularJS ではモデルとビューの双方向バインディングという機能があり、
-モデルを変更すればビューも変更され、ビューを変更すればモデルも変更されるようになっています。
-双方向バインディングは $scope オブジェクトを通じて行なわれます。
-例えばアプリの設定を管理する conf モデルがあったとします。</p>
+Zone.current.fork(zoneSettings).run(() =&gt; {
 
-<pre><code>app.controller('TaskCtrl', function($scope){
-    $scope.conf = {
-        appName : 'TODO'
+  const emitter = Zone.current.get(&#39;emitter&#39;);
+  const timeStacker = new TimeStacker();
+
+  let lastHtml = &#39;&#39;;
+
+  // モデルが変更されたかもよイベントを受け取ったら...
+  emitter.on(&#39;checkDataChanged&#39;, () =&gt; {
+
+    // 変更されていたたら...
+    const html = timeStacker.getHtml();
+    if(lastHtml !== html){
+
+      // ビューを書き換える
+      document.querySelector(&#39;.state&#39;).innerHTML = html;
+      lastHtml = html;
+      console.log(&#39;----------draw&#39;);
     }
+  });
+
+  document.querySelector(&#39;.start&#39;).addEventListener(&#39;click&#39;, () =&gt; {
+
+    // 今の時分秒をモデルにロードする
+    timeStacker.loadCurrentTime();
+
+  }, false);
 });
 </code></pre>
+<p>裏で動く zone.js 側は次の通り。</p>
+<p>zoneSettings.js</p>
+<pre><code class="lang-JavaScript">import {EventEmitter} from &#39;events&#39;;
 
-<p><br>
-この conf モデルの値をビューにバインドするには、
-HTML 上のコントローラの機能を有効にする範囲に ng-controller 属性を記述し、モデルの値をバインドしたい箇所に {{属性名}} と記述します。</p>
-
-<pre><code>&lt;div ng-controller="TaskCtrl"&gt;
-    &lt;h1&gt;{{conf.appName}}&lt;/h1&gt; &lt;!-- TODO と表示される--&gt;
-&lt;/div&gt;
-</code></pre>
-
-<p>これで h1 要素に TODO と表示されます。モデルの値を変更するとリアルタイムに画面上の出力も変更されます。
-（コントローラー内に別のコントローラーを定義した場合、親コントローラーに定義された属性値を $scope 経由で参照することができます。）</p>
-
-<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo01.html">DEMO</a></p>
-
-<h2>フォームとモデルのバインド</h2>
-
-<p>HTML のフォーム要素にモデルの値やメソッドを割り当てることもできます。
-タスクの登録フォームを設置し、未入力の状態で登録しようとした場合、エラー表示するようにしてみます。</p>
-
-<pre><code>&lt;form ng-submit="addTask()"&gt;
-    &lt;input ng-model="taskTitle" placeholder="タスクを入力してください"&gt;
-    &lt;span&gt;{{error}}&lt;/span&gt;
-&lt;/form&gt;
-</code></pre>
-
-<p><br>
-$scope に addTask, taskTitle, error を追加することでビューとバインドされ、
-何も入力せずエンターした場合はエラーが表示されます。</p>
-
-<pre><code>$scope.taskTitle = '';
-$scope.addTask = function(){
-    if(!$scope.taskTitle.length){
-        $scope.error = 'タスクが入力されてません！'
-        return;
+export default {
+  properties: {
+    state: {
+      changedPossibility: false,
+    },
+    emitter: new EventEmitter
+  },
+  onHasTask: function(parent, current, target, hasTask) {
+    const state = Zone.current.get(&#39;state&#39;);
+    const emitter = Zone.current.get(&#39;emitter&#39;);
+    state.changedPossibility = !hasTask.macroTask &amp;&amp; !hasTask.microTask;
+    if(state.changedPossibility){
+      emitter.emit(&#39;checkDataChanged&#39;);
     }
-    $scope.error = '';
+  },
+  onScheduleTask: function(parentZoneDelegate, currentZone, targetZone, task) {
+    console.log(`onScheduleTask ${task.source}`);
+    parentZoneDelegate.scheduleTask(targetZone, task);
+  },
+  onInvokeTask: function(parentZoneDelegate, currentZone, targetZone, task, applyThis, applyArgs) {
+    console.log(`onInvokeTask ${task.source}`);
+    const state = Zone.current.get(&#39;state&#39;);
+    const emitter = Zone.current.get(&#39;emitter&#39;);
+    emitter.emit(&#39;checkDataChanged&#39;);
+    parentZoneDelegate.invokeTask(targetZone, task, applyThis, applyArgs);
+  }
 }
 </code></pre>
+<p>onXxxTask とあるが、タスクとはコールバック関数のことを指す。例えば以下は、関数 f がタスクであり、setTimeout() によりタスクが登録され、これらタスクが実行待ち状態になってることを指し、スケジュールと呼ぶ。</p>
+<pre><code>setTimeout(function f(){}, 1000):
+</code></pre><p>onScheduleTask() はスケジューリングの際に実行され、onInvokeTask() はタスクが実行される直前に実行される。</p>
+<p>これらのタスクは非同期で実行されるが故に、複数のタスクが未実行で保持されてる状態にも成りえる。onHasTask() は、これらのタスクの実行待ち状態が変化した時に実行される。上記コードでは hasTask.macroTask、hasTask.microTask を参照し実行待ちタスクの有無を参照してるが、他にも hasTask.eventTask がある。タスクの種類は次のように分類される。</p>
+<ul>
+<li>MicroTask : キャンセルできない一回だけ実行されるタスク（Promise の resolve 等）</li>
+<li>MacroTask : キャンセル可能で一回以上遅延実行されるタスク（setTimeout, setInterval 等）</li>
+<li>EventTask : イベント発生時に実行されるタスク（addEventListener 等）</li>
+</ul>
+<p>EventTask については cancelEventListener() を実行しない限り、タスクは常に実行待ち状態のままなので、上記のコードでは得に参照してない。</p>
+<p>非同期で取得した時間をストックして、HTML に変換するクラスは次のとおり。非同期処理については、せっかくなので async / await を使ってみる。</p>
+<p>TimeStacker.js</p>
+<pre><code>export default class TimeStacker {
 
-<p><img src="http://lh5.googleusercontent.com/-8GV9VANkgJw/VLqGAO_K3mI/AAAAAAAAIyY/BfaX00Kbu4Q/s800/angular01.png" alt="demo"></p>
+  constructor(){
+    this.times = [];
+  }
 
-<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo02.html">DEMO</a></p>
+  async loadCurrentTime (){
+    const time = await this.fetchTime();
+    if(!this.times.length || this.times[this.times.length-1] !== time){
+      this.times.push(time);
+    }
+  }
 
-<h2>コレクションの繰り返し処理</h2>
+  getHtml () {
+    if(!this.times.length) {
+      return &#39;&#39;;
+    }
+    const list = this.times.map(time =&gt; {
+      return `&lt;li&gt;${time}&lt;/li&gt;`;
+    }).join(&#39;&#39;);
+    return `&lt;ul&gt;${list}&lt;/ul&gt;`;
+  }
 
-<p>登録したタスクを配列に格納することで、リスト形式で出力させることができます。
-前述の addTask() メソッドにてモデルを配列に追加していきます。</p>
-
-<pre><code>//配列の定義
-$scope.tasks = [];
-$scope.addTask = function(){
-    ・・・
-    //モデルの追加
-    $scope.tasks.push({
-        title: $scope.taskTitle,
-        closed: false
+  fetchTime (){
+    return new Promise(resolve =&gt; {
+      setTimeout(function(){
+        const date = new Date;
+        const hours = (date.getHours()+&#39;&#39;).padStart(2,&#39;0&#39;);
+        const minutes = (date.getMinutes()+&#39;&#39;).padStart(2,&#39;0&#39;);
+        const seconds = (date.getSeconds()+&#39;&#39;).padStart(2,&#39;0&#39;);
+        const time = `${hours}:${minutes}:${seconds}`;
+        resolve(time);
+      }, 500);
     });
-    //入力フィールドのクリア
-    $scope.taskTitle = '';
+  }
 }
-</code></pre>
-
-<p><br>
-画面に表示する際は、ng-repeat を使用します。</p>
-
-<pre><code>&lt;ul class="taskList"&gt;
-    &lt;li ng-repeat="task in tasks" class="closed-{{task.closed}}"&gt;
-        &lt;input type="checkbox" ng-model="task.closed"&gt;
-        &lt;span class="title"&gt;{{task.title}}&lt;/span&gt;
-    &lt;/li&gt;
-&lt;/ul&gt;
-</code></pre>
-
-<p><br>
-li のクラスに closed-{{task.closed}} と割り振っているので、下記スタイルの適用で完了タスクに取消線が引かれます。</p>
-
-<pre><code>li.closed-true .title{
-    color: gray;
-    text-decoration: line-through;
-}
-</code></pre>
-
-<p><img src="http://lh4.googleusercontent.com/-6Bk8Ylt_oJU/VLqGALcB0eI/AAAAAAAAIx8/mXd-PVRO2Hc/s800/angular02.png" alt="demo"></p>
-
-<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo03.html">DEMO</a></p>
-
-<h2>選択したタスクの削除</h2>
-
-<p>ng-repeat 内で $index を参照すると配列番号を取得することができます。
-これを利用し選択したタスクを削除する機能を追加してみます。
-また、クリックイベントにて preventDefault() を行うために $event も参照します。</p>
-
-<pre><code>&lt;ul class="taskList"&gt;
-    &lt;li ng-repeat="task in tasks" class="closed-{{task.closed}}"&gt;
-        &lt;input type="checkbox" ng-model="task.closed"&gt;
-        &lt;span class="title"&gt;{{task.title}}&lt;/span&gt;
-        &lt;!-- delTaskに$event, $indexを渡す --&gt;
-        &lt;a ng-click="delTask($event, $index)" href="#"&gt;x&lt;/a&gt;
-    &lt;/li&gt;
-&lt;/ul&gt;
-</code></pre>
-
-<p><br>
-delTask() メソッドに $index を渡すことで、指定されたタスク番号を配列から削除することができます。</p>
-
-<pre><code>$scope.delTask = function($event, $index){
-    $event.preventDefault();
-    $scope.tasks.splice($index, 1)
-}
-</code></pre>
-
-<p><br>
-ついでにタスクを全て削除するボタンも設置してみます。</p>
-
-<pre><code>&lt;button class="clear" ng-click="delAllTask()"&gt;全て削除&lt;/button&gt;
-</code></pre>
-
-<p><br>
-配列の中身を空にすることで全て削除されます。</p>
-
-<pre><code>$scope.delAllTask = function(){
-    $scope.tasks = [];
-}
-</code></pre>
-
-<p><img src="http://lh5.googleusercontent.com/-g8Otlv2PSWE/VLqGAOX2oMI/AAAAAAAAIyM/eP270ovfV0Q/s800/angular03.png" alt="demo"></p>
-
-<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo04.html">DEMO</a></p>
-
-<h2>TODO アプリの完成</h2>
-
-<p>とりあえずここまでで TODO アプリの機能としては完成とします。
-ソースは以下のようになります。</p>
-
-<h4>code</h4>
-
-<h5>css</h5>
-
-<pre><code>li.closed-true .title{
-    color: gray;
-    text-decoration: line-through;
-}
-</code></pre>
-
-<h5>html</h5>
-
-<pre><code>&lt;div ng-app="taskApp"&gt;
-    &lt;div ng-controller="TaskCtrl"&gt;
-        &lt;h1&gt;{{conf.appName}}&lt;/h1&gt;
-        &lt;form ng-submit="addTask()"&gt;
-            &lt;input ng-model="taskTitle" placeholder="タスクを入力してください"&gt;
-            &lt;span&gt;{{error}}&lt;/span&gt;
-        &lt;/form&gt;
-        &lt;ul class="taskList"&gt;
-            &lt;li ng-repeat="task in tasks" class="closed-{{task.closed}}"&gt;
-                &lt;input type="checkbox" ng-model="task.closed"&gt;
-                &lt;span class="title"&gt;{{task.title}}&lt;/span&gt;
-                &lt;a class="del" ng-click="delTask($event, $index)" href="#"&gt;x&lt;/a&gt;
-            &lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;button class="clear" ng-click="delAllTask()"&gt;全て削除&lt;/button&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-</code></pre>
-
-<h5>script</h5>
-
-<pre><code>angular.module('taskApp',[]).
-    controller('TaskCtrl', function($scope){
-        $scope.conf = {
-            appName : 'TODO'
-        }
-        $scope.taskTitle = '';
-        $scope.tasks = [];
-        $scope.addTask = function(){
-            if(!$scope.taskTitle.length){
-                $scope.error = 'タスクが入力されてません！'
-                return;
-            }
-            $scope.tasks.push({
-                title: $scope.taskTitle,
-                closed: false
-            });
-            $scope.taskTitle = '';
-            $scope.error = '';
-        }
-        $scope.delTask = function($event, $index){
-            $event.preventDefault();
-            $scope.tasks.splice($index, 1)
-        }
-        $scope.delAllTask = function(){
-            if(confirm('タスクを全て削除しますか？')){
-                $scope.tasks = [];
-            }
-        }
-    });
-</code></pre>
-
-<h2>外部テンプレートの読み込み</h2>
-
-<p>テンプレートを読み込んだり、DOM に処理を追加する機能としてディレクティブといものがあります。
-ここでは独自のディレクティブを定義し、外部テンプレートを読み込んでみます。
-画面の上部、下部それぞれに以下の tmpl-bar.html を読み込んでみます。</p>
-
-<pre><code>&lt;!-- tmpl-bar.html --&gt;
-&lt;div class="bar"&gt;{{bar.title}}&lt;/div&gt;
-</code></pre>
-
-<p><br>
-テンプレートを出力したい箇所に、独自定義のディレクティブ名 tmpl-bar（ハイフン区切りで表記）を記述します。</p>
-
-<pre><code>&lt;div tmpl-bar ng-controller="BarCtrl" data="top"&gt;&lt;/div&gt;
-&lt;div ng-controller="TaskCtrl"&gt;・・・&lt;/div&gt;
-&lt;div tmpl-bar ng-controller="BarCtrl" data="bottom"&gt;&lt;/div&gt;
-</code></pre>
-
-<p><br>
-directive() にて、テンプレートファイルとディレクティブ名のマッチングを行います。</p>
-
-<pre><code>angular.module('taskApp', []).
-    controller('TaskCtrl', function($scope){
-        ・・・
-    }).
-    controller('BarCtrl', function($scope){
-        $scope.top = {title:'HEAD'}
-        $scope.bottom = {title:'FOOT'}
-    }).
-    directive('tmplBar', function() {
-        return {
-            scope: {
-                bar: '=data'
-            },
-            templateUrl: "tmpl-bar.html"
-        };
-    });
-</code></pre>
-
-<p><img src="http://lh6.googleusercontent.com/-HX0pkwFAK7Q/VLqGBCMLkaI/AAAAAAAAIyI/2gIHkSEfvBw/s800/angular04.png" alt="demo"></p>
-
-<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo05.html">DEMO</a></p>
-
-<h2>モジュールの再利用とサービス化</h2>
-
-<p>再利用したい処理は別モジュールで管理し、必要に応じ読み込んで利用できます。
-また、汎用的な処理はサービスとして定義できます。
-例えば以下のように認証処理のモックを別モジュールのサービスとして定義してみます。</p>
-
-<pre><code>angular.module('auth',[]).
-    service('authService', function(){
-        return {
-            user : '',
-            label : 'LOGIN',
-            toggle : function(){
-                if(this.label == 'LOGIN'){
-                    this.label = 'LOGOUT';
-                    this.user = 'Taro Yamada';
-                }
-                else{
-                    this.label = 'LOGIN';
-                    this.user = '';
-                }
-            }
-        }
-    });
-</code></pre>
-
-<p><br>
-このサービスを利用するには、以下のように記述します。</p>
-
-<pre><code>angular.module('taskApp',['auth']). // authモジュールの読み込み
-    controller('AuthCtrl', function($scope, authService){ // authServiceの取得
-            $scope.auth = authService;
-    }).
-    controller('TaskCtrl', function($scope){
-        alert($scope.auth); //undefined ※参照ＮＧ
-    });
-</code></pre>
-
-<p>但し、上記の記述のままだと AuthCtrl で定義された $scope.auth を TaskCtrl 内から参照できません。</p>
-
-<p>以下のように authService を $rootScope に割り当てることで、他のコントローラからも参照可能になります。</p>
-
-<pre><code>angular.module('taskApp',['auth']). // authモジュールの読み込み
-    controller('AuthCtrl',function($rootScope, authService){ // authServiceの取得
-        $rootScope.auth = authService;
-    }).
-    controller('TaskCtrl', function($scope){
-        alert($scope.auth); //[object Object] ※参照ＯＫ
-    });
-</code></pre>
-
-<p><br>
-または、TaskCtrl で authService を取得することで、同一の authService オブジェクトを参照することができます。</p>
-
-<pre><code>angular.module('taskApp',['auth']). // authモジュールの読み込み
-    controller('AuthCtrl',function($scope, authService){ // authServiceの取得
-        $scope.auth = authService;
-    }).
-    controller('TaskCtrl', function($scope, authService){ // authServiceの取得
-        alert(authService); //[object Object] ※参照ＯＫ
-    })
-</code></pre>
-
-<p><br>
-以下のようなマークアップを追加することで、認証 UI が表示されます。</p>
-
-<pre><code>&lt;div ng-app="taskApp"&gt;
-    &lt;div ng-controller="AuthCtrl"&gt;
-        &lt;button ng-click="auth.toggle()"&gt;{{auth.label}}&lt;/button&gt; {{auth.user}} 
-    &lt;/div&gt;
-    ・・・
-</code></pre>
-
-<p><img src="http://lh3.googleusercontent.com/-fLQAFrxcB5c/VLqGBePjw6I/AAAAAAAAIyU/-mUC4ezHJLo/s800/angular05.png" alt="demo"></p>
-
-<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo06.html">DEMO</a></p>
-
-<h2>サービスとしての外部テンプレート機能</h2>
-
-<p>前述の定義方法だと認証サービスと外部テンプレートのバインドを、自前でコントローラを用意して行う必要がありました。
-サービスモジュール内でこれらのバインド処理を行い、呼び出し側の記述をシンプルにしてみます。</p>
-
-<p>ファクトリ関数内で link 属性に関数を記述することで、scope を参照できるので、ここでバインドします。</p>
-
-<pre><code>angular.module('auth', []).
-    service('authService', function(){
-        ・・・
-    }).
-    directive('tmplAuth', function(authService) { // 認証サービスの読み込み
-        return {
-            templateUrl: "tmpl-auth.html",
-            link : function(scope, element, attrs){ // scope を参照できる
-                scope.auth = authService;
-            }
-        };
-    });
-</code></pre>
-
-<p><br>
-これによりサービスを利用する側は、サービスのモジュールを読み込むのみでよく、コントローラの定義も $scope へのバインドも不要になります。</p>
-
-<pre><code>angular.module('taskApp',['auth']) // authモジュールの読み込み
-</code></pre>
-
-<p><br>
-HTML にディレクティブ属性を記述すれば、テンプレートが埋め込まれます。</p>
-
-<pre><code>&lt;div tmpl-auth&gt;&lt;/div&gt;
-</code></pre>
-
-<p><a href="http://cyokodog.github.io/JS_STUDY/angularjs/todo07.html">DEMO</a></p>
-
-<h2>最後に</h2>
-
-<p>こうやってまとめるのもなかなか骨がおれますね・・^^;<br>
-最小のアプリを作る上で最低限おさえておきたい機能はどの辺かなぁ、という視点で調べたとこをまとめてみました。
-最初は<a href="http://dotinstall.com/lessons/basic_angularjs">ドットインストールさんの動画</a>が分かりやすくて良いかもしれません。
-<a href="http://cyokodog.github.io/JS_STUDY/angularjs/dot-install.html">こちら</a>に動画を見ながらタイプしたコードがありますのでよろしければどうぞ。</p>
-
-<p>AngularJS で検索すると結構な数の日本語記事があり注目されているのが良く分かります。
-機能も豊富なようで覚えることだらけとの事で、
-趣味の範囲で習得するのは大変そうですが仕事でこれを扱えたらやりがいがありそうですね！（うらやましい・・）</p>
-              </div>
-
-
+</code></pre><h2 id="-">参考にしたサイト</h2>
+<ul>
+<li><a href="https://github.com/angular/zone.js/">angular/zone.js: Implements Zones for JavaScript</a></li>
+<li><a href="http://qiita.com/kodo_san/items/b31d8125cce438ff3706">async awaitでキレイなコードが書けないと辛い気持ちになってたところ、zone.jsを使ったらいろいろと解決できそうなことが分かった - Qiita</a></li>
+<li><a href="http://qiita.com/Quramy/items/83f4fbc6755309f78ad2">Angular 2とZone.jsとテストの話 - Qiita</a></li>
+<li><a href="http://qiita.com/ukyo/items/1775f5f09bbd9b5c2978">Angularでイベントから無駄にChange Detectionを走らせないためにすべきこと - Qiita</a></li>
+</ul>
 
     </div>
 
@@ -547,13 +548,20 @@ HTML にディレクティブ属性を記述すれば、テンプレートが埋
       <div class="wp-widget">
         <div class="wp-widget__header">Recent Posts</div>
         <ul>
+          <li><a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a></li>
+          <li><a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a></li>
+          <li><a href="/blog/bitbar/">BitBar を試してみる</a></li>
+          <li><a href="/blog/angular-cli/">Angular CLI を試してみる</a></li>
+          <li><a href="/blog/riot/">はじめてのRiot.js</a></li>
+          <li><a href="/blog/facebook-flux/">はじめてのfacebook/flux</a></li>
+          <li><a href="/blog/reactjs/">はじめてのReact.js</a></li>
           <li><a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a></li>
           <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
           <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
           <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
           <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
           <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
-          <li><a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
           <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
           <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
           <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
@@ -665,6 +673,34 @@ HTML にディレクティブ属性を記述すれば、テンプレートが埋
         <div class="wp-widget__header" id="allPosts">All Posts</div>
           <ul>
             <li>
+              <span class="post-date">2017-05-06</span>
+              <a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-08-23</span>
+              <a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a>
+            </li>
+            <li>
+              <span class="post-date">2016-07-05</span>
+              <a href="/blog/bitbar/">BitBar を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-30</span>
+              <a href="/blog/angular-cli/">Angular CLI を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-14</span>
+              <a href="/blog/riot/">はじめてのRiot.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-11</span>
+              <a href="/blog/facebook-flux/">はじめてのfacebook/flux</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-09</span>
+              <a href="/blog/reactjs/">はじめてのReact.js</a>
+            </li>
+            <li>
               <span class="post-date">2016-05-18</span>
               <a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a>
             </li>
@@ -690,7 +726,7 @@ HTML にディレクティブ属性を記述すれば、テンプレートが埋
             </li>
             <li>
               <span class="post-date">2015-01-17</span>
-              <a href="/blog/angular/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+              <a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
             </li>
             <li>
               <span class="post-date">2015-01-07</span>
