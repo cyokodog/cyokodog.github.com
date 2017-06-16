@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法 | CYOKODOG</title>
+	<title>Headless Chrome をさわってみた | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,95 +72,583 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/ml-narisumasi-gmail-and-gas/" title="メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+        <a href="/blog/headless-chrome/" title="Headless Chrome をさわってみた">Headless Chrome をさわってみた</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2014-05-28</li>
+        <li class="article__info__date">2017-06-15</li>
 <!--
         <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
       </ul>
     </div>
     <div class="article__body">
-    <div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/ml-narisumasi-gmail-and-gas/"><img src="https://lh3.googleusercontent.com/-m_kTmYTel6Q/U4XU4fJEPJI/AAAAAAAAHPI/Q5ezti_QpjQ/s800/gas02.png"></a>
-</div>
-<p>携帯のメールアドレスで Google グループ（メーリングリスト）に参加したら、「なりすまし」と判定されメールが届いてこないといった経験はないでしょうか？<br>
-携帯キャリアのセキュリティレベルの設定を変更することで大抵は解決できますが、メンバーが大勢いたり、ＩＴに詳しい人が少ない場合、この作業が結構面倒だったりします。<br>
-今回、Gmail と Google Apps Script（GAS） を使用し、この問題を回避させる事ができたので手順をご紹介します。</p>
-
+    <p>Headless Chromeのリリースをうけて、PhantomJS のメンテナーが開発の終了を宣言したりとか、ちょっと話題になった Headless Chrome について試してたことをメモっておく。</p>
+<p>試したやつのリポジトリ：<a href="https://github.com/cyokodog/headless-chrome">https://github.com/cyokodog/headless-chrome</a></p>
 <!--more-->
-
-<h2>Gmail で受信し、GAS で監視・送信する</h2>
-
-<p>方法は、Gmail でメーリングリストの配信を受信し、GAS でその受信状況を監視、新着を見つけた場合は GAS 自身がメールの内容を携帯アドレスに送信する、というものです。
-この方法だと Gmail アカウントからの送信メールとなるので、携帯側で「なりすまし」と判定されずに済みます。</p>
-
-<p>大まかな手順としては以下のようになります。</p>
-
-<ol>
-<li>専用の Gmail アカウントを作成し、Google グループに参加させる</li>
-<li>Gmail の監視＋自動送信プログラムを GAS で作成する</li>
-<li>一定時間毎に GAS のプログラムが実行されるよう設定する</li>
-</ol>
-
-<h2>Gmail の監視＋メール送信プログラムの作成</h2>
-
-<p>以下手順で、Gmail の監視＋自動送信プログラムを GAS で作成します。</p>
-
-<ol>
-<li><a href="https://drive.google.com/">Google ドライブ</a>にアクセス</li>
-<li>[作成] → [スプレッドシート] の順でクリック(スプレッドシートが表示される)<img src="https://lh6.googleusercontent.com/-gpfRWWCTj2Y/U4XvYufuIPI/AAAAAAAAHQE/WfqR7mfoFgE/s400/GAS02.png" alt="スプレッドシート"></li>
-<li>[ツール] → [スクリプトエディタ] の順でクリック(スクリプトエディタが表示される)<img src="https://lh3.googleusercontent.com/-o-dmGqa-nVo/U4XvYlBnGEI/AAAAAAAAHQI/8UAJBmsi7CM/s400/GAS03.png" alt="スクリプトエディタ"></li>
-<li>以下の「監視＋自動送信プログラム」を入力し保存する</li>
-</ol>
-
-<p><span></span></p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">function</span><span class="pln"> myFunction</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span></li><li class="L1"><span class="pln">    </span><span class="kwd">var</span><span class="pln"> threads </span><span class="pun">=</span><span class="pln"> </span><span class="typ">GmailApp</span><span class="pun">.</span><span class="pln">getInboxThreads</span><span class="pun">();</span></li><li class="L2"><span class="pln">    </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> i </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> i </span><span class="pun">&lt;</span><span class="pln"> threads</span><span class="pun">.</span><span class="pln">length</span><span class="pun">;</span><span class="pln"> i</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L3"><span class="pln">        </span><span class="typ">Utilities</span><span class="pun">.</span><span class="pln">sleep</span><span class="pun">(</span><span class="lit">1000</span><span class="pun">);</span></li><li class="L4"><span class="pln">        </span><span class="kwd">var</span><span class="pln"> msgs </span><span class="pun">=</span><span class="pln"> threads</span><span class="pun">[</span><span class="pln">i</span><span class="pun">].</span><span class="pln">getMessages</span><span class="pun">();</span></li><li class="L5"><span class="pln">        </span><span class="kwd">for</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> j </span><span class="pun">=</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> j </span><span class="pun">&lt;</span><span class="pln"> msgs</span><span class="pun">.</span><span class="pln">length</span><span class="pun">;</span><span class="pln"> j</span><span class="pun">++)</span><span class="pln"> </span><span class="pun">{</span></li><li class="L6"><span class="pln">            </span><span class="kwd">var</span><span class="pln"> msg </span><span class="pun">=</span><span class="pln"> msgs</span><span class="pun">[</span><span class="pln">j</span><span class="pun">];</span></li><li class="L7"><span class="pln">            </span><span class="com">// 未読か？</span></li><li class="L8"><span class="pln">            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">msg</span><span class="pun">.</span><span class="pln">isUnread</span><span class="pun">())</span><span class="pln"> </span><span class="pun">{</span></li><li class="L9"><span class="pln">                </span><span class="com">// 送信！</span></li><li class="L0"><span class="pln">                </span><span class="typ">MailApp</span><span class="pun">.</span><span class="pln">sendEmail</span><span class="pun">(</span></li><li class="L1"><span class="pln">                    </span><span class="str">"example@hoge.co.jp"</span><span class="pun">,</span><span class="pln"> </span><span class="com">// 「なりすまし」判定する携帯アドレスを記述</span></li><li class="L2"><span class="pln">                    </span><span class="str">"【転送】"</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> msg</span><span class="pun">.</span><span class="pln">getSubject</span><span class="pun">(),</span></li><li class="L3"><span class="pln">                    msg</span><span class="pun">.</span><span class="pln">getFrom</span><span class="pun">()</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="str">'からメールが送信されました\n\n'</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> msg</span><span class="pun">.</span><span class="pln">getPlainBody</span><span class="pun">(),</span></li><li class="L4"><span class="pln">                    </span><span class="pun">{</span></li><li class="L5"><span class="pln">                        bcc</span><span class="pun">:</span><span class="str">"example@fuga.co.jp"</span><span class="pln"> </span><span class="com">// 管理者のアドレスを記述</span></li><li class="L6"><span class="pln">                    </span><span class="pun">}</span></li><li class="L7"><span class="pln">                </span><span class="pun">);</span></li><li class="L8"><span class="pln">                </span><span class="com">// 既読にする</span></li><li class="L9"><span class="pln">                msg</span><span class="pun">.</span><span class="pln">markRead</span><span class="pun">();</span></li><li class="L0"><span class="pln">                </span><span class="com">// アーカイブへ移動</span></li><li class="L1"><span class="pln">                threads</span><span class="pun">[</span><span class="pln">i</span><span class="pun">].</span><span class="pln">moveToArchive</span><span class="pun">();</span></li><li class="L2"><span class="pln">            </span><span class="pun">}</span></li><li class="L3"><span class="pln">        </span><span class="pun">}</span></li><li class="L4"><span class="pln">    </span><span class="pun">}</span></li><li class="L5"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 522px;"></textarea></div></div></div>
-
-<p>未読の受信メールを見つけたら、メールの内容を指定したアドレスに送信し、対象となった受信メールは既読にしアーカイブへ移動します。</p>
-
-<h2>一定時間毎に GAS のプログラムを実行する</h2>
-
-<p>以下の手順で一定時間毎に GAS のプログラムが実行されるように設定します。</p>
-
-<ol>
-<li>前述の手順でスクリプトエディタを起動</li>
-<li>[時計のアイコン] をクリック(トリガー設定画面が表示される)</li>
-<li>以下のよう入力し保存する
-
+<h2 id="-">概要</h2>
 <ul>
-<li>実行：”myFunction”</li>
-<li>イベント：”時間手動型”、”分タイマー”、”15分ごと”</li>
-</ul></li>
-</ol>
-
-<p><img src="https://lh3.googleusercontent.com/-dhn9HKlvAxQ/U4XsgPKdINI/AAAAAAAAHPk/FGMJr1gdZoU/s640/GAS.png" alt="trigger"></p>
-
-<p>以上です。</p>
-
-<h2>最後に</h2>
-
-<p>GAS、前々からちゃんと使ったら便利なんじゃないかなと思ってましたが、やっぱり便利ですね！^^)<br>
-Google の各種サービスの API とスクリプトで連携できるのって、アイディア次第でいろいろできそうな気がします。</p>
-
-<p>キャリア別受信設定の変更方法が、下記サイトにて紹介されてます。できるだけ各自で携帯の設定を見直してもらった方が良いでしょう。</p>
-
-<ul>
-<li><a href="http://leads.med.gunma-u.ac.jp/mailinglist/">Googleグループによるメーリスの受信設定マニュアル – LEADS</a></li>
+<li>ヘッドレス（GUIを表示しない状態）で実行できる Chrome の機能</li>
+<li>Chromium と Blink が提供する機能をコマンドラインで利用できる</li>
+<li>Chrome 59 から利用可（2017/06/08時点ではMAC、Linuxのみ）</li>
+<li>活用例<ul>
+<li>ウェブページのテスト<ul>
+<li>表示・動作テスト、画像やPDFによる画面のスクリーンショット</li>
 </ul>
-
-<p>以下のサイトを参考にさせていただきました。</p>
-
-<ul>
-<li><a href="http://blog.field-works.co.jp/post/19044484618/gmail">Gmailで自動返信メールシステムを構築する方法</a></li>
-<li><a href="https://developers.google.com/apps-script/reference/gmail/">Gamil Service – Google Apps Script</a></li>
-<li><a href="http://libro.tuyano.com/index2?id=638001">初心者のためのGoogle Apps Scriptプログラミング入門</a></li>
-<li><a href="http://ascii.jp/elem/000/000/872/872855/">Web制作をちょっと便利にするGoogle Apps Script入門 – ASCII.jp</a></li>
+</li>
+<li>スクレイピング<ul>
+<li>認証が必要なサイトでも対応</li>
 </ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="-">ヘッドレスで起動する</h2>
+<ul>
+<li>--headless フラグと --disable-gpu フラグ（そのうち指定不要になる）を指定する</li>
+</ul>
+<pre><code>// mac環境の場合
+alias chrome=&#39;/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome&#39;
+chrome --headless --disable-gpu --その他のフラグ
+</code></pre><h2 id="dom-">DOM を出力する</h2>
+<ul>
+<li>--dump-dom フラグで document.body.innerHTML が標準出力される</li>
+</ul>
+<pre><code>chrome --headless --disable-gpu --dump-dom https://www.pxgrid.com/ &gt; pxgrid-body.html
+</code></pre><h2 id="pdf-">PDF を作成する</h2>
+<ul>
+<li>--print-to-pdf フラグで指定ページの PDF が生成される</li>
+<li>ファイル名は output.pdf 固定で変更できない実装っぽい<ul>
+<li><a href="https://cs.chromium.org/chromium/src/headless/app/headless_shell.cc?l=47">https://cs.chromium.org/chromium/src/headless/app/headless_shell.cc?l=47</a></li>
+</ul>
+</li>
+</ul>
+<pre><code>chrome --headless --disable-gpu --print-to-pdf https://www.pxgrid.com/
+</code></pre><h2 id="-">スクリーンショットを撮る</h2>
+<ul>
+<li>--screenshot フラグで指定ページをスクリーンショットした png 画像が生成される</li>
+<li>ファイル名は screenshot.png 固定で変更できない実装っぽい<ul>
+<li><a href="https://cs.chromium.org/chromium/src/headless/app/headless_shell.cc?l=45">https://cs.chromium.org/chromium/src/headless/app/headless_shell.cc?l=45</a></li>
+</ul>
+</li>
+<li>全画面のスクショ方法は後述</li>
+</ul>
+<pre><code>chrome --headless --disable-gpu --screenshot https://www.pxgrid.com/
 
-<p>ありがとうございました。</p>
+# window サイズの指定
+chrome --headless --disable-gpu --screenshot --window-size=1280,1696 https://www.pxgrid.com/
+</code></pre><h2 id="-">リモート接続でデバッグする</h2>
+<ul>
+<li>--remote-debugging-port=9222 フラグで DevTools Protocol が有効化され、リモート接続によるデバッグが可能になる</li>
+</ul>
+<pre><code>chrome --headless --disable-gpu --remote-debugging-port=9222 https://www.pxgrid.com/
+</code></pre><ul>
+<li>他のブラウザ（chrome or opera）で、localhost:9222 につなぐと、ヘッドレスで遷移してるウェブページとリモートデバッグ UI が表示される</li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/PqdhMWw2k6CNTqqArZmzXdPYDpF4m6QEBwuIdALnEVmhPpqOhXbn_KkUFODLOzpS8WNlkgBAVe_ofqz1Wv8ZWlXvOddnA2XvAqCjDuewuxeXDAe5u3SAHnDAphvsmh_XKW9KvMu99PQqnPCNd2gu-5Aghl_Ms-N-gPBbXrVvq21_xFXEIRqkovGnCiP2PmQFEfHYpc4a7MTth1zcqkM12t4ylKK4A6Upe8F6wiqNlQ4iuIBR1Y0ghaw302Gtj-gsQ9Ylk2rMVcEfDx1yjsnt7iWVsj7VMpofGAcjoxDGjqNFEOeeNhgo-xME471Ps4BUdQm18X61sH5e6O2TxcRiKRTBm2mal9i-Z3gcxdEGfxtlXmrvn8wpdW9zqKX_NuOgsdGV-WUk2674cDTtkvAH4nywP9S-NutRSYfm9sDbhgnfTD3_RMRz8xLZfZeunGL11wq4AQJyCPwdrFFtJkF1VdJiwAFtxhpSV2TlkEBsfuymaL4mMBpALcnNZGyW0IyOXIMt-0P1kiMNDWS7b_iUbY0W-MSr4Gn3oJlBIj08CkcHrsCoUVlfbfx9K9I7MOABd8hvB_u9owc1fJE-YKbQZbf59fwhhK_f3e2pH55za2peXeVsktUBhs0Dqdyea22Ju_qCf7jVoxI0l-b-45equMiKrNZHO8dZ5-IxRsXKNps=w968-h718-no" alt=""></p>
+<h2 id="node-js-">Node.jsから起動する</h2>
+<ul>
+<li>child_process で実行</li>
+<li>プラットフォーム毎に chrome の path を変える必要がある</li>
+</ul>
+<pre><code>const execFile = require(&#39;child_process&#39;).execFile;
+execFile(
+
+  // chromeのpath(Macの場合のpath)
+  &#39;/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome&#39;,
+
+  // パラメータ
+  [
+      &#39;--headless&#39;,
+      &#39;--disable-gpu&#39;,
+      &#39;--remote-debugging-port=9222&#39;,
+      url
+  ],
+
+  // callback
+  (err, stdout, stderr) =&gt; {  }
+);
+</code></pre><h2 id="lighthouse-chromelauncher-">Lighthouse の ChromeLauncher で起動する</h2>
+<pre><code>npm i lighthouse --save
+</code></pre><pre><code>const {ChromeLauncher} = require(&#39;lighthouse/lighthouse-cli/chrome-launcher&#39;);
+const launcher = new ChromeLauncher({
+  port: 9222, // remote-debugging-port
+  additionalFlags: [
+    &#39;--headless&#39;,
+    &#39;--disable-gpu&#39;
+  ]
+});
+launcher.run()
+  .then(() =&gt; {
+    // ここに処理を書く    
+  })
+  .catch(err =&gt; {
+    return launcher.kill().then(
+      () =&gt; { throw err; },
+      console.error
+    );
+  });
+</code></pre><ul>
+<li>chrome を見つけて起動してくれる</li>
+<li>デフォルトだと Canary を起動しようとする（ autoSelectChrome: false で手動指定になる）</li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/3WcRSWrVNX-chOHZK_rtghUSF3HmogxItOjrZ9WdjE-OAowooY6zGAFAAqW5woUr5uwXtiBDZWC22zowKOxhgJLxBi63u_lbGyFepJJce26B3c5UyeEv7DlnPnH7C9bk5J-g5WBjEAmEpcT9SjojqCdfwJ2wbF691DEqOnycVmxcOtVI4r8UBgTG8mk7Or5rAOK5_YIL6mudDa7fzgfQ2Ir4v599irfN-drsz7vmZj_CJ3R6UIITphWDYgEJlcLNYkvLidNr6j7JF24hEkR0YXb_O53IYxnOAo4dLHhTsogZ3_RRjZLVURLuGlLRrafFhvPL9yIwiKxsl9816zQlzqjUCixCvkKMPdzUuBwCeHVrjwrC5ZEbtarzo4OvAU_bM8vwjEwU4ZQqzcxJapexmefYozd_gktJe4bTbfmR2LzMtlom0wqg7OZBF8Q9G7yteW66uvSxc6MpY0lz4iTulFBTTEAyuRh8dU7fEGm77RYjjvmW4jerEDgdmLPFowvo7wiAX6n_VfqmK9lfDjio6SZBU6yT86g50yQ3rb48Pw1WEeoj2wdpXpw-Pbf-myG0j35TNECTMSG-OsroD2wV0uGAAPk7pqD_yNAYK-wYvpRU2oesh7p5Bg=w1112-h124-no" alt=""></p>
+<ul>
+<li>プログラムから Chrome を操作するには port を指定して DevTools Protocol を有効化する</li>
+</ul>
+<pre><code>new ChromeLauncher({
+  port: 9222, // remote-debugging-port
+  ...
+</code></pre><h2 id="chrome-remote-interface-chrome-">chrome-remote-interface で chrome を操作する</h2>
+<ul>
+<li>DevTools Protocol をベースとしたハイレベルな API を提供する</li>
+<li>リファレンス：<a href="https://chromedevtools.github.io/devtools-protocol/">Chrome DevTools Protocol Viewer</a></li>
+</ul>
+<pre><code>const CDP = require(&#39;chrome-remote-interface&#39;);
+launcher.run().then(() =&gt; {
+
+  CDP(async protocol =&gt; {
+
+    // 使用する機能を有効化して
+    const {Page, Runtime} = protocol;
+    await Page.enable();
+    await Runtime.enable();
+
+    // 処理を書く
+
+  }).on(&#39;error&#39;, err =&gt; {
+    throw Error(&#39;Cannot connect to Chrome:&#39; + err);
+  });
+</code></pre><ul>
+<li>あんまり使いやすくないせいか、いろんなラッパーライブラリがある<ul>
+<li><a href="https://github.com/OnetapInc/chromy">OnetapInc/chromy: Chromy is a library for operating headless chrome. 🍺🍺🍺</a></li>
+<li><a href="https://github.com/moos/chromate">moos/chromate: Automate Headless Chrome.</a></li>
+<li><a href="https://github.com/LucianoGanga/simple-headless-chrome">LucianoGanga/simple-headless-chrome</a></li>
+</ul>
+</li>
+<li><a href="https://chromedevtools.github.io/devtools-protocol/">リファレンス</a>も説明があんまりなく分かりずらいので、これらライブラリの実装を読むのが理解の近道かも</li>
+</ul>
+<h2 id="web-">web ページにスクリプトを追加する</h2>
+<pre><code>// 画面遷移
+await Page.navigate({url: &#39;http://www.cyokodog.net/&#39;});
+
+// 埋め込むスクリプトをテキストにする
+var source = (function(){
+  document.addEventListener(&quot;DOMContentLoaded&quot;, function(){
+    if (window.location.href === &#39;...&#39;) {
+      // 処理
+    }
+  });
+}).toString();
+
+// ページにスクリプトを埋め込む
+await Page.addScriptToEvaluateOnLoad({
+  scriptSource: `(${source})()`
+});
+</code></pre><ul>
+<li>Page.addScriptToEvaluateOnLoad() を使用する</li>
+<li>ページ移動や iframe によるページの読み込みが行われる都度、スクリプトが追加される<ul>
+<li>DOM を参照する場合は、DOMContentLoaded イベント内に処理を記述</li>
+<li>必要に応じて処理を適用すべき url を window.location.href でチェックする</li>
+</ul>
+</li>
+</ul>
+<h2 id="-">追加したスクリプトから値を得る</h2>
+<pre><code>await Page.navigate({url: &#39;http://www.cyokodog.net/&#39;});
+
+var source = (function(){
+  return document.querySelector(&#39;.foo&#39;).innerHTML; // 値を返す
+}).toString();
+
+// ページロードを待つ
+await Page.loadEventFired();
+
+const result = await Runtime.evaluate({ // =&gt; { result: { type: &#39;string&#39;, value: 返却値 } }
+  expression: `(${source})()`
+});
+</code></pre><ul>
+<li>Page.loadEventFired() と Runtime.evaluate() を使用する</li>
+<li>DOMContentLoaded は不要</li>
+<li>ページ毎に実行する場合は callback に処理を記述する</li>
+</ul>
+<pre><code>await Page.loadEventFired(async () =&gt; {
+  const result = await Runtime.evaluate({
+    expression: `(${source})()`
+  });
+  console.log(result);
+});
+</code></pre><h2 id="node-js-dom-">Node.js から直接 DOM を得る</h2>
+<pre><code>await Page.navigate({url: &#39;https://www.pxgrid.com/&#39;});
+await Page.loadEventFired();
+const doc = await DOM.getDocument();
+const hero = await DOM.querySelector({
+  nodeId: doc.root.nodeId,
+  selector: &#39;.pxg3-hero__text&#39;
+});
+if (hero.nodeId) {
+  const html = await DOM.getOuterHTML({   // =&gt; { outerHTML: nodeIdのhtml }
+    nodeId: hero.nodeId
+  });
+}
+</code></pre><ul>
+<li>DOM.getDocument() や DOM.querySelector() で要素の nodeId を得て</li>
+<li>DOM.getOuterHTML() や DOM.getAttributes() でその nodeId に該当する要素の情報を得る</li>
+</ul>
+<h2 id="-">フルサイズでスクリーンショットを撮る</h2>
+<ul>
+<li>(1)画面の表示サイズを適当に設定</li>
+<li>(2)DOM.getBoxModel() でページの高さを得る</li>
+<li>(3)Emulation.setVisibleSize() で高さを設定</li>
+<li>(4)Page.captureScreenshot() でスクショしたデータを得る</li>
+</ul>
+<pre><code>const {Page, DOM, Emulation} = protocol;
+
+const format = &#39;png&#39;;
+const defaultScreenSize = {
+  width: 1440,
+  height: 900,
+};
+
+await Page.enable();
+
+// (1)画面の表示サイズを適当に設定
+await Emulation.setDeviceMetricsOverride(
+  Object.assign({
+    deviceScaleFactor: 0,
+    mobile: false,
+    fitWindow: false,
+  }, defaultScreenSize)
+);
+await Emulation.setVisibleSize(defaultScreenSize);
+
+await Page.navigate({url: &#39;https://www.pxgrid.com/&#39;});
+await Page.loadEventFired();
+
+const {root: {nodeId: documentNodeId}} = await DOM.getDocument();
+const {nodeId: bodyNodeId} = await DOM.querySelector({
+  selector: &#39;body&#39;,
+  nodeId: documentNodeId,
+});
+
+// (2)DOM.getBoxModel() でページの高さを得る
+const {model: {height}} = await DOM.getBoxModel({nodeId: bodyNodeId});
+
+// (3)Emulation.setVisibleSize() で高さを設定
+await Emulation.setVisibleSize(
+  Object.assign(defaultScreenSize, {height})
+);
+
+// バグ対策？これがないとうまくいかない
+await Emulation.forceViewport({x: 0, y: 0, scale: 1});
+
+// (4)Page.captureScreenshot() でスクショしたデータを得る
+const screenshot = await Page.captureScreenshot({format});
+
+const buffer = new Buffer(screenshot.data, &#39;base64&#39;);
+file.writeFile(&#39;screen_shot.png&#39;, buffer, &#39;base64&#39;, function(err) {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(&#39;Screenshot saved&#39;);
+  }
+  protocol.close();
+});
+</code></pre><h2 id="-">スクレイピングしてみた</h2>
+<ul>
+<li><a href="https://github.com/cheeriojs/cheerio">cheeriojs/cheerio</a>のような dom パーサーを併用すると楽</li>
+</ul>
+<h3 id="-json-">マークアップが荒いサイトのコンテンツをJSON化する</h3>
+<p>なんだかとってもなつかしい匂いのする <a href="http://www.ajsa.jp/">AJSA のウェブサイト</a>から<a href="http://www.ajsa.jp/pro/2016pro/02_ka.html">プロ選手のリスト</a>を JSON 化して取得してみる。</p>
+<p><img src="https://lh3.googleusercontent.com/VrxelUI8b0AI7kGBcvddYix1uvFgv58zIT1crKyCcR2cKBWUd7xIWN5bFnGuom-kXaf523u1Lh33Zs_A1AGS-pXdUEw0aZ8JN0nqai-sSuVF8FsPRk5oJ_jgI3o0P-LiPvCtZ2up87trjCEwKM4YBes1bTNGWqLNTwCb8jTEPgv9ezsS0rAh3ExpfdREIrKb7u3Xn8cCEiGzz3Y9mckLqchkJC0kgiVQYDEuzovWTglK-7vvn5W_nl4P07R0UKTrNKNNmU_D6gTiYAgzBx7bNfEXaRJSAz6rscngckkeXCrnu49-0U-zTdPh8u0T8CKceJmIFq61jgZVDTKecopSr0-F7gtKiTuiAc7UeD90ceCa7dSW_Wd4aQ_N4mhrwCYgnVjfG5IztsBcg0N1rmdUVjXKs3sOQmoR887GdPhFkl2_TznMwUZVrhetYStm4gNBRXV0eWViQmmzUd2Pcj3_Alp_0DUi0WzTNR_6Ou-37bnFeBAcNtM5Uf-cUQDxPHyzcXq4ML6A4Wvsbh3MVL3tESgxSqIClSLlYzM62ixLC1zDOmXs8A3g3Rp6eV22evl1EyqWposcjv1oE3cRjJneaJ4qIvVm9X4dauM8354uaw_8h520HdOoTfuYdId0A27vLN7p7nWaw8w=w740-h516-no" alt=""></p>
+<ul>
+<li><a href="https://github.com/cyokodog/headless-chrome/blob/master/src/ajsa.js">headless-chrome/ajsa.js at master · cyokodog/headless-chrome</a></li>
+</ul>
+<pre><code>const CDP = require(&#39;chrome-remote-interface&#39;);
+const {ChromeLauncher} = require(&#39;lighthouse/lighthouse-cli/chrome-launcher&#39;);
+const cheerio = require(&#39;cheerio&#39;);
+const launcher = new ChromeLauncher({
+  port: 9222, // remote-debugging-port
+  additionalFlags: [
+    &#39;--headless&#39;,
+    &#39;--disable-gpu&#39;
+  ]
+});
+
+launcher.run().then(() =&gt; {
+
+  CDP(async protocol =&gt; {
+    const {Page, Runtime} = protocol;
+
+    await Page.enable();
+    await Runtime.enable();
+
+    // 画面遷移
+    await Page.navigate({url: &#39;http://www.ajsa.jp/pro/2016pro/02_ka.html&#39;});
+
+    // ロードを待つ
+    await Page.loadEventFired();
+
+    // HTMLを得る
+    let bodyHtml = await evaluate(() =&gt; {
+      return document.body.innerHTML;
+    });
+
+    const skaters = [];
+    const $ = cheerio.load(`&lt;div&gt;${bodyHtml}&lt;/div&gt;`);
+    $(&#39;table&#39;).each((i, table) =&gt; {
+      const skater = {
+        name: &#39;&#39;,
+        nameKana: &#39;&#39;,
+        birthDay: &#39;&#39;,
+        sponsors: []
+      };
+      const el = $(table).find(&#39;tr&#39;).find(&#39;td font&#39;);
+      const text = el.text().replace(/HP or Blog/g,&#39;&#39;);
+      var arr = text.split(&#39;\n&#39;)
+      var t1 = arr[0];
+      skater.name = t1.replace(/\n/g,&#39;&#39;).replace(/(（.+)/,&#39;&#39;);
+      skater.nameKana = t1.replace(/\n/g,&#39;&#39;).replace(/^(.+)\/(\s*)(.+)(生年月日.+)/,&#39;$3&#39;);
+      skater.birthDay = t1.replace(/\n/g,&#39;&#39;).replace(/^(.+生年月日：)(.*)(　身長.+)$/,&#39;$2&#39;).replace(&#39;：&#39;,&#39;&#39;);
+
+      arr.shift();
+      arr.forEach(item =&gt; {
+        var v = item.replace(&#39;スポンサー：&#39;,&#39;&#39;);
+        v.split(&#39;/&#39;).forEach(item =&gt; {
+          var v = item.replace(/\t/g,&#39;&#39;).replace(/　/g, &#39;&#39;).replace(/^\s|\s$/g,&#39;&#39;);
+          if(v) skater.sponsors.push(v);
+        });
+      });
+      skaters.push(skater);
+    });
+
+    console.log(skaters);
+
+    protocol.close();
+    launcher.kill();
+
+    async function evaluate(f) {
+      const str = f.toString();
+      const result = await Runtime.evaluate({expression: `(${str})()`});
+      return result.result.value;
+    }
+
+  }).on(&#39;error&#39;, err =&gt; {
+    throw Error(&#39;Cannot connect to Chrome:&#39; + err);
+  });
+}).catch(err =&gt; {
+  return launcher.kill().then(
+    () =&gt; { throw err; },
+    console.error
+  );
+});
+</code></pre><p>こんな感じで取れる。</p>
+<pre><code>[ { name: &#39;春日 美夢&#39;,
+    nameKana: &#39;かすがみゆ&#39;,
+    birthDay: &#39;1997.12/30&#39;,
+    sponsors: [ &#39;SK8MAFIA&#39;, &#39;e\&#39;S&#39;, &#39;JSLV&#39;, &#39;ムラサキスポーツスペイン坂&#39;, &#39;DICE&#39; ] },
+  { name: &#39;金盛 壮一郎&#39;,
+    nameKana: &#39;かなもりそういちろう&#39;,
+    birthDay: &#39;1985.9/18&#39;,
+    sponsors: [ &#39;Raccos Burger&#39;, &#39; ムラサキスポーツ倉敷&#39;, &#39;FVK ZIPPERS&#39; ] },
+  { name: &#39;兼本理玖&#39;,
+    nameKana: &#39;かねもと りく&#39;,
+    birthDay: &#39;1999.9/28&#39;,
+    sponsors: 
+     [ &#39;ムラサキスポーツ岡山&#39;,
+       &#39;IFO&#39;,
+       &#39;DC&#39;,
+       &#39;NINJA &#39;,
+       &#39;ソースボルト&#39;,
+       &#39;NAGI skatepark&#39;,
+       &#39;みやおか接骨院&#39; ] },
+  { name: &#39;岸田 義己&#39;,
+    nameKana: &#39;きしだ よしき&#39;,
+    birthDay: &#39;1991.3/13&#39;,
+    sponsors: [ &#39;ムラサキスポーツ岸和田&#39;, &#39;ZooYork&#39;, &#39;SATORI&#39; ] },
+  { name: &#39;清野玲生&#39;,
+    nameKana: &#39;きよのれお&#39;,
+    birthDay: &#39;2000.10/4&#39;,
+    sponsors: [ &#39;ムラサキパーク東京&#39; ] },
+  { name: &#39;清原 和也&#39;,
+    nameKana: &#39;きよはらかずや&#39;,
+    birthDay: &#39;1982.4/22&#39;,
+    sponsors: [ &#39;Tre\&#39;sb Skateshop&#39;, &#39;REVEL ROYAL&#39; ] },
+  { name: &#39;久保田 敏弘&#39;,
+    nameKana: &#39;くぼたとしひろ&#39;,
+    birthDay: &#39;1979.8/16&#39;,
+    sponsors: [] },
+  { name: &#39;桑本 透伍&#39;,
+    nameKana: &#39;くわもと とうご&#39;,
+    birthDay: &#39;1996.5/27&#39;,
+    sponsors: 
+     [ &#39;ムラサキスポーツ&#39;,
+       &#39;BONES&#39;,
+       &#39;PLAN B&#39;,
+       &#39;PUMA&#39;,
+       &#39;THEEVE&#39;,
+       &#39;SKULL CANDY&#39;,
+       &#39;CRYSTAL GEYSER&#39;,
+       &#39;http:&#39;,
+       &#39;ameblo.jp&#39;,
+       &#39;105-sk8&#39; ] },
+  { name: &#39;郡山 智&#39;,
+    nameKana: &#39;こおりやまさとし&#39;,
+    birthDay: &#39;1976.10/16&#39;,
+    sponsors: [ &#39;JOCKS&#39;, &#39;NEWS AIR FORCE&#39; ] },
+  { name: &#39;小鈴 大和&#39;,
+    nameKana: &#39;こすずやまと&#39;,
+    birthDay: &#39;2000.7/5&#39;,
+    sponsors: [ &#39;ELEMENT&#39;, &#39;SRH&#39;, &#39;RONIN EYE WEAR&#39; ] },
+  { name: &#39;小林 紗輝&#39;,
+    nameKana: &#39;こばやしさき&#39;,
+    birthDay: &#39;1997.9/18&#39;,
+    sponsors: [ &#39;ダブルフェイス&#39;, &#39;SHOE GOO&#39;, &#39;久里浜さいとう整骨院&#39; ] } ]
+</code></pre><h3 id="qiita-json-">qiita でログインしてトップページのフィードをJSON化して取得する</h3>
+<ul>
+<li><a href="https://github.com/cyokodog/headless-chrome/blob/master/src/qiita.js">headless-chrome/qiita.js at master · cyokodog/headless-chrome</a></li>
+</ul>
+<pre><code>const account = require(&quot;../.account.json&quot;);
+// {
+//   &quot;qiita&quot;: {
+//     &quot;user&quot;: &quot;user_name&quot;,
+//     &quot;pass&quot;: &quot;password&quot;
+//   }
+// }
+
+const CDP = require(&#39;chrome-remote-interface&#39;);
+const {ChromeLauncher} = require(&#39;lighthouse/lighthouse-cli/chrome-launcher&#39;);
+const cheerio = require(&#39;cheerio&#39;);
+const launcher = new ChromeLauncher({
+  port: 9222, // remote-debugging-port
+  additionalFlags: [
+    &#39;--headless&#39;,
+    &#39;--disable-gpu&#39;
+  ]
+});
+
+launcher.run().then(() =&gt; {
+
+  CDP(async protocol =&gt; {
+    const {Page, Runtime} = protocol;
+
+    await Page.enable();
+    await Runtime.enable();
+
+    // 画面遷移
+    await Page.navigate({url: &#39;https://qiita.com&#39;});
+
+    // ロードを待つ
+    await Page.loadEventFired();
+
+    // ログイン処理
+    const loginSrc = `
+      document.querySelector(&#39;#identity&#39;).value = &#39;${account.qiita.user}&#39;;
+      document.querySelector(&#39;#password&#39;).value = &#39;${account.qiita.pass}&#39;;
+      document.querySelector(&#39;.landingLoginForm&#39;).submit();
+    `;
+    await Runtime.evaluate({expression: loginSrc});
+
+    // ロードを待つ
+    await Page.loadEventFired();
+
+    // SPAの描画を待つ
+    await sleep(3000);
+
+    // HTMLを得る
+    let result = await evaluate(() =&gt; {
+      return document.body.innerHTML;
+    });
+
+    // リスト部分を抜き出す
+    const $ = cheerio.load(result);
+    const list = [];
+    $(&#39;.streamContainer_streams .item-box-title h1 a&#39;).each((i, link) =&gt; {
+      const $link = $(link);
+      list.push({
+        title: $link.text().trim(),
+        url: $link.prop(&#39;href&#39;).trim()
+      });
+    });
+
+    console.log(list);
+
+    protocol.close();
+    launcher.kill();
+
+    async function sleep(time){
+      return new Promise( resolve =&gt; {
+        setTimeout(async function(){
+          resolve();
+        }, time);
+      });
+    }
+
+    async function evaluate(f) {
+      const str = f.toString();
+      const result = await Runtime.evaluate({expression: `(${str})()`});
+      return result.result.value;
+    }
+
+  }).on(&#39;error&#39;, err =&gt; {
+    throw Error(&#39;Cannot connect to Chrome:&#39; + err);
+  });
+}).catch(err =&gt; {
+  return launcher.kill().then(
+    () =&gt; { throw err; },
+    console.error
+  );
+});
+</code></pre><p>こんな感じでとれる。</p>
+<pre><code>[ { title: &#39;Rails + Materialize でCollapsibleの不具合を直した&#39;,
+    url: &#39;http://qiita.com/uenoryo/items/e78bae038e25ac743baa&#39; },
+  { title: &#39;macを購入してやったこと&#39;,
+    url: &#39;http://qiita.com/_am_/items/189132cf2d1312f42ce3&#39; },
+  { title: &#39;ステーキ定食の画像から物体を選別できないかやってみた - クラスタリング編&#39;,
+    url: &#39;http://qiita.com/neriai/items/6df233918513a51a7147&#39; },
+  { title: &#39;Facebookの過去の記事・コメントをすべてぶっこ抜くjavascript(DeveloperTools活用版)&#39;,
+    url: &#39;http://qiita.com/nori4k/items/e4c5c0685a0e42dc3d31&#39; },
+  { title: &#39;gulp-sassの起動エラーメモ Error: Node Sass does not yet support your current environment&#39;,
+    url: &#39;http://qiita.com/n0bisuke/items/7c683fd70e398ad678b9&#39; },
+  { title: &#39;[javascript] Markdown でライトニングトーク用の高橋メソッド式スライドを作る&#39;,
+    url: &#39;http://qiita.com/hidao/items/03604a0ada7987125a0e&#39; },
+  { title: &#39;逆引きWebpackの使い方&#39;,
+    url: &#39;http://qiita.com/bobu_web/items/dc72e19f0e548c484f0e&#39; },
+  { title: &#39;逆引きWebpackの使い方&#39;,
+    url: &#39;http://qiita.com/bobu_web/items/dc72e19f0e548c484f0e&#39; },
+  { title: &#39;vue ファイルをリント(ESLint)する&#39;,
+    url: &#39;http://qiita.com/komatzz/items/3cc7cc34699747efb675&#39; },
+  { title: &#39;JSON形式のNEMトランザクションから送金情報を抽出する。&#39;,
+    url: &#39;http://qiita.com/nem_takanobu/items/327a7997587cce9e80f8&#39; },
+  { title: &#39;配列を無理やり（破壊的/非破壊的）に操作する&#39;,
+    url: &#39;http://qiita.com/jkr_2255/items/59c01b276a2abbfd2cc8&#39; },
+  { title: &#39;「 ⌘ + Tab 」まわりの意外と知られていないTips&#39;,
+    url: &#39;http://qiita.com/mtmtkzm/items/69e4f217ddaf234a5f18&#39; },
+  { title: &#39;#jQuery JSON で SyntaxError&#39;,
+    url: &#39;http://qiita.com/komuchan/items/2c49bb8c3c78f9603dee&#39; },
+  { title: &#39;z-indexが言うことを聞いてくれない場合はこの辺のことが原因だと思うよ&#39;,
+    url: &#39;http://qiita.com/ykyk1218/items/155ec7a8552da9fb2d8e&#39; },
+  { title: &#39;お前ら今すぐそのCSSフレームワーク使うのやめろ!&#39;,
+    url: &#39;http://qiita.com/isuke/items/e132669d54523c934b96&#39; },
+  { title: &#39;Qiita の Markdown では class が使える&#39;,
+    url: &#39;http://qiita.com/8x9/items/4f3e120d0f2ee4915ce5&#39; },
+  { title: &#39;利用ケースからWeakMapを理解する&#39;,
+    url: &#39;http://qiita.com/Anders/items/fca56dcdfedd7bd8e241&#39; },
+  { title: &#39;python3環境にmatplotlibを追加&#39;,
+    url: &#39;http://qiita.com/ryuhjyu/items/3c606058fd5a07e4f5a2&#39; },
+  { title: &#39;python3.5環境構築メモ&#39;,
+    url: &#39;http://qiita.com/ryuhjyu/items/7ef56b10423fa72f3cbc&#39; },
+  { title: &#39;javascript のコード中に Markdown をヒアドキュメント風に直書きする方法&#39;,
+    url: &#39;http://qiita.com/hidao/items/71213093b4f469340664&#39; } ]
+</code></pre><h2 id="-">参考サイト</h2>
+<ul>
+<li><a href="https://cs.chromium.org/chromium/src/headless/app/">https://cs.chromium.org/chromium/src/headless/app/</a></li>
+<li><a href="https://chromium.googlesource.com/chromium/src/+/master/headless/README.md">Headless Chromium</a></li>
+<li><a href="https://developers.google.com/web/updates/2017/04/headless-chrome?hl=ja">ヘッドレス Chrome ことはじめ  |  Web  |  Google Developers</a></li>
+<li><a href="https://developers.google.com/web/tools/lighthouse/?hl=ja">Lighthouse によるウェブアプリの監査  |  Web  |  Google Developers</a></li>
+<li><a href="https://www.npmjs.com/package/chrome-remote-interface">chrome-remote-interface</a></li>
+<li><a href="https://chromedevtools.github.io/devtools-protocol/">Chrome DevTools Protocol Viewer</a></li>
+</ul>
+<h2 id="-">気持ち</h2>
+<p>仕事でも使えるかもなので E2E テストも試してみたい...（けどまだあんまり情報がない）</p>
 
     </div>
 
