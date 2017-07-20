@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>入力キーの種類を調べることができる jQuery プラグイン | CYOKODOG</title>
+	<title>getUserMedia と連携させて Computer Vision API を使ってみた | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,89 +72,300 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/keyinfo-doc/" title="入力キーの種類を調べることができる jQuery プラグイン">入力キーの種類を調べることができる jQuery プラグイン</a>
+        <a href="/blog/computer-vision-api/" title="getUserMedia と連携させて Computer Vision API を使ってみた">getUserMedia と連携させて Computer Vision API を使ってみた</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2013-11-25</li>
+        <li class="article__info__date">2017-07-20</li>
 <!--
-        <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
       </ul>
     </div>
     <div class="article__body">
-    <p>Keyinfo は、入力キーの種類を調べることができる jQuery プラグインです。
-<a href="/web/20150911211412/https://github.com/cyokodog/jquery.utility-kit">jQuery Utility Kit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。
-
+    <p>マイクロソフトの画像認識APIの Computer Vision API を試してみた。API そのものより</p>
+<ul>
+<li>「getUserMedia で動画を得る」-&gt;「スナップショットを取る」-&gt;「APIへアップロード」</li>
+</ul>
+<p>って部分が勉強になったのでメモっておく。</p>
 <!--more-->
-
-
-<h2>変更履歴</h2>
-
+<h2 id="computer-vision-api-">Computer Vision APIとは</h2>
 <ul>
-<li>v0.1.1
-
-<ul>
-<li>IE8 以下でエラーになる不具合対応</li>
-</ul></li>
+<li>Microsoftの画像認識API (<a href="https://azure.microsoft.com/ja-jp/services/cognitive-services/computer-vision/">site</a>)</li>
+<li>REST で画像を投げると JSON 形式で画像を分析した結果を返してくれる</li>
+<li>画像の説明文、画像になにが写ってるか、人物の年齢や性別、顔の座標、著名人の名前、有名な建物の名前、などを返してくれる</li>
 </ul>
-
-<h2>使い方</h2>
-
-<p class="for-bottom">jQuery、jQuery Utility Kit（または Keyinfo）の JS ファイルを読み込みます。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"</span><span class="tag">&gt;&lt;/script&gt;</span></li><li class="L1"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"jquery.utility-kit.js"</span><span class="tag">&gt;&lt;/script&gt;</span><span class="com">&lt;!-- または jquery.keyinfo.js --&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
-
-<p class="for-bottom">keydown イベント等で取得できる入力キーコードの種類を調べることができます。
-以下の例では、number-only クラスを持つ入力フィールドに対し、数字と BS / DEL 等の制御キー（エンターキーは除く）のみの入力を受け付けるようにしています。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pln">$</span><span class="pun">(</span><span class="str">'body'</span><span class="pun">).</span><span class="pln">on</span><span class="pun">(</span><span class="str">'keydown'</span><span class="pun">,</span><span class="pln"> </span><span class="str">'input.number-only'</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">evt</span><span class="pun">){</span></li><li class="L1"><span class="pln">    </span><span class="kwd">return</span><span class="pln"> evt</span><span class="pun">.</span><span class="pln">keyCode </span><span class="pun">!=</span><span class="pln"> $</span><span class="pun">.</span><span class="pln">keyinfo</span><span class="pun">.</span><span class="pln">ENTER              </span><span class="com">// エンターキー以外？</span></li><li class="L2"><span class="pln">           </span><span class="pun">&amp;&amp;</span><span class="pln"> </span><span class="pun">(</span><span class="pln">$</span><span class="pun">.</span><span class="pln">keyinfo</span><span class="pun">.</span><span class="pln">isNUMBER</span><span class="pun">(</span><span class="pln">evt</span><span class="pun">.</span><span class="pln">keyCode</span><span class="pun">)</span><span class="pln"> </span><span class="pun">||</span><span class="pln">      </span><span class="com">// 数字キー？</span></li><li class="L3"><span class="pln">               $</span><span class="pun">.</span><span class="pln">keyinfo</span><span class="pun">.</span><span class="pln">isCONTROL</span><span class="pun">(</span><span class="pln">evt</span><span class="pun">.</span><span class="pln">keyCode</span><span class="pun">));</span><span class="pln">      </span><span class="com">// 制御キー？</span></li><li class="L4"><span class="pun">});</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 144px;"></textarea></div></div></div>
-
-<p><div class="for-top"><a href="/web/20150911211412/http://cyokodog.github.io/jquery.utility-kit/keyinfo/demo.html" class="demo external" target="_blank">Demo</a></div></p>
-
-<p>キーコードは $.keyinfo.ENTER のように記述し、以下種類のものを参照できます。</p>
-
+<h2 id="-json-">得られるJSONデータ</h2>
+<p>例えば以下のような画像をAPIに投げると...</p>
+<p><img src="https://lh3.googleusercontent.com/N7V5LIV0AIClPy8P-tLXtnr3xpzqtJ_HQJOiW_ahMnKZ6_B7XbE8Ape8m5sMe3nV6ujyJeg7HrkEPvpRi0u6kEai6Bxo1fBCuI5ZMGUaW1V6mnBbxpkeLHMKAVrPa_LmSaqSiUUxkEa0Jhy9F7-yT4zP74UkMq9HF1sgmNgJkS9QWllLaPB5BmrWmqcBop13n8KbFw88nJDj1jetkx4czZkAOb8B-LZviAJMbLp_fCVOozgyBrKrTm6XDm38Ja6E9oI9QKaZ3ioTHgKRdSdUJdkXv72muoT6DVTePmiW9uOX5-gQD01RA739su1XSgJ_Z7eYGZsSFF8Y6zMEpXTpBvicJL6fRUlb-95jmlWfpBfQ0el45x8SfGkI8Iy3zt8zV1XYvotfHGBDGWoPc4ls3fx4rbtUewdmVUawHrblAbBQtbKgBnq215_CoBjbneMvwy_yXSVKlj3yvwMUxU1SZ37Kljdzas2bbLnsoUHsUV_LkBsTt4LGtGURD2BCtFfe5vTLUfus5tM9_aZK97PGfTRzlAiYwB4PHsY-BbqPahWXakuSr6eSGwf8guz9gzZtu6d9xJXtKkNsj8dG2a_tZ9m5X7iq_1LhVdJ6tTMN8WQDNpDKcRKP89Sv=w1600-h1200-no" alt="a boy"></p>
+<p>次のようなJSONが返ってくる</p>
+<pre><code>{
+  &quot;categories&quot;: [
+    {
+      &quot;name&quot;: &quot;others_&quot;,
+      &quot;score&quot;: 0.0078125
+    },
+    {
+      &quot;name&quot;: &quot;outdoor_&quot;,
+      &quot;score&quot;: 0.0078125,
+      &quot;detail&quot;: {
+        &quot;landmarks&quot;: []
+      }
+    },
+    {
+      &quot;name&quot;: &quot;people_&quot;,
+      &quot;score&quot;: 0.30859375,
+      &quot;detail&quot;: {
+        &quot;celebrities&quot;: []
+      }
+    }
+  ],
+  &quot;adult&quot;: {
+    &quot;isAdultContent&quot;: false,
+    &quot;isRacyContent&quot;: false,
+    &quot;adultScore&quot;: 0.0168526079505682,
+    &quot;racyScore&quot;: 0.023264266550540924
+  },
+  &quot;tags&quot;: [
+    {
+      &quot;name&quot;: &quot;outdoor&quot;,
+      &quot;confidence&quot;: 0.9941964149475098
+    },
+    {
+      &quot;name&quot;: &quot;road&quot;,
+      &quot;confidence&quot;: 0.9823024868965149
+    },
+    {
+      &quot;name&quot;: &quot;ground&quot;,
+      &quot;confidence&quot;: 0.9675083756446838
+    },
+    {
+      &quot;name&quot;: &quot;boy&quot;,
+      &quot;confidence&quot;: 0.920303225517273
+    },
+    {
+      &quot;name&quot;: &quot;person&quot;,
+      &quot;confidence&quot;: 0.9178870320320129
+    },
+    {
+      &quot;name&quot;: &quot;young&quot;,
+      &quot;confidence&quot;: 0.803716778755188
+    }
+  ],
+  &quot;description&quot;: {
+    &quot;tags&quot;: [
+      &quot;outdoor&quot;,
+      &quot;road&quot;,
+      &quot;boy&quot;,
+      &quot;person&quot;,
+      &quot;child&quot;,
+      &quot;young&quot;,
+      &quot;little&quot;,
+      &quot;small&quot;,
+      &quot;street&quot;,
+      &quot;riding&quot;,
+      &quot;sidewalk&quot;,
+      &quot;man&quot;,
+      &quot;holding&quot;,
+      &quot;standing&quot;,
+      &quot;side&quot;,
+      &quot;baby&quot;,
+      &quot;wearing&quot;,
+      &quot;walking&quot;,
+      &quot;board&quot;,
+      &quot;fire&quot;,
+      &quot;bed&quot;,
+      &quot;hydrant&quot;
+    ],
+    &quot;captions&quot;: [
+      {
+        &quot;text&quot;: &quot;a little boy that is standing on the side of a road&quot;,
+        &quot;confidence&quot;: 0.8269637487808089
+      }
+    ]
+  },
+  &quot;requestId&quot;: &quot;d7387e20-3e79-4b9b-b5b0-2eb967a71c7e&quot;,
+  &quot;metadata&quot;: {
+    &quot;width&quot;: 1600,
+    &quot;height&quot;: 1200,
+    &quot;format&quot;: &quot;Jpeg&quot;
+  },
+  &quot;faces&quot;: [
+    {
+      &quot;age&quot;: 6,
+      &quot;gender&quot;: &quot;Male&quot;,
+      &quot;faceRectangle&quot;: {
+        &quot;left&quot;: 777,
+        &quot;top&quot;: 216,
+        &quot;width&quot;: 127,
+        &quot;height&quot;: 127
+      }
+    }
+  ],
+  &quot;color&quot;: {
+    &quot;dominantColorForeground&quot;: &quot;Grey&quot;,
+    &quot;dominantColorBackground&quot;: &quot;Grey&quot;,
+    &quot;dominantColors&quot;: [
+      &quot;Grey&quot;,
+      &quot;White&quot;
+    ],
+    &quot;accentColor&quot;: &quot;436737&quot;,
+    &quot;isBWImg&quot;: false
+  },
+  &quot;imageType&quot;: {
+    &quot;clipArtType&quot;: 0,
+    &quot;lineDrawingType&quot;: 0
+  }
+}
+</code></pre><h2 id="-">競合サービス</h2>
 <ul>
-<li>BS</li>
-<li>TAB</li>
-<li>ENTER</li>
-<li>SHIFT</li>
-<li>CTRL</li>
-<li>ALT</li>
-<li>ESC</li>
-<li>LEFT （左矢印キー）</li>
-<li>UP （上矢印キー）</li>
-<li>RIGHT （右矢印キー）</li>
-<li>DOWN （下矢印キー）</li>
-<li>DEL</li>
+<li>各社類似サービスを出している<ul>
+<li><a href="https://cloud.google.com/vision/">Vision API - 画像コンテンツ分析  |  Google Cloud Platform</a></li>
+<li><a href="https://www.ibm.com/watson/developercloud/visual-recognition.html">Visual Recognition | IBM Watson Developer Cloud</a></li>
+<li><a href="https://aws.amazon.com/jp/rekognition/">Amazon Rekognition (深層学習に基づく画像認識サービス) | AWS</a></li>
 </ul>
-
-<p>以下のよう isキー名() とすることでメソッドで判別することもできます。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">if</span><span class="pun">(</span><span class="pln">$</span><span class="pun">.</span><span class="pln">keyinfo</span><span class="pun">.</span><span class="pln">isENTER</span><span class="pun">(</span><span class="kwd">event</span><span class="pun">.</span><span class="pln">keyCode</span><span class="pun">){</span><span class="pln"> </span><span class="pun">...</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 72px;"></textarea></div></div></div>
-
-<p>また、定義済みキーコード以外に、以下のメソッドも使用できます。</p>
-
-<ul>
-<li>isNUMBER( keyCode )
-
-<ul>
-<li>キーコードの値が数字の場合 true を返す。</li>
-</ul></li>
-<li>isCONTROL( keyCode )
-
-<ul>
-<li>キーコードの値が制御コードの場合 true を返す。</li>
-</ul></li>
+</li>
+<li>この記事（<a href="http://qiita.com/tomoki-n/items/7b503d64c03cace51197">画像認識対決 ~Microsoft VS Google VS IBM~ - Qiita</a>）を読む限り、この分野ではマイクロソフトが強そう</li>
 </ul>
-
-<h2>ダウンロード</h2>
-
-<p>こちらからどうぞ。</p>
-
+<h2 id="microsoft-api-">MicrosoftのAPIサービス郡での位置づけ</h2>
 <ul>
-<li><a href="/web/20150911211412/https://github.com/cyokodog/jquery.utility-kit">jquery.utility-kit – GitHub</a></li>
+<li>Microsoftでは <a href="https://azure.microsoft.com/ja-jp/services/cognitive-services/">Cognitive Services</a> という名のAPIサービス群を提供している</li>
+<li>サービスは以下のようにカテゴライズされてる<ul>
+<li><strong>Vision</strong></li>
+<li>Speech</li>
+<li>Language</li>
+<li>Knowledge</li>
+<li>Search</li>
 </ul>
+</li>
+<li>Visionカテゴリは以下で構成される<ul>
+<li><strong>Computer Vision</strong></li>
+<li>Emotion (感情を推測する)</li>
+<li>Face (年齢を推測する)</li>
+<li>Video</li>
+</ul>
+</li>
+</ul>
+<h2 id="-">利用に際して必要なこと</h2>
+<ul>
+<li>Cognitive Servicesの利用開始登録（要クレジットカード番号）</li>
+<li>30日間の無料試用可</li>
+<li>各APIサービスの url と Subscription Key を得る（コードに記述する）</li>
+</ul>
+<h2 id="-">注意点</h2>
+<ul>
+<li>提示される url が正確でないので補正が必要</li>
+<li>Computer Vision API<ul>
+<li><a href="https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/">https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/</a>  + analyze<ul>
+<li>末尾に analyze を付け足す</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Emotion API<ul>
+<li><a href="https://westus.api.cognitive.microsoft.com/emotion/v1.0/">https://westus.api.cognitive.microsoft.com/emotion/v1.0/</a> + Srecognize<ul>
+<li>末尾に recognize を付け足す</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="-">デモを作った</h2>
+<p>以下内容で動作するデモを作った</p>
+<ul>
+<li>画像指定パターン<ul>
+<li>ネットにある画像を指定</li>
+<li>ローカルの画像をアップロード</li>
+<li>カメラ（getUserMedia）でキャプチャした動画からスナップショットを取ってアップロード</li>
+</ul>
+</li>
+<li>顔認識した場合は顔の位置を囲み予想年齢を表示する</li>
+<li>JSONの表示</li>
+<li>説明文を Web Speech API で喋らせる</li>
+<li>mobx + template stringで各UIをモジュール化（らしきことをしたがcssも含め結構ぐだぐだ）</li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/lfCa-tYBWI1z5tvAhYCHnDQpSvP7SGs34kKibN23BmwCr5VBmoxk-igMagE6oUPIHu6xjSlS9NoGyob2M0d5ZgwrNfJfKWFf6RBB2L6GpH0rnSkFUL4lgkd2UWuXZ_ShoLASabrSN0AsXwiG6OAyTWJO0gadxLD6jSojHPSngw8BXO5ndOcurEo9ynSaB9_7H4s1EpdoovT_Gn42-Ba8Z8pSc8WtTGoH9UFH_HKR9IHGIsbh0jjiiQbi7746faupv7g4wx1UXRz8Pr9J7f3D5f1lhpH6anuTIiuPUcvq_55xf-FmHa6dF7-KgJdwMdNIsdFKOyFJc5zJ8MbxR4KyqIK5d4fvf2KoDqP3FhQivEVAwYEjZs7v8bbQlhFB9ZM2fbYLT1yADeh2pyrlXXJ2YvnzL7MoWpRxuFMIwOZHw9wNvAv_nTF8n8SNqIoM7Bzq--JeMY-zJWRFq8AtsH_ytPTwmRle_7M7S0pFT9d3O-h99RPvyItlaewx7n3mq_05ndrOSjK8pnnylz8tLVD-usiS2ThlI_qRnXr3wODKRlHBO560dbv1Bb0tg74X6gxeAr0RbYrj8jS5inBXWT06uruQykpMvVQvyUL4ZUMjemX2uTW-wdLfPErLbIgKufoxJR4s1RLjvgG4PtI=w548-h318-no" alt=""></p>
+<ul>
+<li>demo<ul>
+<li><a href="https://cyokosaturn.github.io/computer-vision-api_study/demo/">https://cyokosaturn.github.io/computer-vision-api_study/demo/</a></li>
+</ul>
+</li>
+<li>source<ul>
+<li><a href="https://github.com/cyokosaturn/computer-vision-api_study">https://github.com/cyokosaturn/computer-vision-api_study</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="-">ネットにある画像を指定</h2>
+<pre><code class="lang-js">const params = [
+  &#39;visualFeatures=Categories,Tags, Description, Faces, ImageType, Color, Adult&#39;,
+  &#39;details=Celebrities, Landmarks&#39;,
+  &#39;language=en&#39;
+].join(&#39;&amp;&#39;);
 
+fetch(&#39;https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/analyze?&#39; + params, {
+  method: &#39;POST&#39;,
+  body: JSON.stringify({url: imgageUrl}),
+  headers: {
+    &quot;Content-Type&quot;: &#39;application/json&#39;,
+    &quot;Ocp-Apim-Subscription-Key&quot;: &#39;260f006a16c04453........
+  }
+}).then(function(response) {
+  return response.json();
+}).then(json =&gt; {...})
+</code></pre>
+<ul>
+<li>Content-Type は application/json を指定</li>
+<li>body は JSON.stringify で文字列変換</li>
+</ul>
+<h2 id="-">画像のアップロード</h2>
+<ul>
+<li>Content-Type は application/octet-stream を指定</li>
+<li>body には File オブジェクトを指定</li>
+</ul>
+<pre><code class="lang-js">const file = document.querySelector(&#39;input[type=file]&#39;).files[0];
+fetch(&#39;https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/analyze?&#39; + params, {
+  method: &#39;POST&#39;,
+  body: file,
+  ...
+</code></pre>
+<ul>
+<li>画像のプレビューには FileReader を利用する</li>
+</ul>
+<pre><code class="lang-js">const reader = new FileReader();
+const dataUrl = reader.readAsDataURL(file);
+reader.onload = (file =&gt; {
+  return event =&gt; {
+    $img.src = event.target.result;
+  };
+})(file);
+</code></pre>
+<h2 id="getusermedia-">getUserMediaでキャプチャしてアップロード</h2>
+<ul>
+<li>Content-Type は application/octet-stream を指定</li>
+<li>body は blob に変換した画像を指定</li>
+</ul>
+<p>キャプチャ開始</p>
+<pre><code class="lang-js">const config = {
+  video: true,
+  audio: false
+};
+navigator.mediaDevices.getUserMedia(config).then(stream =&gt; {
+  $video.src = URL.createObjectURL(stream);
+  $video.play();
+});
+</code></pre>
+<p>静止画のdataUrlを得る</p>
+<pre><code class="lang-js">const ctx = $canvas.getContext(&quot;2d&quot;);
+ctx.drawImage($video, 0, 0, 320, 240);
+const dataUrl = $canvas.toDataURL(contentType);
+</code></pre>
+<p>dataUrlをblob形式に変換</p>
+<pre><code class="lang-js">const bin = atob(dataUrl.split(&#39;,&#39;)[1]);
+const imageBuffer = new Uint8Array(bin.length);
+for (let i = 0; i &lt; bin.length; i++) {
+  imageBuffer[i] = bin.charCodeAt(i);
+}
+const blob = new Blob([imageBuffer.buffer], {type: contentType});
+</code></pre>
 
     </div>
 
