@@ -366,7 +366,11 @@ for (let i = 0; i &lt; bin.length; i++) {
 }
 const blob = new Blob([imageBuffer.buffer], {type: contentType});
 </code></pre>
-
+<p>（追記）これでいけるらしい... 便利！</p>
+<pre><code>$canvas.toBlob(blob =&gt; {
+  ...
+}, contentType);
+</code></pre>
     </div>
 
   </article>
