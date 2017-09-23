@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>Life | CYOKODOG</title>
+	<title>ヘッドレス chrome を操作する puppeteer で E2E テストを CircleCI で動かしてみた | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -67,74 +67,470 @@
 
   <div class="l-contents">
     <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
 
-    <div class="l-article">
-      <article class="article">
-
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/garamodel/" title="ガラクタで重厚感のあるおもちゃを作ってみた">ガラクタで重厚感のあるおもちゃを作ってみた</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2013-09-04</li>
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/puppeteer/" title="ヘッドレス chrome を操作する puppeteer で E2E テストを CircleCI で動かしてみた">ヘッドレス chrome を操作する puppeteer で E2E テストを CircleCI で動かしてみた</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2017-09-24</li>
 <!--
-      <li class="article__info__category"><a href="/category/life/" rel="category tag">Life</a></li>
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/garamodel/"><img src="https://lh3.googleusercontent.com/-skerYXxvj34/UhiPfLvWPHI/AAAAAAAAFCA/8elO-eWTvUw/s144/IMG_0897.JPG"></a>
-</div></p>
-<p>
-ガラクティストこと <strong><a href="http://mo-3.no-blog.jp/hitoligoto">ゴトー孟(もう)</a></strong> さんをご存じでしょうか？<br>
-ペットボトルや空き箱などの日常生活で出るがらくたを使って、ハイクオリティなおもちゃを作ってしまうすごい方なのですが、先日、子供の自由研究のネタ探しに訪れた横浜こども宇宙科学館でその作品を初めて見ました。とてもガラクタでできてるとは思えない重厚感、完成度に衝撃を受けました。<br>
-そんな訳で夏休みの時間を利用し、我が家でも作ってみました。
-</p>
+      </ul>
+    </div>
+    <div class="article__body">
+    <p>ヘッドレス chrome を操作する chrome-remote-interface が扱いづらかったせいか、はやくも puppeteer とかいう公式っぽい代替ライブラリがでてたので、もろもろ試したことをメモっておく。</p>
+<p>試したやつのリポジトリ：<a href="https://github.com/cyokodog/puppeteer_study">cyokodog/puppeteer_study</a></p>
+<!--more-->
+<h2 id="headless-chrome-">Headless Chrome のおさらい</h2>
+<p>puppeteer 位置づけを確認する意味で Headless Chrome をどう動かしてたかをおさらい（via <a href="http://www.cyokodog.net/blog/headless-chrome/">Headless Chrome をさわってみた | CYOKODOG</a>）。</p>
+<h3 id="node-js-headless-chrome-">Node.js で Headless Chrome を起動する</h3>
+<ul>
+<li>Headless Chrome を操作するには DevTools プロトコルを有効にして chrome を起動する必要がある</li>
+<li>--remote-debugging-port フラグつきで実行すると、DevTools Protocol が有効になった状態でインスタンスが起動する</li>
+<li>child_process で chrome を起動するには以下のとおり</li>
+</ul>
+<pre><code>const execFile = require(&#39;child_process&#39;).execFile;
+execFile(&#39;/Applications/Google\ chrome.app/Contents/MacOS/Google\ chrome&#39;, [ // mac chrome path
+    &#39;--headless&#39;,
+    &#39;--disable-gpu&#39;,
+    &#39;--remote-debugging-port=9222&#39;, // DevTools Protocolが有効になる
+    url
+  ], (err, stdout, stderr) =&gt; {
+});
+</code></pre><ul>
+<li>Lighthouse の chromeLauncher で起動する方法もある</li>
+<li>chrome がインストールされてる場所を探してくれる</li>
+</ul>
+<pre><code>const {chromeLauncher} = require(&#39;lighthouse/lighthouse-cli/chrome-launcher&#39;);
+const launcher = new chromeLauncher({
+  port: 9222, // remote-debugging-port
+  additionalFlags: [
+    &#39;--headless&#39;,
+    &#39;--disable-gpu&#39;
+  ]
+});
+</code></pre><h3 id="node-js-headless-chrome-">Node.js で Headless Chrome を操作するには</h3>
+<ul>
+<li>DevTools プロトコルと対話する</li>
+<li>リファレンスが公開されてる -&gt; <a href="https://chromedevtools.github.io/devtools-protocol/">chrome DevTools Protocol Viewer</a></li>
+<li>公式サイトでは <a href="https://github.com/cyrus-and/chrome-remote-interface">chrome-remote-interface</a> (DevTools Protocol をベースとしたハイレベルな API を提供) による操作方法を<a href="https://chromium.googlesource.com/chromium/src/+/master/headless/README.md">紹介している</a></li>
+<li>あんまり使いやすくないせいか <strong>chrome-remote-interface の</strong> ラッパーライブラリがいろいろある<ul>
+<li><a href="https://github.com/OnetapInc/chromy">OnetapInc/chromy: Chromy is a library for operating headless Cchrome. 🍺🍺🍺</a></li>
+<li><a href="https://github.com/moos/chromate">moos/chromate: Automate Headless Chrome.</a></li>
+<li><a href="https://github.com/LucianoGanga/simple-headless-chrome">LucianoGanga/simple-headless-chrome</a></li>
+<li><a href="https://github.com/graphcool/chromeless">graphcool/chromeless: 🖥 chrome automation made simple. Runs locally or headless on AWS Lambda.</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="puppeteer-">puppeteer とは</h2>
+<ul>
+<li>Headless Chrome をNode.jsで操作しやすくしたライブラリ</li>
+<li>Chrome DevTools 開発チームがメンテナンスしてる</li>
+<li>他のラッパーライブラリと異なり chrome-remote-interface を介さず直接 DevTools プロトコルと対話する</li>
+<li>Node v7.10以降が必要</li>
+</ul>
+<h2 id="-">インストール</h2>
+<ul>
+<li>puppeteer を npm i するのみ</li>
+<li>最新版のchromiumも同時にダウンロードされるので、chromeのインストールは不要</li>
+</ul>
+<pre><code>npm install puppeteer
+</code></pre><h2 id="api-">API をさわってみる</h2>
+<ul>
+<li>公式ページにコピペで動くサンプルが載ってるので拝借して試す</li>
+</ul>
+<h3 id="chrome-web-">chrome インスタンスの起動とwebページへの遷移</h3>
+<pre><code>const puppeteer = require(&#39;puppeteer&#39;);
+puppeteer.launch().then(async browser =&gt; {
+  const page = await browser.newPage();
+  await page.goto(&#39;https://www.google.com&#39;);
+  // other actions...
+  await browser.close();
+});
+</code></pre><p><a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#class-puppeteer">class: Puppeteer</a></p>
+<h3 id="iphone6-">iPhone6をエミュレートする</h3>
+<pre><code>const puppeteer = require(&#39;puppeteer&#39;);
+const devices = require(&#39;puppeteer/DeviceDescriptors&#39;);
+const iPhone = devices[&#39;iPhone 6&#39;];
+puppeteer.launch().then(async browser =&gt; {
+  const page = await browser.newPage();
+  await page.emulate(iPhone);
+  await page.goto(&#39;https://www.google.com&#39;);
+  // other actions...
+  await browser.close();
+});
+</code></pre><p><a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageemulateoptions">page.emulate(options)</a></p>
+<h3 id="-">スクリーンショットを撮る</h3>
+<pre><code>const puppeteer = require(&#39;puppeteer&#39;);
+puppeteer.launch().then(async browser =&gt; {
+  const page = await browser.newPage();
+  await page.goto(&#39;https://www.google.com&#39;);
+  await page.screenshot({path: &#39;screenshot.png&#39;});
+  await browser.close();
+});
+</code></pre><h3 id="pdf-">PDFを生成する</h3>
+<pre><code class="lang-js">const puppeteer = require(&#39;puppeteer&#39;);
+puppeteer.launch().then(async browser =&gt; {
+  const page = await browser.newPage();
+  await page.goto(&#39;https://www.google.com&#39;, {waitUntil: &#39;networkidle&#39;});
+  await page.pdf({path: &#39;google.pdf&#39;, format: &#39;A4&#39;});
+  await browser.close();
+});
+</code></pre>
+<p><a href="https://github.com/Googlechrome/puppeteer/blob/master/docs/api.md#pagepdfoptions">page.pdf(options)</a></p>
+<h3 id="-script-">ページ内でscriptを評価する</h3>
+<pre><code class="lang-js">const puppeteer = require(&#39;puppeteer&#39;);
+puppeteer.launch().then(async browser =&gt; {
+  const page = await browser.newPage();
+  await page.goto(&#39;https://www.google.com&#39;);
+  const dimensions = await page.evaluate(() =&gt; {
+    return {
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight,
+      deviceScaleFactor: window.devicePixelRatio
+    };
+  });
+  console.log(&#39;Dimensions:&#39;, dimensions);
+  browser.close();
+});
+</code></pre>
+<p><a href="https://github.com/Googlechrome/puppeteer/blob/master/docs/api.md#pageevaluatepagefunction-args">page.evaluate(pageFunction, ...args)</a></p>
+<h3 id="-console-log-">ページ内で実行したconsole.log()をターミナルに出力する</h3>
+<pre><code>const puppeteer = require(&#39;puppeteer&#39;);
+puppeteer.launch({
+  headless: false,
+  slowMo: 250 // slow down by 250ms
+}).then(async browser =&gt; {
+  const page = await browser.newPage();
+  await page.goto(&#39;https://www.google.com&#39;);
+  page.on(&#39;console&#39;, (...args) =&gt; console.log(&#39;PAGE LOG:&#39;, ...args));
+  await page.evaluate(() =&gt; console.log(`url is ${location.href}`));  
+  browser.close();
+});
+</code></pre><p><a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#event-console">event: &#39;console&#39;</a></p>
+<h3 id="node-js-">Node.js上の関数をブラウザ内で利用する</h3>
+<ul>
+<li>Node.jsのライブラリ crypto をブラウザ内から利用する</li>
+</ul>
+<pre><code>const puppeteer = require(&#39;puppeteer&#39;);
+const crypto = require(&#39;crypto&#39;);
+puppeteer.launch().then(async browser =&gt; {
+  const page = await browser.newPage();
+  page.on(&#39;console&#39;, console.log);
+  await page.exposeFunction(&#39;md5&#39;, text =&gt;
+    crypto.createHash(&#39;md5&#39;).update(text).digest(&#39;hex&#39;)
+  );
+  await page.evaluate(async () =&gt; {
+    // use window.md5 to compute hashes
+    const myString = &#39;pUPPETEER&#39;;
+    const myHash = await window.md5(myString);
+    console.log(`md5 of ${myString} is ${myHash}`);
+  });
+  await browser.close();
+});
+</code></pre><ul>
+<li>/etc/hosts をブラウザ内から読み込む</li>
+</ul>
+<pre><code>const puppeteer = require(&#39;puppeteer&#39;);
+const fs = require(&#39;fs&#39;);
+puppeteer.launch().then(async browser =&gt; {
+  const page = await browser.newPage();
+  page.on(&#39;console&#39;, console.log);
+  await page.exposeFunction(&#39;readfile&#39;, async filePath =&gt; {
+    return new Promise((resolve, reject) =&gt; {
+      fs.readFile(filePath, &#39;utf8&#39;, (err, text) =&gt; {
+        if (err)
+          reject(err);
+        else
+          resolve(text);
+      });
+    });
+  });
+  await page.evaluate(async () =&gt; {
+    // use window.readfile to read contents of a file
+    const content = await window.readfile(&#39;/etc/hosts&#39;);
+    console.log(content);
+  });
+  await browser.close();
+});
+</code></pre><p><a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageexposefunctionname-puppeteerfunction">page.exposeFunction(name, puppeteerFunction)</a></p>
+<h3 id="-">ググった結果のスクショを撮る</h3>
+<pre><code>const puppeteer = require(&#39;puppeteer&#39;);
+puppeteer.launch({
+  headless: false,
+  slowMo: 250 // slow down by 250ms
+}).then(async browser =&gt; {
+  const page = await browser.newPage();
+  await page.goto(&#39;http://www.google.com&#39;, {waitUntil: &#39;networkidle&#39;});
+  await page.type(&#39;headless Chrome puppeteer&#39;);
+  await page.click(&#39;input[type=&quot;submit&quot;]&#39;);
+  await page.waitForNavigation();
+  await page.screenshot({path: &#39;search_result.png&#39;});
+  browser.close();
+});
+</code></pre><h2 id="e2e-">E2E テストしてみる</h2>
+<h3 id="-todo-">適当なTODOアプリを用意</h3>
+<pre><code>&lt;body&gt;
+  &lt;todo&gt;&lt;/todo&gt;
+  &lt;script src=&quot;todo.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+</code></pre><pre><code>class Todo {
 
+  constructor () {
+    this.list = [
+      &#39;買い物に行く&#39;,
+      &#39;仕事をする&#39;
+    ];
+    this.rendarView();
+  }
 
-<!--
-    <a href="/blog/garamodel/" class="more-link">Read More</a>
--->
-  </div>
+  rendarTasks () {
+    this.el.tasks.innerHTML = [&#39;&lt;li&gt;&#39;, this.list.join(&#39;&lt;/li&gt;&lt;li&gt;&#39;),&#39;&lt;/li&gt;&#39;].join(&#39;&#39;);
+  }
 
-</article>
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/garamodel02/" title="ガラクタで重厚感のあるおもちゃを作ってみた ～その２～">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2013-09-07</li>
-<!--
-      <li class="article__info__category"><a href="/category/life/" rel="category tag">Life</a></li>
--->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="/web/20150912020149/http://www.cyokodog.net/blog/garamodel02/"><img src="https://lh4.googleusercontent.com/-3HUHFKtVTJg/UiS-v1EwonI/AAAAAAAAFO0/dTC6vZTRXUA/s144/IMG_0991.JPG"></a>
-</div></p>
-<p>
-皆さん、今年の夏はいかがおすごしでしたでしょうか。<br>
-うちは子供を中心にプール、クワガタ探し、スケボーと例年通りの変わり映えない夏でした。ただ唯一いつもと違ったのは、<a href="/web/20150912020149/http://www.cyokodog.net/blog/garamodel/">前回のエントリー</a>でも書いたガラクタ（というか日常ゴミ）によるおもちゃ作りに家族全員が精を出してたという事です。
-という訳でその後、置き場所も考えず、調子にのってさらに作りこんでしまった作品郡も載せときますのでよろしかったら見てやってください。</p>
+  submit () {
+    const task = this.el.newTask.value;
+    if (task.length) {
+      this.list.push(task);
+      this.rendarTasks();
+      this.el.newTask.value = &#39;&#39;;
+    }
+    event.preventDefault();
+  }
 
+  rendarView () {
+    document.querySelector(&#39;todo&#39;).innerHTML = `
+      &lt;form onSubmit=&quot;todo.submit()&quot; method=&quot;post&quot;&gt;
+        &lt;input class=&quot;newTask&quot;/&gt;&lt;input type=&quot;submit&quot;/&gt;
+        &lt;ul class=&quot;tasks&quot;&gt;
+        &lt;/ul&gt;
+      &lt;/form&gt;
+    `;
+    this.el = {
+      newTask: document.querySelector(&#39;.newTask&#39;),
+      tasks:  document.querySelector(&#39;.tasks&#39;)
+    };
+    this.rendarTasks();
+  }
 
-<!--
-    <a href="/blog/garamodel02/" class="more-link">Read More</a>
--->
-  </div>
+}
+window.todo = new Todo();
+</code></pre><h3 id="-mocha-">手軽なイメージのある mocha でテストしてみる</h3>
+<pre><code>const connect = require(&#39;connect&#39;);
+const serveStatic = require(&#39;serve-static&#39;);
+const Mocha = require(&#39;mocha&#39;);
 
-</article>
+const runHttpServer = () =&gt; {
+  const server = connect();
+  server.use(serveStatic(__dirname));
+  console.log(&#39;Server running on 8080&#39;);
+  return new Promise((resolve, reject) =&gt; {
+    server.listen(8080, () =&gt; {
+      return resolve(server)
+    });
+  });
+};
 
-      </article>
+const runTest = () =&gt; {
+  const mocha = new Mocha();
+  mocha.addFile(&#39;./demo/todo.spec.js&#39;);
+  return new Promise((resolve, reject) =&gt; {
+    mocha.run(failures =&gt; {
+      resolve(failures);
+    });
+  });
+};
+
+(async () =&gt; {
+  const server = await runHttpServer();
+  const failures = await runTest();
+  console.log(&#39;failures&#39;, failures);
+  process.exit();
+})();
+</code></pre><ul>
+<li>プログラム内で mocha を制御する</li>
+<li>mocha.addFile() でテストファイルを指定</li>
+<li>mocha.run() でテストを実行してエラー件数を得られる</li>
+</ul>
+<h3 id="-">テストファイル</h3>
+<pre><code>const puppeteer = require(&#39;puppeteer&#39;);
+const assert = require(&quot;assert&quot;);
+
+describe(&#39;TODOアプリのテスト&#39;, function(){
+
+  // mocha のタイムアウトを設定
+  this.timeout(5000);
+
+  const appUrl = &#39;http://localhost:8080/demo/todo.html&#39;;
+  let browser, page;
+
+  before(async function(done){
+
+    // CIとlocalでpuppeteerの起動パラメータを切り替える
+    const params = process.env.CI ? {
+      args: [&#39;--no-sandbox&#39;, &#39;--disable-setuid-sandbox&#39;]
+    } : {
+      headless: false,
+      slowMo: 250
+    };
+
+    browser = await puppeteer.launch(params);
+    page = await browser.newPage();
+    page.on(&#39;console&#39;, console.log);
+    done();
+  });
+
+  describe(&#39;画面遷移時&#39;, () =&gt; {
+
+    before(async function(done){
+      await page.goto(appUrl, {waitUntil: &#39;networkidle&#39;});
+      done();
+    });
+
+    it(&#39;タスクが2つ表示されていること&#39;, async () =&gt; {
+      const tasks = await page.$$(&#39;.tasks li&#39;);
+      assert.equal(tasks.length, 2);
+    });
+  });
+
+  describe(&#39;新規タスク入力後&#39;, () =&gt; {
+
+    const newTaskValue = &#39;勉強するぞ！&#39;;
+
+    before(async function(done){
+      await page.focus(&#39;.newTask&#39;);    
+      await page.type(newTaskValue);
+      await page.click(&#39;input[type=submit]&#39;);
+      done();
+    });
+
+    it(&#39;タスクが3つ表示されること&#39;, async () =&gt; {
+      const tasks = await page.$$(&#39;li&#39;);
+      assert.equal(tasks.length, 3);
+    });
+
+    it(&#39;新規タスク入力フィールドが空になっていること&#39;, async () =&gt; {
+      const val = await page.evaluate(() =&gt; 
+        document.querySelector(&#39;.newTask&#39;).value
+      );
+      assert.equal(val, &#39;&#39;);
+    });
+
+    it(&#39;最終行に表示されたタスクが新規入力したタスクと一致すること&#39;, async () =&gt; {
+      const val = await page.evaluate(() =&gt; {
+        const list = document.querySelectorAll(&#39;.tasks li&#39;);
+        return list.length ? list[list.length-1].innerText : &#39;&#39;;
+      });
+      assert.equal(val, newTaskValue);
+    });
+
+  });
+
+  after(async (done) =&gt; {
+    browser.close();
+    done();
+  });
+
+});
+</code></pre><ul>
+<li>chromeの起動でモサって mocha がタイムアウトしちゃうので、this.timeout(5000) でタイムアウト時間を変更</li>
+<li>おそらく puppeteer.launch() が重いので実用時は、テストファイル単位でこれをしない工夫が必要そう</li>
+<li>CI で puppeteer を起動する場合は {args:[&#39;--no-sandbox&#39;, &#39;--disable-setuid-sandbox&#39;]} の指定が必要</li>
+<li>ローカルの場合は動作が低速で見れるように {headless: false, slowMo: 250} を指定</li>
+</ul>
+<p>こんな感じで動く</p>
+<p><img src="https://lh3.googleusercontent.com/zglirGln9EEvVP-mDHLqG3I_3Rfp-yhkr3bYIbk8nhKCIN2emwEKq9FR5Fi8hRrMIku8p2lKYLndhDqo0rtfQq4n9wW_iXbDe5tp_yyEi9EJEfyfcv8ImF1En1HvMN57copj73lO9GVf26AplimPf9c7vXsWtBwmTCWyayB9-esu_cm6qgO6eJiPIaVdaza1ct-xELXyi4YNHrWhIRPOxXilucgSWyb2KFD9nOZBOjOYTzygMJ2FHmGn54bUq45aPPOW6WAnefbzLXded6hwXFOrqjp1GLNFws0_WtKAj-C1H8mN6_V4kz-b0TMxdlY30l1T9LFlJo1jO1a85c8Nq5BldakfBdeP_dfOoUX3yYaNikLsksleblcI7NokZRBfjxjALHOr2TypyHBbEV_H1aKNK3nFz_GAgyK4ovDNQARXa6CsEmZ56SYpUMnFNSPIhn_CaKF8xotMmGh8LERwY4EyAR19aUto5oVhiugEmYD0URiZSN7MgQbFOACEyr_OkYCFuVEaBwTAgBQnnYCAmuLhUdKomsbKjt1-0wgAIhYHwmsrj-H52IGVSv635xEeaWS4fRO4fOgu17WJTiZEtL0gz6eJH8BK2AtJedvznh8=w832-h497-no" alt=""></p>
+<h2 id="circleci-">CircleCIでもテストしてみる</h2>
+<ul>
+<li>CircleCI 2.0 のように Docker 系の CI の場合以下が必要<ul>
+<li>SUID Sandbox の無効化（[&#39;--no-sandbox&#39;, &#39;--disable-setuid-sandbox&#39;]）</li>
+<li>libxcb パッケージのインストール<ul>
+<li>via <a href="https://github.com/Googlechrome/puppeteer/issues/290#issuecomment-324838511">https://github.com/Googlechrome/puppeteer/issues/290#issuecomment-324838511</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>これしないと chromium が見つからない的なエラーがでる</li>
+</ul>
+<pre><code>% ~/p /home/fortes/p/node_modules/puppeteer/.local-chromium/linux-494755/chrome-linux/chrome --help
+/home/fortes/p/node_modules/puppeteer/.local-chromium/linux-494755/chrome-linux/chrome: error while loading shared libraries: libX11-xcb.so.1: cannot open shared object file: No such file or directory
+</code></pre><h3 id="-circleci-config-yml">.circleci/config.yml</h3>
+<ul>
+<li>なので .circleci/config.yml を次のように設定する</li>
+<li>chmod で setup_libxcb.sh に実行権限与えてから実行する</li>
+</ul>
+<pre><code># Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:7.10
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum &quot;package.json&quot; }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: chmod +x ./setup_libxcb.sh
+      - run: sh ./setup_libxcb.sh
+      - run: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum &quot;package.json&quot; }}
+
+      # run tests!
+      - run: yarn test
+</code></pre><h3 id="setup_libxcb-sh">setup_libxcb.sh</h3>
+<ul>
+<li>setup_libxcb.sh は以下、sudo 付けないとパーミッションエラーになるので注意</li>
+</ul>
+<pre><code>#!/bin/bash
+
+sudo apt-get update
+sudo apt-get install -yq gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
+  libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 \
+  libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 \
+  libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 \
+  ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+</code></pre><p>めでたし！</p>
+<p><img src="https://lh3.googleusercontent.com/fOMVze996DkdteJKRL3-u3NO5zeaigiz12C-EVuhDNI35Ou6h6VxHNXJT1mdG0fr8TQypt_DyY8PhAKpLixJgGT6rdsk2qmi7rNXBhtbirujSacqvilbWgkJjscq6HAuAypWFQFCIhV2tUA9ZA6Gzeg1K1D05lQUzseaDd_zyhQh6LIT6JhUmHjcRXPO0ryVvI-eRcfzqPyJK9n2BJJEjM9pNITx1NM3oTZ2W-ek8Ab9z_hqXtCrke5w_mACR8BnJZ7PEnNNsF7qRcmswuQCq8uWyMKqx5cEtuirEtRz5kh6oZEuXR36whO4X7iVhx5kndoXkuo4-DyEUwBdAdTGMhkEje5vvC6-u4ubFkG_pGLHbfum6HWm4BPv2l3bKesiaWKbIo9IACJ1INIBtxFsxxjN6aB4b11CrEckmFCYBxA84d0LyDrcL1jXTnPb-atWlj5T_tuTTT34dRm8DEsBvruqwY4lxXd56bCt57c_mcEiZYn3Q2N9PQ-EaojHbXw9qsLCFPm2F5m3vP1eTo2LmnTkEKCJIsON3UyVYXk-DWYIFBNjL4NUI-9ZBRJXaKTx_yYlvmuE0urs1OYatGlK4uY1kh9nNLmEaiE-fU2NNto=w1724-h1320-no" alt=""></p>
+<h2 id="-">参考サイト</h2>
+<ul>
+<li><a href="https://github.com/GoogleChrome/puppeteer">GoogleChrome/puppeteer: Headless Chrome Node API</a></li>
+<li><a href="https://medium.com/@e_mad_ehsan/getting-started-with-puppeteer-and-chrome-headless-for-web-scrapping-6bf5979dee3e">Getting started with Puppeteer and Chrome Headless for Web Scraping</a></li>
+<li><a href="http://morizyun.github.io/docker/docker-compose-chrome-puppeteer-headless.html">Dockerで日本語対応のHeadless Chrome + puppeteerを立ち上げ | 酒と涙とRubyとRailsと</a></li>
+<li><a href="https://www.sambaiz.net/article/131/">Headless Chromeでファイルをダウンロードする - sambaiz-net</a></li>
+<li><a href="https://qiita.com/Quramy/items/26058e83e898ec2ec078">--headless時代の本命？ Chrome を Node.jsから操作するライブラリ puppeteer について - Qiita</a></li>
+<li><a href="https://github.com/Quramy/angular-puppeteer-demo">Quramy/angular-puppeteer-demo: A demonstration repository explains how to using Puppeteer in unit testing</a></li>
+<li><a href="https://github.com/Quramy/puppeteer-example">Quramy/puppeteer-example</a></li>
+<li><a href="https://chromium.googlesource.com/chromium/src/+/master/docs/linux_suid_sandbox_development.md">Linux SUID Sandbox Development</a></li>
+<li><a href="https://github.com/GoogleChrome/puppeteer/issues/290">Chrome Headless doesn&#39;t launch on Debian · Issue #290 · GoogleChrome/puppeteer</a></li>
+<li><a href="https://github.com/charlieduong94/mocha-puppeteer">charlieduong94/mocha-puppeteer: Run your mocha tests in headless chrome using puppeteer</a></li>
+<li><a href="http://www.columbia.edu/~njn2118/journal/2015/7/17.html">A Mocha test runner for RequireJS</a></li>
+<li><a href="https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically">Using mocha programmatically · mochajs/mocha Wiki</a></li>
+</ul>
+
     </div>
 
-
-
-
+  </article>
+</div>
 
   <div class="l-page-nav">
     <div class="l-page-nav__body">
