@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>ヘッドレス chrome を操作する puppeteer で E2E テストを CircleCI で動かしてみた | CYOKODOG</title>
+	<title>Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,7 +72,7 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/puppeteer/" title="ヘッドレス chrome を操作する puppeteer で E2E テストを CircleCI で動かしてみた">ヘッドレス chrome を操作する puppeteer で E2E テストを CircleCI で動かしてみた</a>
+        <a href="/blog/puppeteer/" title="Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a>
       </h1>
       <ul class="article__info">
         <li class="article__info__date">2017-09-24</li>
@@ -82,9 +82,15 @@
       </ul>
     </div>
     <div class="article__body">
-    <p>ヘッドレス chrome を操作する chrome-remote-interface が扱いづらかったせいか、はやくも puppeteer とかいう公式っぽい代替ライブラリがでてたので、もろもろ試したことをメモっておく。</p>
+    <p>Chrome DevTools 開発チームによる puppeteer なる Headless Chrome を操作するライブラリがでたので、もろもろ試したことをメモっておく。</p>
 <p>試したやつのリポジトリ：<a href="https://github.com/cyokodog/puppeteer_study">cyokodog/puppeteer_study</a></p>
 <!--more-->
+<h2 id="puppeteer-">puppeteer とは</h2>
+<ul>
+<li>Headless Chrome をNode.jsで操作しやすくしたライブラリ</li>
+<li>Chrome DevTools 開発チームがメンテナンスしてる</li>
+<li>Node v7.10以降が必要</li>
+</ul>
 <h2 id="headless-chrome-">Headless Chrome のおさらい</h2>
 <p>puppeteer 位置づけを確認する意味で Headless Chrome をどう動かしてたかをおさらい（via <a href="http://www.cyokodog.net/blog/headless-chrome/">Headless Chrome をさわってみた | CYOKODOG</a>）。</p>
 <h3 id="node-js-headless-chrome-">Node.js で Headless Chrome を起動する</h3>
@@ -116,27 +122,24 @@ const launcher = new chromeLauncher({
 </code></pre><h3 id="node-js-headless-chrome-">Node.js で Headless Chrome を操作するには</h3>
 <ul>
 <li>DevTools プロトコルと対話する</li>
-<li>リファレンスが公開されてる -&gt; <a href="https://chromedevtools.github.io/devtools-protocol/">chrome DevTools Protocol Viewer</a></li>
+<li>リファレンス -&gt; <a href="https://chromedevtools.github.io/devtools-protocol/">chrome DevTools Protocol Viewer</a></li>
 <li>公式サイトでは <a href="https://github.com/cyrus-and/chrome-remote-interface">chrome-remote-interface</a> (DevTools Protocol をベースとしたハイレベルな API を提供) による操作方法を<a href="https://chromium.googlesource.com/chromium/src/+/master/headless/README.md">紹介している</a></li>
-<li>あんまり使いやすくないせいか <strong>chrome-remote-interface の</strong> ラッパーライブラリがいろいろある<ul>
+<li>より利用しやすくした <strong>chrome-remote-interface の</strong> ラッパーライブラリがいろいろある<ul>
 <li><a href="https://github.com/OnetapInc/chromy">OnetapInc/chromy: Chromy is a library for operating headless Cchrome. 🍺🍺🍺</a></li>
 <li><a href="https://github.com/moos/chromate">moos/chromate: Automate Headless Chrome.</a></li>
 <li><a href="https://github.com/LucianoGanga/simple-headless-chrome">LucianoGanga/simple-headless-chrome</a></li>
 <li><a href="https://github.com/graphcool/chromeless">graphcool/chromeless: 🖥 chrome automation made simple. Runs locally or headless on AWS Lambda.</a></li>
 </ul>
 </li>
+<li>puppeteer の場合<ul>
+<li>chrome-remote-interface を介さず直接 DevTools プロトコルと対話する</li>
+<li>chromiumもダウンロードされるので、chromeのインストールが不要</li>
 </ul>
-<h2 id="puppeteer-">puppeteer とは</h2>
-<ul>
-<li>Headless Chrome をNode.jsで操作しやすくしたライブラリ</li>
-<li>Chrome DevTools 開発チームがメンテナンスしてる</li>
-<li>他のラッパーライブラリと異なり chrome-remote-interface を介さず直接 DevTools プロトコルと対話する</li>
-<li>Node v7.10以降が必要</li>
+</li>
 </ul>
 <h2 id="-">インストール</h2>
 <ul>
 <li>puppeteer を npm i するのみ</li>
-<li>最新版のchromiumも同時にダウンロードされるので、chromeのインストールは不要</li>
 </ul>
 <pre><code>npm install puppeteer
 </code></pre><h2 id="api-">API をさわってみる</h2>
@@ -517,6 +520,9 @@ sudo apt-get install -yq gconf-service libasound2 libatk1.0-0 libc6 libcairo2 li
 <li><a href="https://medium.com/@e_mad_ehsan/getting-started-with-puppeteer-and-chrome-headless-for-web-scrapping-6bf5979dee3e">Getting started with Puppeteer and Chrome Headless for Web Scraping</a></li>
 <li><a href="http://morizyun.github.io/docker/docker-compose-chrome-puppeteer-headless.html">Dockerで日本語対応のHeadless Chrome + puppeteerを立ち上げ | 酒と涙とRubyとRailsと</a></li>
 <li><a href="https://www.sambaiz.net/article/131/">Headless Chromeでファイルをダウンロードする - sambaiz-net</a></li>
+<li><a href="https://dev.oro.com/posts/2017/07/programming/testing-with-headless-chrome/">Chrome Headless ブラウザでテストを実行する</a></li>
+<li><a href="https://qiita.com/sand/items/b01d7d8f3d9c1642298b">PuppeteerでヘッドレスChromeを操ってみる - Qiita</a></li>
+<li><a href="https://github.com/GoogleChrome/puppeteer/issues/699">Feature request: debugging inside test runners · Issue #699 · GoogleChrome/puppeteer</a></li>
 <li><a href="https://qiita.com/Quramy/items/26058e83e898ec2ec078">--headless時代の本命？ Chrome を Node.jsから操作するライブラリ puppeteer について - Qiita</a></li>
 <li><a href="https://github.com/Quramy/angular-puppeteer-demo">Quramy/angular-puppeteer-demo: A demonstration repository explains how to using Puppeteer in unit testing</a></li>
 <li><a href="https://github.com/Quramy/puppeteer-example">Quramy/puppeteer-example</a></li>
@@ -525,6 +531,12 @@ sudo apt-get install -yq gconf-service libasound2 libatk1.0-0 libc6 libcairo2 li
 <li><a href="https://github.com/charlieduong94/mocha-puppeteer">charlieduong94/mocha-puppeteer: Run your mocha tests in headless chrome using puppeteer</a></li>
 <li><a href="http://www.columbia.edu/~njn2118/journal/2015/7/17.html">A Mocha test runner for RequireJS</a></li>
 <li><a href="https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically">Using mocha programmatically · mochajs/mocha Wiki</a></li>
+<li><a href="https://stackoverflow.com/questions/23492043/change-default-timeout-for-mocha">javascript - Change default timeout for mocha - Stack Overflow</a></li>
+<li><a href="https://github.com/mochajs/mocha/issues/2638">Run test from string code · Issue #2638 · mochajs/mocha</a></li>
+<li><a href="https://github.com/mochajs/mocha/issues/995">The same test suite won&#39;t run twice when using mocha programmatically · Issue #995 · mochajs/mocha</a></li>
+<li><a href="https://qiita.com/uryyyyyyy/items/fd1133edb71bbb0ca6b8">ScalaプロジェクトをCircleCI 2.0に対応させてみた話 - Qiita</a></li>
+<li><a href="http://blog.aqutras.com/entry/2016/08/10/210000">cordovaアプリをCircleCI上でe2eテストする - Aqutras Members&#39; Blog</a></li>
+<li><a href="https://github.com/karma-runner/karma/issues/2603">Headless Chrome instances is reported as Safari 0.0.0 · Issue #2603 · karma-runner/karma</a></li>
 </ul>
 
     </div>
@@ -564,7 +576,7 @@ sudo apt-get install -yq gconf-service libasound2 libatk1.0-0 libc6 libcairo2 li
       <div class="wp-widget">
         <div class="wp-widget__header">Recent Posts</div>
         <ul>
-          <li><a href="/blog/puppeteer/">ヘッドレス chrome を操作する puppeteer で E2E テストを CircleCI で動かしてみた</a></li>
+          <li><a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a></li>
           <li><a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a></li>
           <li><a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a></li>
           <li><a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a></li>
@@ -693,7 +705,7 @@ sudo apt-get install -yq gconf-service libasound2 libatk1.0-0 libc6 libcairo2 li
           <ul>
             <li>
               <span class="post-date">2017-09-24</span>
-              <a href="/blog/puppeteer/">ヘッドレス chrome を操作する puppeteer で E2E テストを CircleCI で動かしてみた</a>
+              <a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a>
             </li>
             <li>
               <span class="post-date">2017-07-20</span>
