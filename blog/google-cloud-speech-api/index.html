@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>Google Cloud Speech API の使い方 | CYOKODOG</title>
+	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+  <link href='/theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' href='/theme/cyokodog/css/app.min.css?a' type='text/css' media='all' />
+  <link rel='stylesheet' id='style-css'  href='/theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <!--<a class="fa fa-facebook-square" href="https://www.facebook.com/"></a>-->
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>JS DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/google-cloud-speech-api/" title="Google Cloud Speech API の使い方">Google Cloud Speech API の使い方</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2016-12-21</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <p>Google Cloud Speech API とは</p>
+<ul>
+<li>Googleの音声認識エンジン</li>
+<li>Speech Recognition API の Cloud サービスみたいなやつ</li>
+</ul>
+<!--more-->
+<h2 id="-">特徴として</h2>
+<ul>
+<li>機械学習して精度があがってく</li>
+<li>80か国語対応</li>
+<li>雑音に強い</li>
+<li>デバイス非依存</li>
+<li>リアルタイム(ストリーム)と録音済みファイル両対応<ul>
+<li>non-streaming mode</li>
+<li>streaming mode</li>
+</ul>
+</li>
+<li><a href="https://cloud.google.com/speech/">デモ</a></li>
+</ul>
+<h2 id="google-api-">Google API の利用にあたり</h2>
+<p><a href="https://console.cloud.google.com/">Google Cloud Platform</a>でもろもろ準備が必要</p>
+<h3 id="-">プロジェクトの作成</h3>
+<p><img src="https://lh3.googleusercontent.com/Hplks-NsO7RwkhoeoWO4vxXpo8dvTprqN2jbva8IBYnHyP8v4V0tgdJ5t75ci0Qz8FAolff1G_ZXlm1DX3LskCTjzRo7yTIYFyqk6o7MocAJUUUUaUBmGChrklkw7iOpwwvJlDnSu4RTd-r4SSFRpdvh6OTtm4t6mgIR5FNO3i6fostu7pEnNh0qlvaTxtiEf2MiLwvt-gpvo8-DLCGIfpk-eMEX_YPfV7byoXL9-GRSHuVOwslezDIX230gNnxBXpikiD7AXBu0b_0H006muYgX9gEJVrwuwIjmm7J5MB-yHs4UtZ4fnSLAbwndtstbVYVYk3PbGdDHn_x2g3Sz0ngrTk0t-faVhdkz9hxD_2--_j1J0cRFXtG_d7CDgrEqjyi3NNd6F8A8BRl8auuxACkVCUCibPv6Oyn1tNrqQGMIbVmUiyQVjyEBurV9pivLdm59Pa_nO0vc9J8IMyDGVSVhk8UBr2G3TqqKw75YafkQRzyx3twXZzuBC_vfhWPLAnxSmdNBSqfi9-6CiA2trHce9tBsBIoxuVT4eJwouFS4drmxtGpiJnkHyCGPEFhENZedgeLx_NRmvS0T_aTz3nWtcPEJjTSAGTQVMDN0c9-upmb_Tpiy-LEkooSGCUNGgbZJrWp0m4gfidRmySkua71mmlBzdFsfqg=w2382-h1374-no" alt=""></p>
+<h3 id="-api-https-console-cloud-google-com-apis-dashboard-">利用する<a href="(https://console.cloud.google.com/apis/dashboard">APIの有効化</a>)</h3>
+<p><img src="https://lh3.googleusercontent.com/kyDPPOdoCaxRJm2wEUEV1aMGVniYKj8uPQbh9aAMxMJUNAFQV8zVt50hyZUbrAGwhTAwTNx9WEUzwd2eed2SUfdqQ2b4YbZNeb4ZXGQnpYDfqOHRfHLyCE9olGoPOz_ighMzp4SYLGbZKAU9UVY5MpS0Di7juglG9vttaI3zgokySOuN_wGcdonYik20hp9p4u7oIJ3tHHRU1ZI6Lp20b5XlsmvyQXcp5ukAkpEcyvCsdSGuhbTzE5UcYKENoP28Ao2GP4NgrN1de9VxY_E1og6SItpkzzcLH5ET4jPUFe0wTH-f14rvHhbsBpS4onx8sDlOALVrjsLTEafMKOjAWFYGDvXNw76I90_-GfmbdcAQBrUlwBTJbbdRBYWsdqm2K3v_0evStB8IL6Qf64zhryyo0qTKYjmGR6-BBuwGV8qXQkLpoZb0o6rbF0MNz4kUJuhVQN90O29Y_fvpu4FY7sBnVGLRbcj3oTDY16CkHeXCH8QAl3dHHiTybPCyqAtXELBhmV2L2u-fE_ITLFPM1Gz-8-E9fBysQF4M5Chr76fUp4k2hZC_sDLWGDzTlNmEXWc0MeSAFTC7TCnd8ovaieNJCATr01oOSWRdNhfk=w2056-h934-no" alt=""></p>
+<h3 id="-">認証情報の作成</h3>
+<ul>
+<li>Speech API ではサービスアカウントキーが必要</li>
+<li>秘密鍵が含まれた<strong>サービスアカウントキーファイル</strong>がダウンロードできるので保存しておく</li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/kMxfFKxNjQ-GrrZzKZqP0zTNo57_6C0MwcPSqLiYClCja2GxBqYAlAFVGZWdKg5YtmVB7Oe1DJSswF9EYGSGnlbn3YXvbe5C8OhSpiTiBX2YUzxGbH7Yt3KNB5dxyHMoAaYBUPUG0Fw-5jIOUEz7DbClTry0elUJ_5vcGTjVPX6_7pDer3J5kGrMs4yXH5Q_BDaiD5MwgfA0LMa7t5d1wULjpCCYRsXYPjJDM_PLBD6PGp5Yi5aMHPpJL_RmCKFvldGks_eXzJsbSRMuWX7fjgHqhlqb7O6Vb3GySP594LVsyWFS3uwnn_ZD0ktxc_B4S4Ik1orLRD_VJ4S_NbwG449F68aXSFccKpLNPJC0sVOQvr6XcbSinaCVXlEqRD9QtlmF2ibfo6uih9qfRTKwBQTj-f4KVL9QET6s65xcVCAl8UbbfcNtNHm4qO-yzr5KS2jgHlfCF-H1Z8OIAgE_3bv7hfGkwtiiybJIxlX2VEwempE6pHX6ZBQcQHlfYWZwaePh_O_cZJrK75GDs_0u8J8S05WXDXipi7_QIbjRqJaPABTQ7X_fZcA-sx37e-OQa19Z9A8-CCd2xrKdPfTds3wvIDYT-hA7Y_TAMf6y=w1178-h798-no" alt=""></p>
+<h3 id="-">課金設定</h3>
+<ul>
+<li>Speech APIの利用には <a href="https://console.developers.google.com/billing">課金設定</a>が必要</li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/wgjncHOQyszRrL0qqglkESCCyzyu11kr6w4udQUAPt4J61fKwOc7TqCsrmmqdzd9OdWZk44Au5JZIyk5Vm27O59zXhhmk3ac49s-PGotloyrobaFanjN20tH8OdVlU8V44J1IDDQ8mzUl9a6Py_Bj-A5gRds8dDBqupNrhk16TxMSbekcsV91xcuX2sOGw-f33Lvv8Ifm_wkTleex9IUVLx6tuGMN5jfnDxFwZLw10sYbzJiaCOpwjR3ByV156mPw7-Ly_93-I8wW12xJZtXFo6DR0Dzy-1oZoFPZIcVk3Kd3nyeCYUZXUVq7WhykOk_h1oSXraFl15Ml8aIv1KeLef6x2OPDqD460pcgb5_097IQQxjVIn6AgginKaXNxYB8jgvcb4S7_g4HcF6yydZeQ8XSswMYAa_fVEFWYVhw2L9HUgGvts2HQs56ED3AKJ-O0juUKFrFelUBljPa0zh_FBG9eeSHhRmVVjWGMIHk7lfcOi19zQI9T24tIcO2uA5QK7xUVNw1LhhjTlDryUUesGKd5LD6_cFwKF-c4JmV_YmKqQjQSKCStw0SqFejN68kpR0qYULfI96aMJJHBsbF48zOznNbh85-lx6Aaqo=w1508-h1270-no" alt=""></p>
+<h2 id="-cloud-sdk-https-cloud-google-com-sdk-"><a href="https://cloud.google.com/sdk/">Cloud SDK</a>とは</h2>
+<ul>
+<li>Google のサービスにコマンドラインからアクセスできるツールセット</li>
+<li>gcloud、gsutil、bq といったコマンドが利用可能になる</li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/ivNfp0MM2HFcn6ZLS8Qo0vO3kg4asniVBiM5LIKnO7LfiiKjUEt1mGFoQ4z8nFJcOBlgfWGQlAIel8LPcoIDm3pQtFPxFgjPZ4AVPoOQNSyDw1ZLPEKgjs282fJjRt8fTdJM-adpL2sSFxvu9qlASPgbTy-OuZwFX6mbUrhik09__uFlRlyfhtBs0lPEay4Ytb3vBW3y77yHJV2ebh9H6dK8hE3L2mO5fp34XtqL0XsTlPOTXfnkgn0ugqGOTsiMeFWdyDjqEXVRkpluw_xtTb_SUywMXSdAwNcEYzRRjhUTISSiP1xvPPZTk5XCASsbPnukHG1b2YayhGPnbbdQhgNov9p_syjfZnGU-Sw0c-s4qQOeXdLeBIUE-iyVodvxBfInviOaNJ6XPaRzlLPeZoAx4VH-PLQG1D8ScGwyTJVZyT0q19WMRbkL2PjzSaB08yizYy97KdrlJzyOJZdJP6BetS6_tG9FoqnmoSwYliqs1mmqujjvt8hzpYbQvxKucU50RdaqllWDQZwq6zRXgDingUFeZETW1po9_qZIdFUAPj6Zf_IFwx4idnqZ0uEcBqcmqjrvtshNLoIbhTlZ-6kC1toLreHpFdRdVpBm=w2266-h898-no" alt=""></p>
+<p>インストール</p>
+<pre><code>$ curl https://sdk.cloud.google.com | bash
+</code></pre><h2 id="-">音声認識させる音声の準備</h2>
+<ul>
+<li><p>音声の録音</p>
+<pre><code>$ brew install sox
+$ rec --bits 16 --channels 1 --rate 16000 sample.wav
+</code></pre></li>
+<li><p>flac形式に変換</p>
+<pre><code>brew install flac
+flac -V sample.wav
+</code></pre></li>
+</ul>
+<h2 id="-">音声ファイルをアップロードしておく</h2>
+<ul>
+<li><a href="https://console.cloud.google.com/storage/">Google Cloud Storage</a> にアップロード</li>
+</ul>
+<p><img src="https://lh3.googleusercontent.com/Xi433pr4k27mQOFnEwIIZvcrHC9kdt5J-P5jeI4LOasQiWvLdlBSfoBa2egDcoiCEPzNgwSs-AAN5XndXSjGz90TfJCf1IvC2fp4jxfKB5KgtMk8muMsoNTVCvarwgOZf098sYjC7ZGQ2HZVAyTy4R_lJ1Uvx00bo8ziF46DNSG36UcUMUHOVYMHQJy5Wcb5Jyngxa2VzpwxnflyaBSJ84cuBsGLExRXnRR0qw2QUwctAMxdd4b6rcqtiDnNIiCEuwGzyFaNHT_sbFonKlyrxf0OcUHxoL5QQWysOjWKbWz9tZC2OSTplbLlDMDqtd13ZA8GeW0_y8fe3Lx-maLZJv4SGYB1rH6VuwH5sT6yCdVkN1fXFBzdl5bZIDn8g9Mh6AGaWnVnEBYwJ5FVAll8jPUTxBMTTVDWoHg0Swy6Uv01XYTrgDd-Obb1ke_oV4CnEda5OHevwiXnBrGRQa5cOccS5N8qm5Q28cZucSxLW1A3FQrjB5DyGaG517mDK-2p3YUR-f4ZbqYpUXzTwM96OI4tmsCR8A32_EuubbONG0C-JmBCjQSBGvL8D7oDeVw0Kt7X-BjV3eFDX5_7WTmLYIFIFINfdJT4xCr5JwWd=w1874-h502-no" alt=""></p>
+<ul>
+<li>コマンドラインでファイルの存在を確認</li>
+</ul>
+<pre><code>$ gsutil ls -R gs://cyoko-bucket
+gs://cyoko-bucket/sample.flac
+</code></pre><h2 id="-">音声ファイルの指定</h2>
+<ul>
+<li>sync-request.jsonに音声ファイルの情報を設定する</li>
+</ul>
+<pre><code>{
+  &quot;config&quot;: {
+      &quot;encoding&quot;:&quot;FLAC&quot;,
+      &quot;sampleRate&quot;: 16000,
+      &quot;languageCode&quot;: &quot;ja-JP&quot;
+
+  },
+  &quot;audio&quot;: {
+      &quot;uri&quot;:&quot;gs://cyoko-bucket/sample.flac&quot;
+  }
+}
+</code></pre><h2 id="-">音声ファイルをアップロードしない方法</h2>
+<ul>
+<li>base64に変化して</li>
+</ul>
+<pre><code>$ base64 source_audio_file &gt; dest_audio_file
+</code></pre><ul>
+<li><code>content</code>に指定する</li>
+</ul>
+<pre><code>{
+      &quot;config&quot;: {
+          &quot;encoding&quot;:&quot;FLAC&quot;,
+          &quot;sampleRate&quot;: 16000,
+          &quot;languageCode&quot;: &quot;ja-JP&quot;
+      },
+      &quot;audio&quot;: {
+          &quot;content&quot;: &quot;ZkxhQwAAACIQABAAAAUJABtAA+gA8AB+W8FZndQvQAyjv...&quot;&quot;
+      }
+    }
+</code></pre><h2 id="-">認証してアクセストークンを得る</h2>
+<ul>
+<li>--key-fileには<strong>サービスアカウントキーファイルのファイル名</strong>を指定する</li>
+</ul>
+<pre><code>$ gcloud auth activate-service-account --key-file=&quot;＜サービスアカウントキーファイル名＞&quot;
+Activated service account credentials for: [xxxxxxxxxxx-compute@developer.gserviceaccount.com]
+
+$ gcloud auth print-access-token
+＜アクセストークンが表示される＞
+</code></pre><h2 id="-">音声認識させる</h2>
+<ul>
+<li>アクセストークンの指定</li>
+<li>入力音声の指定（Request bodyにsync-request.jsonを指定）</li>
+</ul>
+<pre><code>$ curl -s -k -H &quot;Content-Type: application/json&quot; \
+    -H &quot;Authorization: Bearer ＜アクセストークン＞&quot; \
+    https://speech.googleapis.com/v1beta1/speech:syncrecognize \
+    -d @sync-request.json
+</code></pre><h2 id="-">認識結果</h2>
+<ul>
+<li><a href="https://storage.googleapis.com/cyoko-bucket/sample2.wav">使用した音声</a></li>
+</ul>
+<pre><code>{
+  &quot;results&quot;: [
+    {
+      &quot;alternatives&quot;: [
+        {
+          &quot;transcript&quot;: &quot;google cloud speech api では使いやすい api で高度な ニュートラルネットワーク
+モデルを適用し音声をテキストに変換できます&quot;,
+          &quot;confidence&quot;: 0.8266666
+        }
+      ]
+    }
+  ]
+}
+</code></pre><h2 id="-">ストリームによる音声認識</h2>
+<p><a href="http://qiita.com/sayonari/items/a70118a468483967ad34">Google Cloud Speech gRPC API を使ってストリーム音声認識をしたい！（簡易VAD付けた） - Qiita</a></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/MbGthtSh_tI" frameborder="0" allowfullscreen></iframe>
+
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a></li>
+          <li><a href="/blog/angular-fire/">AngularFire使ってみた</a></li>
+          <li><a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a></li>
+          <li><a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a></li>
+          <li><a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a></li>
+          <li><a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a></li>
+          <li><a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a></li>
+          <li><a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a></li>
+          <li><a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a></li>
+          <li><a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a></li>
+          <li><a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a></li>
+          <li><a href="/blog/bitbar/">BitBar を試してみる</a></li>
+          <li><a href="/blog/angular-cli/">Angular CLI を試してみる</a></li>
+          <li><a href="/blog/riot/">はじめてのRiot.js</a></li>
+          <li><a href="/blog/facebook-flux/">はじめてのfacebook/flux</a></li>
+          <li><a href="/blog/reactjs/">はじめてのReact.js</a></li>
+          <li><a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a></li>
+          <li><a href="/blog/electron/">Electron さわってみた</a></li>
+          <li><a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a></li>
+          <li><a href="/blog/wunderline/">Wunderline を使ってみた</a></li>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2018-01-10</span>
+              <a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-11-15</span>
+              <a href="/blog/angular-fire/">AngularFire使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-09-24</span>
+              <a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-07-20</span>
+              <a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-30</span>
+              <a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-15</span>
+              <a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-05-06</span>
+              <a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2017-03-08</span>
+              <a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a>
+            </li>
+            <li>
+              <span class="post-date">2017-02-01</span>
+              <a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a>
+            </li>
+            <li>
+              <span class="post-date">2016-12-21</span>
+              <a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a>
+            </li>
+            <li>
+              <span class="post-date">2016-08-23</span>
+              <a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a>
+            </li>
+            <li>
+              <span class="post-date">2016-07-05</span>
+              <a href="/blog/bitbar/">BitBar を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-30</span>
+              <a href="/blog/angular-cli/">Angular CLI を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-14</span>
+              <a href="/blog/riot/">はじめてのRiot.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-11</span>
+              <a href="/blog/facebook-flux/">はじめてのfacebook/flux</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-09</span>
+              <a href="/blog/reactjs/">はじめてのReact.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-05-18</span>
+              <a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-03-02</span>
+              <a href="/blog/electron/">Electron さわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2016-02-24</span>
+              <a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a>
+            </li>
+            <li>
+              <span class="post-date">2015-11-18</span>
+              <a href="/blog/wunderline/">Wunderline を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+
+<script type="text/javascript" src="/theme/cyokodog/js/bundle.js?"></script>
+
+
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/theme/cyokodog/index.jsx?'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

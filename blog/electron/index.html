@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>Electron さわってみた | CYOKODOG</title>
+	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+  <link href='/theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' href='/theme/cyokodog/css/app.min.css?a' type='text/css' media='all' />
+  <link rel='stylesheet' id='style-css'  href='/theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <!--<a class="fa fa-facebook-square" href="https://www.facebook.com/"></a>-->
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>JS DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/electron/" title="Electron さわってみた">Electron さわってみた</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2016-03-02</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <p>Electronとは</p>
+<ul>
+<li>GitHub.inc が開発</li>
+<li>HTML5 で OSX, Windows, Linux のデスクトップアプリを開発できる実行環境<ul>
+<li><a href="http://itpro.nikkeibp.co.jp/article/COLUMN/20100218/344797/">IEのHTA</a>、<a href="http://www.atmarkit.co.jp/ait/articles/0801/25/news146.html">Adobe AIR</a>、<a href="http://qiita.com/castaneai/items/92df0535b9421eb6ebfc">NW.js(node-webkit)</a>的な位置づけ</li>
+</ul>
+</li>
+<li>Atom の実行環境としても使われいて Atom Shell と呼ばれていた</li>
+<li>JS の実行エンジンとして Node.js、HTML5 の実行環境として Chromium を使用</li>
+<li>ビルドしたアプリには Chromium が内蔵されるので特別なインストールは不要。スタンドアローンアプリとして配布可。</li>
+</ul>
+<!--more-->
+<h2 id="electron-">Electron の採用事例</h2>
+<ul>
+<li>Atom エディタ</li>
+<li>Visual Studio Code</li>
+<li>Slack の Windows 版</li>
+<li>Kobito の Windows 版</li>
+<li>Docker GUI</li>
+</ul>
+<h2 id="-">他の類似技術との比較</h2>
+<p>via <a href="https://ics.media/entry/7298">初めてのElectron！ HTML5でデスクトップアプリを作成しよう - ICS MEDIA</a></p>
+<p>Electronの場合、エントリポイントがjsファイルなのでhtmlはなくてもOK</p>
+<h2 id="-">使用できる技術</h2>
+<ul>
+<li>Node.js / npmライブラリ</li>
+<li>React や AngularJS などのフレームワーク</li>
+<li>Chromium の webview など</li>
+<li>Chrome Developer Tools</li>
+<li>ELectron が提供するモジュール郡やHTML5の独自拡張</li>
+<li>ローカルファイルやOSのAPIへのアクセス</li>
+</ul>
+<p>webとネイティブのいいとこどり。</p>
+<h2 id="-">２つの内部プロセス</h2>
+<p>以下の２つのプロセスに実行される JS のプログラムを書く。</p>
+<ul>
+<li>メインプロセス<ul>
+<li>起動時に実行</li>
+<li>OS とのやりとりをするバックエンド処理</li>
+</ul>
+</li>
+<li>レンダラプロセス<ul>
+<li>メインプロセスから起動</li>
+<li>HTML/CSSによる描画やブラウザコンテキストのJSの実行</li>
+</ul>
+</li>
+</ul>
+<p>それぞれコンテキストが異なるので両者間で通信するには<a href="https://ja.wikipedia.org/wiki/%E3%83%97%E3%83%AD%E3%82%BB%E3%82%B9%E9%96%93%E9%80%9A%E4%BF%A1"> IPC(プロセス間通信)</a> を行う必要あり。</p>
+<h3 id="install">install</h3>
+<pre><code>npm install -g electron-prebuilt
+electron -v
+&gt; v0.36.7
+</code></pre><h3 id="hello-world-">Hello World と表示する</h3>
+<h3 id="package-json">package.json</h3>
+<pre><code>{
+  &quot;name&quot;: &quot;hello-electron&quot;,
+  &quot;name&quot;: &quot;main.js&quot;
+}
+</code></pre><h3 id="main-js">main.js</h3>
+<pre><code class="lang-js">var app = require(&#39;app&#39;);
+var BrowserWIndow = require(&#39;browser-window&#39;);
+
+var mainWindow = null;
+
+app.on(&#39;window-all-closed&#39;, function(){
+  if(process.platform != &#39;darwin&#39;){
+    app.quit();
+  }
+});
+
+app.on(&#39;ready&#39;, functin(){
+
+  mainWindow = new BrowserWindow(
+    { width: 800, height: 600}
+  );
+
+  mainWindow.loadUrl(
+    &#39;file://&#39; + __dirname + &#39;/index.html&#39;
+  );
+  mainWindow.on(&#39;closed&#39;, function(){
+    mainWindow = null;
+  });
+
+});
+</code></pre>
+<h3 id="index-html">index.html</h3>
+<pre><code class="lang-html">&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Hello, World&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Hello, world&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Node.js &lt;script&gt;document.write(process.version)&lt;/script&gt;&lt;/li&gt;
+&lt;li&gt;Electron &lt;script&gt;document.write(process.versions.electron)&lt;/script&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="-">実行</h3>
+<pre><code>electron .
+</code></pre><p><img src="https://lh3.googleusercontent.com/Iljx9g5d23QzxyIEqfuEl2QMf7gwtDGqoTacejPHcNISjskxH0KgHivx5I_x8ECa43Q-rETtFom8Oo9VhgnrTBM87lLfwzF4y_u8wyeNUybLiwPcdMN8zABBm3xle-wxPotiYVvvpbW5Pnw5sQv2adg7AoHHnxjqFvaPLAM9BlXak3HffE2SbhTttZTVQxvOiHi1lcVITz-TOjcMP6EmC4EELAFqfYJA9O5ds_4oN9hJPaovHwMLLFppH__MsFtT-Z-3-g_wNHEvI3_bddyFHjsDH3G9IpvuBZa9fz2Aa-KEgg_X3x2T8GXguo88SRdoTfhdiQUXwEE3E22vZ1DIMri-Aya3z2L-nhuKM4GrDyDu_sbKtcw-dYVovTvIq4dLIxTptG1Hiby8n_D4oaOtF3yLjoUf8oHKlw18JJIhuS_P0oMssSV9WbrEtD6Te2wbLjRtuYNJhmmjY9DZTkbTVHe_GI0WW5V7Yu9GR5kDW219PaM2fLRtMWGNMgKWrIRpskM8YNrc7j7EgakDSSOLKy-YYGu795T_kj59nBVEOCaq65dt_rAMmHXJH0FqvpJHN3cktGqWHoXCQa3EKxYpCwcwjYpnOZsDgvxZDJlH=w600-h306-no" alt=""></p>
+<h2 id="markdown-viewer-">Markdown Viewer を作る</h2>
+<h3 id="npm-library">npm library</h3>
+<pre><code>npm install markdown --save
+npm install chokidar --save
+</code></pre><h3 id="main-js">main.js</h3>
+<pre><code>さっきと同じ
+</code></pre><h3 id="index-html">index.html</h3>
+<pre><code class="lang-html">&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Markdown Viewer&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;container&quot;&gt;&lt;/div&gt;
+&lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="app-js">app.js</h3>
+<pre><code class="lang-js">var fs = require(&#39;fs&#39;);
+var markdown = require(&#39;markdown&#39;).markdown;
+var chokidar = require(&#39;chokidar&#39;);
+
+var watcher = chokidar.watch(&#39;./README.md&#39;);
+watcher.on(&#39;add&#39;, updateHTML);
+watcher.on(&#39;change&#39;, updateHTML);
+
+var container = document.getElementById(&#39;container&#39;);
+
+function updateHTML(path, stats){
+  fs.readFile(path, &#39;utf8&#39;, function(err,content){
+    container.innerHTML = markdown.toHTML(content);
+  });
+}
+</code></pre>
+<h3 id="-">実行</h3>
+<p><img src="https://lh3.googleusercontent.com/OSXyN5REBsIdvGBNxntPM8wYoVPbmCV4TWX-hWT4cwsuRNKiNgzZuoytg2Em_v9sTcKDr4Wjy3N1gyQ0vIY54HqD9YepHlRWzmYU1cyVtr2-zf7qkc_fg2kyMeWgfOIYLVxigdYKD1-r_utn3Q-NqQONKQgXZZbztDpbyMLsyeniST-3rfYzt4Zr6ByFaqMv17L9SPAWy6zgF6grYdXF5DxusKhoxATmxuryDvGs7cZg8jsNs8enniHsJmzYjcYz_yJatyV-CCoTXOH3K7g9O7NW6UBAuf0duaiS9hrEFJnuOqs87zsqCJWNpj3NtNHmWBpE64Vm6s1ZQI4tMTEQO-GluSe7lIvRy79hmSwgID-qBW4BYYdoRIexEQ5mDjjc4XV1oihQlE1XO_9YLC6vnKxFSZNvSHa64-vE8sGMaeO9C52yP7l0Lrp0ZRdTmD9Jrp5UJbWKzjpo-Pe61Mx8AN3kI3lmbenIvCgT1Zj71uUfK8pC5RjiR0erZ3pdxQwis1ZKiCR8KRJ_N8VuQX99ROaER7cYPk5Gy4eSq_e7laJs9rj0F4W2X3NSFP4-4YI7cclUa5Jmsd-Q-lfrSNjD3sR_otF7PcTGhdDWbw3m=w856-h426-no" alt=""></p>
+<h2 id="clipboard-">clipboard 監視アプリ</h2>
+<ul>
+<li>webviewタグ<ul>
+<li>chromium の機能</li>
+</ul>
+</li>
+<li>clipboardモジュール<ul>
+<li>Electronが提供するモジュール</li>
+</ul>
+</li>
+</ul>
+<h3 id="main-js">main.js</h3>
+<pre><code>さっきと同じ
+</code></pre><h3 id="index-html">index.html</h3>
+<pre><code class="lang-html">&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Clipboard Monitor&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;container&quot;&gt;&lt;/div&gt;
+&lt;webview id=&quot;webview&quot;&gt;&lt;/webview&gt;
+&lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="app-js">app.js</h3>
+<pre><code class="lang-js">var clipboard = require(&#39;clipboard&#39;);
+var container = document.getElementById(&#39;container&#39;);
+var webview = document.getElementById(&#39;webview&#39;);
+var current = &#39;&#39;;
+setInterval(function(){
+  var url = clipboard.readText();
+  if(url.match(/^https?:\/\//) &amp;&amp; current !== url){
+      container.innerText = current = url;
+      webview.setAttribute(&#39;src&#39;, url);
+  }
+}, 500);
+</code></pre>
+<h3 id="-">実行</h3>
+<p><img src="https://lh3.googleusercontent.com/E7VrO01-BdSSXNIgw8Fb_0mR25yxD044HrBFJDCPYhLUZA60K7rv9xuOOIMYF1P0Yteeu8E4KhKjrT1TxLslEkAXplJkAu5n3O40j3E-qYz-2gm1hBUEPJr6dp1mSlFGxvWDZFAUwZooRL3r2gaTybpLbIrBjUOkWYSdfO3E9lFw3JElDpNfSAruIXtBwwbptSiAQ7scA5lMKQchWyk3w_sjKPr3a4OY-IYeL3BKPtx_RS4Ad64B6eOaG49WuZ5ZjIY0fK-N_Zwoyedryf8jxLrFXb0QOZ5ivEQ__eXcK3SuatK3nSDuh3pydoKpUAha5Ly2_k4IFuhJzIO0bY4eAmYmSx11pYhgNa1WPjyIcyiuKjaCIT4fUS00n9kA2E18M0Cxn75cGpbvmhdZmwHW-lgTX7uiDlV2X3eQec91Kkbo_HhPFbbvlPyg0WRZQ0JsOI0oxEyCo4jRcHj6EBTE2StpuYLKXHyXOq0oU2zh0ApGsIbdYD8UKozWhCVPjW18bTONb5D7qESZxxRKYysJOkHH-X1-DA8_VggNnbde4qhzDnbK_Ux7EunKyy2g2gmkvei5GBm2NJ7OyCbAshiqWxgwtdhw28FTyX9gk5Ts=w856-h426-no" alt=""></p>
+<h2 id="-">トレイアプリ</h2>
+<h3 id="main-js">main.js</h3>
+<pre><code class="lang-js">var app = require(&#39;app&#39;);
+var Menu = require(&#39;menu&#39;);
+var Tray = require(&#39;tray&#39;);
+
+var appIcon = null;
+
+app.on(&#39;ready&#39;, function(){
+  appIcon = new Tray(&#39;./icon.jpg&#39;);
+  var contextMenu = Menu.buildFromTemplate([
+    {label: &#39;晴&#39;, type:&#39;radio&#39;},
+    {label: &#39;曇り&#39;, type:&#39;radio&#39;},
+    {label: &#39;雨&#39;, type:&#39;radio&#39;},
+    {type:&#39;separator&#39;},
+    {
+      label: &#39;終了&#39;,
+      accelerator: &#39;Command+Q&#39;,
+      click: function(){
+        app.quit();
+      }
+    }
+  ]);
+
+  appIcon.setContextMenu(contextMenu);
+
+});
+
+app.dock.hide();
+</code></pre>
+<h3 id="-">実行</h3>
+<p><img width="181" alt="tray.png (27.2 kB)" src="https://img.esa.io/uploads/production/attachments/1700/2016/03/02/4505/9a933da1-7145-4c4e-87d1-d72a0c08642e.png"></p>
+<h2 id="-">アプリの配布</h2>
+<pre><code>npm install -g --save electron-packager
+
+// OS X, Windows向けにパッケージング、２回目以降は上書きで
+electron-packager . helloApp --platform=darwin,win32 --arch=x64 --version=0.36.7 --overwrite
+</code></pre><p>パラメータの詳細は公式の<a href="https://github.com/maxogden/electron-packager#usage">usage</a>を</p>
+<p>インストーラとしてdmgファイル化したい場合は <a href="https://www.npmjs.com/package/electron-builder">electron-builder</a> を使う</p>
+<h2 id="-">アプリのバージョンアップ</h2>
+<p>一度配布したアプリのバージョンアップを促すにはOS標準のautoUpdaterを利用すると良い（linuxは対象外）</p>
+<ol>
+<li>メインプロセスでautoUpdaterのAPIをコール</li>
+<li>サーバに置いたメタデータを読む</li>
+<li>バージョンが上がっていたら自分自身を書き換える</li>
+</ol>
+<h2 id="mac-app-store-">Mac App Storeで公開</h2>
+<p>バージョン0.34.0からMac App Storeでの配布が可能。
+証明書の設定が必要であったり、使えないAPIがあったりと制限がある。</p>
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a></li>
+          <li><a href="/blog/angular-fire/">AngularFire使ってみた</a></li>
+          <li><a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a></li>
+          <li><a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a></li>
+          <li><a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a></li>
+          <li><a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a></li>
+          <li><a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a></li>
+          <li><a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a></li>
+          <li><a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a></li>
+          <li><a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a></li>
+          <li><a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a></li>
+          <li><a href="/blog/bitbar/">BitBar を試してみる</a></li>
+          <li><a href="/blog/angular-cli/">Angular CLI を試してみる</a></li>
+          <li><a href="/blog/riot/">はじめてのRiot.js</a></li>
+          <li><a href="/blog/facebook-flux/">はじめてのfacebook/flux</a></li>
+          <li><a href="/blog/reactjs/">はじめてのReact.js</a></li>
+          <li><a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a></li>
+          <li><a href="/blog/electron/">Electron さわってみた</a></li>
+          <li><a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a></li>
+          <li><a href="/blog/wunderline/">Wunderline を使ってみた</a></li>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2018-01-10</span>
+              <a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-11-15</span>
+              <a href="/blog/angular-fire/">AngularFire使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-09-24</span>
+              <a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-07-20</span>
+              <a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-30</span>
+              <a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-15</span>
+              <a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-05-06</span>
+              <a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2017-03-08</span>
+              <a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a>
+            </li>
+            <li>
+              <span class="post-date">2017-02-01</span>
+              <a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a>
+            </li>
+            <li>
+              <span class="post-date">2016-12-21</span>
+              <a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a>
+            </li>
+            <li>
+              <span class="post-date">2016-08-23</span>
+              <a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a>
+            </li>
+            <li>
+              <span class="post-date">2016-07-05</span>
+              <a href="/blog/bitbar/">BitBar を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-30</span>
+              <a href="/blog/angular-cli/">Angular CLI を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-14</span>
+              <a href="/blog/riot/">はじめてのRiot.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-11</span>
+              <a href="/blog/facebook-flux/">はじめてのfacebook/flux</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-09</span>
+              <a href="/blog/reactjs/">はじめてのReact.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-05-18</span>
+              <a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-03-02</span>
+              <a href="/blog/electron/">Electron さわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2016-02-24</span>
+              <a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a>
+            </li>
+            <li>
+              <span class="post-date">2015-11-18</span>
+              <a href="/blog/wunderline/">Wunderline を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+
+<script type="text/javascript" src="/theme/cyokodog/js/bundle.js?"></script>
+
+
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/theme/cyokodog/index.jsx?'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+
