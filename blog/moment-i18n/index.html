@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>大人だけど全力でキン肉マンの絵を描いてみた | CYOKODOG</title>
+	<title>moment.js で i18n 対応したり期間を文字列化する時の注意点 | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,115 +72,192 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/sketch-kinnikuman/" title="大人だけど全力でキン肉マンの絵を描いてみた">大人だけど全力でキン肉マンの絵を描いてみた</a>
+        <a href="/blog/moment-i18n/" title="moment.js で i18n 対応したり期間を文字列化する時の注意点">moment.js で i18n 対応したり期間を文字列化する時の注意点</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2013-12-17</li>
+        <li class="article__info__date">2018-02-06</li>
 <!--
         <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
       </ul>
     </div>
     <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/sketch-kinnikuman/"><img src="https://lh3.googleusercontent.com/-cnGyCyfIw64/UzGdag8rR-I/AAAAAAAAGxo/HZPRImRZxBQ/s800/kin.png"></a>
-</div></p>
-<p>うちには小２の男子が１名いるのですが「誕生日プレゼントなに欲しい？」って聞いたら「キン肉マンの絵」と返ってきました(笑)<br>
-家での遊びは、けん玉、コマ、お絵かき、読む漫画は、北斗の拳、Ｄｒスランプ、キン肉マン・・というある意味「昔ながら」な彼らしい回答です。</p>
-
-<p>そんなわけで、会社の休憩時間と睡眠時間を削って全力でキン肉マンの絵を書いてみました。
-
+    <p>今らなら immutable で軽くて i18n にも対応してるってことで <a href="https://app.codegrid.net/entry/date-fns">date-fns</a> 使うのが良いのだろうけど、moment.js の i18n 対応でいろいろあったので、一応メモっておく。</p>
 <!--more-->
+<h2 id="-format-">ペルシア語の format() メソッドに注意</h2>
+<p>例えば、API向けに投げる日付データとして、YYYY-MM-DD な値を用意する場合、日本語や英語環境なら普通に format() メソッドを使えば問題はない。</p>
+<pre><code>// 日本語
+moment.locale(&#39;ja&#39;);
+console.log(&#39;lang&#39;, lang);
+console.log(moment().format(&#39;YYYY-MM-DD&#39;));
+// -&gt; 2018-02-05
 
-<h2>絵のお題</h2>
+// 英語
+moment.locale(&#39;ja&#39;);
+console.log(&#39;lang&#39;, lang);
+console.log(moment().format(&#39;YYYY-MM-DD&#39;));
+// -&gt; 2018-02-05
+</code></pre><p>ところが、同じことをペルシア語でやるとペルシア数字に変換されちゃう。</p>
+<pre><code>// ペルシア語
+moment.locale(&#39;fa&#39;);
+console.log(&#39;lang&#39;, lang);
+console.log(moment().format(&#39;YYYY-MM-DD&#39;));
+// -&gt; ۲۰۱۸-۰۲-۰۵
+</code></pre><p>画面に表示する場合はこれでよいけど、APIに投げるデータとしては問題がある。なので moment.localeData().preparse() を使って YYYY-MM-DD に変換する。</p>
+<pre><code>// ペルシア語
+moment.locale(&#39;fa&#39;);
+console.log(&#39;lang&#39;, lang);
+console.log(moment.localeData().preparse(moment().format(&#39;YYYY-MM-DD&#39;)));
+// -&gt; 2018-02-05
+</code></pre><pre><code>// 日本語
+moment.locale(&#39;ja&#39;);
+console.log(&#39;lang&#39;, lang);
+console.log(moment.localeData().preparse(moment().format(&#39;YYYY-MM-DD&#39;)));
+// -&gt; 2018-02-05
+</code></pre><h2 id="-months-">各言語毎の言葉で月を求めるには months() メソッド</h2>
+<p>これは知ってると便利そうなのでメモ。</p>
+<pre><code>// 日本語
+moment.locale(&#39;ja&#39;);
+moment.months();
+// -&gt; [&quot;1月&quot;, &quot;2月&quot;, &quot;3月&quot;, &quot;4月&quot;, &quot;5月&quot;, &quot;6月&quot;, &quot;7月&quot;, &quot;8月&quot;, &quot;9月&quot;, &quot;10月&quot;, &quot;11月&quot;, &quot;12月&quot;]
 
-<p>彼の指定してきた絵のお題がこれ</p>
+// 英語
+moment.locale(&#39;en&#39;);
+moment.months();
+// -&gt; [&quot;January&quot;, &quot;February&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot;, &quot;December&quot;]
 
-<p><img src="https://lh6.googleusercontent.com/-3RG3SnA_ol8/UrBrFor3cmI/AAAAAAAAFzw/BbfamgbcNNA/s640/IMG_1271.JPG" alt="キン肉マン"></p>
+// ペルシア語
+moment.locale(&#39;fa&#39;);
+moment.months();
+// -&gt; [&quot;ژانویه&quot;, &quot;فوریه&quot;, &quot;مارس&quot;, &quot;آوریل&quot;, &quot;مه&quot;, &quot;ژوئن&quot;, &quot;ژوئیه&quot;, &quot;اوت&quot;, &quot;سپتامبر&quot;, &quot;اکتبر&quot;, &quot;نوامبر&quot;, &quot;دسامبر]
+</code></pre><h2 id="fromnow-">fromNow() 「○ヶ月前」を求める時のデフォルト閾値に注意</h2>
+<p>fromNow() メソッド使うと「○ヶ月前」的な文字列が求められる。</p>
+<pre><code>console.log(moment().subtract(25, &#39;day&#39;).fromNow());
+// -&gt; 25日前
+</code></pre><p>だけど26日前にすると...</p>
+<pre><code>console.log(moment().subtract(26, &#39;day&#39;).fromNow());
+// -&gt; １ヶ月前
+</code></pre><p>なぜか26日前が1ヶ月前扱いになってしまう。</p>
+<p><a href="https://momentjs.com/docs/#/customization/relative-time-threshold/">relativeTimeThreshold</a> とかいう閾値を設定したり、求めたりするメソッドがある。</p>
+<blockquote>
+<p>duration.humanize has thresholds which define when a unit is considered a minute, an hour and so on. For example, by default more than 45 seconds is considered a minute, more than 22 hours is considered a day and so on. To change those cutoffs use moment.relativeTimeThreshold(unit, limit) where unit is one of ss, s, m, h, d, M.</p>
+</blockquote>
+<p>デフォルトでは45秒以上が1分とみなされ、22時間以上は1日とみなされるらしい。</p>
+<p>他のデフォルトも見てみると....</p>
+<pre><code>console.log(moment.relativeTimeThreshold(&#39;ss&#39;)); // 44
+console.log(moment.relativeTimeThreshold(&#39;s&#39;));  // 45
+console.log(moment.relativeTimeThreshold(&#39;m&#39;));  // 45
+console.log(moment.relativeTimeThreshold(&#39;h&#39;));  // 22
+console.log(moment.relativeTimeThreshold(&#39;d&#39;));  // 26
+console.log(moment.relativeTimeThreshold(&#39;M&#39;));  // 11
+</code></pre><p>うーん、こんなんなってるのか...</p>
+<p>閾値を調整して再度試してみる。</p>
+<pre><code>moment.relativeTimeThreshold(&#39;ss&#39;, 60);
+moment.relativeTimeThreshold(&#39;s&#39;, 60);
+moment.relativeTimeThreshold(&#39;m&#39;, 60);
+moment.relativeTimeThreshold(&#39;h&#39;, 24);
+moment.relativeTimeThreshold(&#39;d&#39;, 30);
+moment.relativeTimeThreshold(&#39;M&#39;, 12);
 
-<p>キン肉マンがアトランティスにタワーブリッジしてるところです（なつかしぃ・・・　小学生の頃この辺のジャンプ数冊持ってて何度も読んだっけ・・）</p>
+console.log(moment().subtract(25, &#39;day&#39;).fromNow());
+// -&gt; 25日前
+console.log(moment().subtract(26, &#39;day&#39;).fromNow());
+// -&gt; 26日前
+</code></pre><p>ちゃんと26日になった。</p>
+<p>念のため、３ヶ月先ぐらいまでチェックしてみる、1ヶ月づつ遡って前後5日間をチェック。</p>
+<pre><code>moment.relativeTimeThreshold(&#39;ss&#39;, 60);
+moment.relativeTimeThreshold(&#39;s&#39;, 60);
+moment.relativeTimeThreshold(&#39;m&#39;, 60);
+moment.relativeTimeThreshold(&#39;h&#39;, 24);
+moment.relativeTimeThreshold(&#39;d&#39;, 30);
+moment.relativeTimeThreshold(&#39;M&#39;, 12);
 
-<p>実はこの絵は本人が数日前まで超真剣に書いてた絵で、なんかのママの怒りでビリビリに破かれた絵でした。</p>
+console.log(&#39;now&#39;, moment().format(&#39;YYYY/MM/DD&#39;));
+Array(3).fill(null).forEach((_, i) =&gt; {
+  console.log(&#39;----------&#39;);
 
-<p>これ↓がその絵（かわいそうだったんで、こっそりゴミ箱から拾っときました）</p>
-
-<p><img src="https://lh4.googleusercontent.com/-NYnx3blG1Ts/UrBrJuRxwlI/AAAAAAAAFz4/dIExy6NrXQY/s640/IMG_1268.JPG" alt="キン肉マン"></p>
-
-<p>紙のつぎはぎ感と出血の痛々しさが、いい感じにシンクロしてます。</p>
-
-<h2>書いた絵</h2>
-
-<p>そんなバックグラウンドもあり気合を入れて書いてみました。</p>
-
-<p class="for-bottom">まずは軽く下書きして、細めのペンでなぞり・・・</p>
-
-<p><img src="https://lh4.googleusercontent.com/-tVwEZ3BbQEU/UrBr7dwmaLI/AAAAAAAAF0A/ZwfNikJcDRw/s640/IMG_1236.JPG" alt="キン肉マン"></p>
-
-<p class="for-bottom">メッセージはキン肉マンのロゴを意識して、太めのペンでなぞり・・・</p>
-
-<p><img src="https://lh5.googleusercontent.com/-VQLzh52Vm4g/UrBr8U1TbDI/AAAAAAAAF0M/a_K2w7w7H6U/s640/IMG_1237.JPG" alt="キン肉マン"></p>
-
-<p class="for-top">ん・・・？なんかメインの絵の印象が弱くなっちゃったかな・・・</p>
-
-<p class="for-bottom">バランスをとってキン肉マンのラインも太く・・・</p>
-
-<p><img src="https://lh3.googleusercontent.com/-VJtuwjFA75M/UrBr9calbnI/AAAAAAAAF0Q/WSYpCFPgBGI/s640/IMG_1238.JPG" alt="キン肉マン"></p>
-
-<p class="for-bottom">着色！</p>
-
-<p><img src="https://lh4.googleusercontent.com/-SbWeWBiJAqM/UrBr-mXNG8I/AAAAAAAAF0c/EGI1NZqivKM/s640/IMG_1239.JPG" alt="キン肉マン"></p>
-
-<p class="for-top">う～ん・・・なんかまだ弱いなぁ</p>
-
-<p class="for-bottom">もう全部太くしちゃえ！</p>
-
-<p><img src="https://lh3.googleusercontent.com/-n1Ydh1wcjvk/UrBsEAZqqjI/AAAAAAAAF0o/zdThhukDxaA/s800/IMG_1245x.jpg" alt="キン肉マン"></p>
-
-<p class="for-top">ふぅ・・・背景がさみしいのとメッセージの書体の雑さがちょっと残念な感じですが、一応完成！</p>
-
-<h2>プレゼント贈呈</h2>
-
-<p class="for-bottom">そしてついにプレゼントの贈呈！</p>
-
-<p><img src="https://lh6.googleusercontent.com/-9kFJcro_thU/UrBz4It5-DI/AAAAAAAAF1E/PqmAx4WGpug/s800/yuta.gif" alt="キン肉マン"></p>
-
-<p class="for-top">「パンツの色、青じゃないのか」とクレームつけられました（笑）確かに彼の絵だと青くなってます</p>
-
-<h2>他のプレゼント</h2>
-
-<p>おばあちゃんから、自転車とかスケボーの板買ってもらったり、<br>
-ママから２、３ヶ月程取り上げられていたスケボーを返却されてました（←これを一番よろこんでた）</p>
-
-<p><img src="https://lh6.googleusercontent.com/-F4OJz3i7FJ4/UrCAno-PG8I/AAAAAAAAF3g/0qnP45tmlRs/s144/yuta2.gif" alt="自転車"> <img src="https://lh3.googleusercontent.com/-3qB9SL-cxtE/UrB22gDcHTI/AAAAAAAAF1k/ruvkWOrcB3g/s144/IMG_1258.JPG" alt="スケボー"> <img src="https://lh4.googleusercontent.com/-CCjf5x0BCaQ/UrB275tsdeI/AAAAAAAAF1s/cv5eNQLWuRY/s144/IMG_1262.JPG" alt="スケボー"></p>
-
-<h2>他の絵</h2>
-
-<p>スケボー取り上げられて、なんせ暇だったので絵を描くのがちょっとはやってました。</p>
-
-<p class="for-bottom">ママの誕生日プレゼントで子供との共作</p>
-
-<p><img src="https://lh4.googleusercontent.com/-1LFapQG3isc/UrB9BZH--QI/AAAAAAAAF2M/hF45h3z_Rss/s800/IMG_1103.JPG" alt="いろんなキャラ"></p>
-
-<p class="for-top">キャラの選定は思いつきで適当、個人的にはネコまじんがお気に入り</p>
-
-<p class="for-bottom">ママは柏木監督がお気に入りらしい</p>
-
-<p><img src="https://lh6.googleusercontent.com/-UBvBd1KMUBo/UrB-ZFCtZaI/AAAAAAAAF3I/31-tKpOhd6A/s800/%25E6%259F%258F%25E6%259C%25A8.jpg" alt="柏木監督"></p>
-
-<p class="for-bottom">子供の描いたウォーズマンVSバッファローマン</p>
-
-<p><img src="https://lh6.googleusercontent.com/-uzgwg0pKYlM/UrCLw-Q2wGI/AAAAAAAAF4k/4yep1ACIeqs/s800/IMG_1234.JPG" alt="ウォーズマンVSバッファローマ"></p>
-
-<p class="for-top">小２の絵にしては上出来かと</p>
-
-<p class="for-bottom">キン肉マンVSウォーズマンの絵も描きました。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-TqMmHgl6J_A/UrB9ppcNv_I/AAAAAAAAF20/UXL6-l9mTWE/s800/IMG_1228x.jpg" alt="キン肉マンVSウォーズマン"></p>
-
-<p class="for-top">これはほんとに疲れました（特に客席が） こんなに真剣に絵を描いたのは子供の時以来かと思います。</p>
-
-<p>なんでも真剣になってやるというのはいいものですね。</p>
-
+  // 1ヶ月先の -5 〜 +5 日間をチェック
+  const base = moment().subtract(i + 1, &#39;months&#39;).add(5, &#39;day&#39;);
+  Array(10).fill(null).forEach(() =&gt; {
+    const d = base.subtract(1, &#39;day&#39;);
+    console.log(d.format(&#39;YYYY/MM/DD&#39;), d.fromNow());   
+  });
+});
+</code></pre><p>ん、なんか変。</p>
+<pre><code>now 2018/02/06
+----------
+2018/01/10 27日前
+2018/01/09 28日前
+2018/01/08 29日前
+2018/01/07 1ヶ月前
+2018/01/06 1ヶ月前
+2018/01/05 1ヶ月前
+2018/01/04 1ヶ月前
+2018/01/03 1ヶ月前
+2018/01/02 1ヶ月前
+2018/01/01 1ヶ月前
+----------
+2017/12/10 2ヶ月前
+2017/12/09 2ヶ月前
+2017/12/08 2ヶ月前
+2017/12/07 2ヶ月前
+2017/12/06 2ヶ月前 &lt;-- この辺から2ヶ月前でないの？
+2017/12/05 2ヶ月前
+2017/12/04 2ヶ月前
+2017/12/03 2ヶ月前
+2017/12/02 2ヶ月前
+2017/12/01 2ヶ月前
+----------
+2017/11/10 3ヶ月前
+2017/11/09 3ヶ月前
+2017/11/08 3ヶ月前
+2017/11/07 3ヶ月前
+2017/11/06 3ヶ月前 &lt;-- この辺から3ヶ月前でないの？
+2017/11/05 3ヶ月前
+2017/11/04 3ヶ月前
+2017/11/03 3ヶ月前
+2017/11/02 3ヶ月前
+2017/11/01 3ヶ月前
+</code></pre><p>どうも、<a href="https://momentjs.com/docs/#/customization/relative-time-rounding/">relativeTimeRounding()</a> って言うメソッドで指定できるコールバック処理のデフォルト処理が、formNow()メソッドで返す日付を四捨五入しちゃってるらしい（1.6ヶ月的な数値を2ヶ月にしちゃってる）。</p>
+<p>と、<a href="https://qiita.com/SallyAcolyte">SallyAcolyte</a> さんが教えてくれた（ありがとうございます！）</p>
+<p>なので、以下の様に Math.floor使って、端数を切り捨てるようにする。</p>
+<pre><code>moment.relativeTimeRounding(Math.floor);
+</code></pre><p>あらためて実行！</p>
+<pre><code>now 2018/02/06
+----------
+2018/01/10 27日前
+2018/01/09 28日前
+2018/01/08 29日前
+2018/01/07 1ヶ月前
+2018/01/06 1ヶ月前
+2018/01/05 1ヶ月前
+2018/01/04 1ヶ月前
+2018/01/03 1ヶ月前
+2018/01/02 1ヶ月前
+2018/01/01 1ヶ月前
+----------
+2017/12/10 1ヶ月前
+2017/12/09 1ヶ月前
+2017/12/08 1ヶ月前
+2017/12/07 1ヶ月前
+2017/12/06 2ヶ月前 &lt;-- ここから2ヶ月前
+2017/12/05 2ヶ月前
+2017/12/04 2ヶ月前
+2017/12/03 2ヶ月前
+2017/12/02 2ヶ月前
+2017/12/01 2ヶ月前
+----------
+2017/11/10 2ヶ月前
+2017/11/09 2ヶ月前
+2017/11/08 2ヶ月前
+2017/11/07 2ヶ月前
+2017/11/06 3ヶ月前 &lt;-- ここから3ヶ月前
+2017/11/05 3ヶ月前
+2017/11/04 3ヶ月前
+2017/11/03 3ヶ月前
+2017/11/02 3ヶ月前
+2017/11/01 3ヶ月前
+</code></pre><p>良さそう！</p>
 
     </div>
 
