@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>fish shellベースのターミナル環境を整える | CYOKODOG</title>
+	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+  <link href='/theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' href='/theme/cyokodog/css/app.min.css?a' type='text/css' media='all' />
+  <link rel='stylesheet' id='style-css'  href='/theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <!--<a class="fa fa-facebook-square" href="https://www.facebook.com/"></a>-->
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>JS DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/fish-based-terminal-environment/" title="fish shellベースのターミナル環境を整える">fish shellベースのターミナル環境を整える</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2020-02-01</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <p>「bash やめて fish とかでターミナル環境いい感じにしたいけど、ググるとあれ入れるためにはこれ入れろとか言っててなんか面倒そうだなぁ...」とか感じた方にとっては有用な記事かもしれません。記事の手順どおり進めればとりあえずいい感じのターミナル環境が整うかと思います。</p>
+<!--more-->
+<h2 id="-">動機</h2>
+<ul>
+<li>数年前から shell に fish を使用している</li>
+<li>とりあえずデフォルト設定のままでもだいぶ便利になるので、git 関連のプロンプト設定ぐらいしかしていなかった<ul>
+<li>あと shell の構文の違いから anyenv(ndenv) を動かすための工夫が必要だった（が、ndenv が非推奨になったので今は nodenv を使っており解決済）</li>
+</ul>
+</li>
+<li>ghq とか peco を使うと便利と聞いてたので気になっていた<ul>
+<li><a href="https://app.codegrid.net/entry/2017-tool-survey-1#toc-3">https://app.codegrid.net/entry/2017-tool-survey-1#toc-3</a> (ゆっきーのおすすめ)</li>
+<li>ググると Go 言語を入れなきゃダメとか古いやり方が結構ひっかかりめんどくさい印象がある(が今は homebrew でもいけるので簡単)</li>
+<li>プラグイン前提の説明が多いので、一度にまとめてやろうとするとどこまでが標準機能で、どこからが拡張機能なのか分かりづらい</li>
+</ul>
+</li>
+<li>不便はしてないけどふわっとした理解だったので、ちょっと整理しながら環境を整えてみよう...！</li>
+</ul>
+<h2 id="-">概要</h2>
+<ul>
+<li>fish</li>
+<li>git 向けプロンプト設定</li>
+<li>fisher(プラグインマネージャ)</li>
+<li>テーマ設定</li>
+<li>ghq</li>
+<li>peco</li>
+<li>peco プラグイン</li>
+<li>ghq + peco 連携プラグイン</li>
+</ul>
+<h2 id="fish">fish</h2>
+<ul>
+<li><a href="https://fishshell.com/">fish shell</a></li>
+<li><a href="http://fish.rubikitch.com/">全訳！fish シェル普及計画【コマンドラインは怖くない】</a></li>
+</ul>
+<pre><code>$ brew install fish
+$ fish -v
+fish, version 3.0.2
+</code></pre><ul>
+<li>とりあえずこれだけでもいろいろ補完が効くようになり便利</li>
+</ul>
+<p><img src="./images/fish-1.gif" alt=""></p>
+<ul>
+<li>fish は、Friendly interactive shell の略</li>
+<li>評判の良くない POSIX（シェルの標準仕様）とは非互換の仕様らしい</li>
+</ul>
+<h2 id="git-">git 向けプロンプト設定</h2>
+<p>以下コマンドでブラウザが開き、ブラウザ上で fish の設定が可能になる</p>
+<pre><code>fish_config
+</code></pre><p><img src="./images/fish-2.png" alt=""></p>
+<p>prompt タブで<code>Set Prompt</code>を押すと、<code>.config/fish/functions/fish_prompt.fish</code>が生成される（後述のプラグイン追加とかをしていくと<code>.config/fish/</code>以下がいろいろと書き換わるので、これらの中身を見てるとなんとなく何してるか見えてくる）。</p>
+<pre><code>function fish_prompt --description &#39;Write out the prompt&#39;
+  set -l color_cwd
+    set -l suffix
+    switch &quot;$USER&quot;
+        case root toor
+            if set -q fish_color_cwd_root
+                set color_cwd $fish_color_cwd_root
+            else
+                set color_cwd $fish_color_cwd
+            end
+            set suffix &#39;#&#39;
+        case &#39;*&#39;
+            set color_cwd $fish_color_cwd
+            set suffix &#39;&gt;&#39;
+    end
+
+    echo -n -s &quot;$USER&quot; @ (prompt_hostname) &#39; &#39; (set_color $color_cwd) (prompt_pwd) (set_color normal) &quot;$suffix &quot;
+end
+</code></pre><p>文字列を整形して、最後の echo 文でプロンプトとして表示している。</p>
+<h3 id="-">ブランチ名の表示</h3>
+<p>上記コードを例えば次のように git プロンプトを示す環境変数(<code>__fish_git_prompt</code>)を表示するよう変更する。</p>
+<pre><code>function fish_prompt
+  echo -n (set_color cyan)(prompt_pwd) (set_color green)&#39;❯&#39;
+
+  # Git
+  set last_status $status
+  printf &#39;%s &#39; (__fish_git_prompt)
+  set_color normal
+end
+</code></pre><p>bash とは構文が異なることが分かる。上記のように標準出力の参照には<code>$</code>が不要で、変数の値セットには<code>set</code>を用いる。</p>
+<pre><code>// bash
+answer=$( expr 1 + 2 )
+echo $answer
+
+// fish
+set answer ( expr 1 + 2 )
+echo $answer
+echo ( expr 1 + 2 )
+</code></pre><p>プロンプトにブランチ名が表示されるようになる。</p>
+<p><img src="./images/fish-3.png" alt=""></p>
+<h3 id="-">ステージング状態の表示</h3>
+<p><code>.config/fish/config.fish</code>に git プロンプト関連の環境変数（<code>__fish_git_prompt_*</code>）を以下のように追記（環境変数などはこのファイルに記述する）。</p>
+<pre><code># Fish git prompt
+set __fish_git_prompt_showdirtystate &#39;yes&#39;
+set __fish_git_prompt_showstashstate &#39;yes&#39;
+set __fish_git_prompt_showuntrackedfiles &#39;yes&#39;
+set __fish_git_prompt_showupstream &#39;yes&#39;
+set __fish_git_prompt_color_branch yellow
+set __fish_git_prompt_color_upstream_ahead green
+set __fish_git_prompt_color_upstream_behind red
+
+# Status Chars
+set __fish_git_prompt_char_dirtystate &#39;⚡&#39;
+set __fish_git_prompt_char_stagedstate &#39;→&#39;
+set __fish_git_prompt_char_untrackedfiles &#39;☡&#39;
+set __fish_git_prompt_char_stashstate &#39;↩&#39;
+set __fish_git_prompt_char_upstream_ahead &#39;+&#39;
+set __fish_git_prompt_char_upstream_behind &#39;-&#39;
+</code></pre><p>プロンプトにステージングの状態が表示されるようになる。</p>
+<p><img src="./images/fish-4.png" alt=""></p>
+<h2 id="fisher-">fisher(プラグインマネージャ)</h2>
+<p>上記のような設定をしなくてもテーマプラグインを入れていい感じにすることもできる。プラグインを入れるためのプラグインマネージャにも oh-my-fish、fisher（旧 fisher man）、fundle、fresco などといろいろあり、設定ファイルの書き換え方とかに違いがある。</p>
+<ul>
+<li><a href="https://qiita.com/ryotako/items/2d9d6fb646d2f3644dc8">fish のプラグインマネージャ比較 - Qiita</a></li>
+</ul>
+<p>最初は oh-my-fish を入れてた</p>
+<ul>
+<li><a href="https://github.com/oh-my-fish/oh-my-fish">oh-my-fish/oh-my-fish: The Fish Shell Framework</a></li>
+</ul>
+<pre><code># oh-my-fishのインストール
+curl -L https://get.oh-my.fish | fish
+
+# インストール済みプラグインを表示
+omf list
+</code></pre><p>けど fisher が主流っぽいので次のように切替えた。</p>
+<ul>
+<li><a href="https://github.com/jorgebucaran/fisher/">jorgebucaran/fisher: A package manager for the fish shell.</a></li>
+</ul>
+<pre><code># oh-my-fish/oh-my-fishのアンインストール
+omf destroy
+
+# fisherのインストール
+curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
+
+# インストール済みプラグインを表示
+fisher ls
+</code></pre><h2 id="-">テーマ設定</h2>
+<p>プラグインマネージャを入れたのでテーマをインストールする。<code>theme-bobthefish</code>っていうテーマがメジャーっぽいのでこれを入れる。</p>
+<pre><code>fisher add oh-my-fish/theme-bobthefish
+</code></pre><p><code>.config/fish/</code>以下がいろいろ書き換わり、次のような見た目になる。</p>
+<p><img src="./images/fish-5.png" alt=""></p>
+<h3 id="-">日付フォーマットの調整</h3>
+<p>日付フォーマットがおかしな感じになってるので<code>. ~/.config/fish/config.fish</code>に<code>theme_date_format</code>の設定を追加。ディレクトリ名の表示を省略したくない場合は<code>fish_prompt_pwd_dir_length</code>も。</p>
+<pre><code>set -g theme_date_format &quot;+%Y-%m-%d %H:%M:%S&quot;
+set -g fish_prompt_pwd_dir_length 0
+</code></pre><h3 id="-">フォント設定</h3>
+<p>さらにプロンプトの文字が化けるので、iTerm2 の<code>Use built-in Powerline glyphs</code>（profiles -&gt; text）を有効にする必要がある。</p>
+<p>VS Code の統合ターミナルも化けるので、こちらも直したい場合は以下のフォントを追加（editor.fontFamily に設定する）</p>
+<p><a href="https://github.com/tonsky/FiraCode">https://github.com/tonsky/FiraCode</a></p>
+<h3 id="-">テーマ使うのやめる</h3>
+<p>なんかフォント追加うんぬんするくらいなら、テーマ使わなくてもいいかな...って言う場合は次のようにテーマを削除する。</p>
+<pre><code>fisher rm oh-my-fish/theme-bobthefish
+</code></pre><p>テーマを削除すると<code>fish_prompt.fish</code>も消えてしまうので、もう一回作り直す。</p>
+<p>公式の説明によると</p>
+<blockquote>
+<p>rm コマンドを使用してパッケージを削除します。パッケージに依存関係がある場合、それらも削除されます。依存関係が他のパッケージによってまだ共有されている場合、それらはインストールされたままになります。
+パイプラインを使え一括で現在インストールされているものをすべて削除できます。
+fisher ls | fisher rm</p>
+</blockquote>
+<p>とのこと（パッケージじゃない自前設定の場合は消えちゃうってことかと）</p>
+<h2 id="ghq">ghq</h2>
+<p>Git のリモートレポジトリから取得したソースファイル郡をローカルでいい感じに管理してくれる。</p>
+<pre><code># インストール
+brew install ghq
+</code></pre><p><code>.gitconfig</code>に ghq で管理するソースファイルのルートディレクトリを設定する。</p>
+<pre><code>git config --global ghq.root ~/src
+</code></pre><p><code>git clone</code>の代わりに<code>ghq get</code>を使う。</p>
+<pre><code>ghq get git@github.com:cyokodog/vnode-parser.git
+</code></pre><p><code>ghq list</code>で取得したリポジトリをリストできる（<code>-p</code>で物理ディレクトリを表示）。</p>
+<pre><code>$ ghq list
+github.com/cyokodog/vnode-parser
+github.com/cyokodog/vuex-adapter
+github.com/typicode/json-server
+
+$ ghq list -p
+/Users/cyokodog/src/github.com/cyokodog/vnode-parser
+/Users/cyokodog/src/github.com/cyokodog/vuex-adapter
+/Users/cyokodog/src/github.com/typicode/json-server
+</code></pre><p><code>ghq look</code>でディレクトリ移動ができる。</p>
+<pre><code>$ ghq look vnode-parser
+$ ~/s/g/c/vnode-parser ❯❯❯  (master=)
+</code></pre><h2 id="peco">peco</h2>
+<p>「標準入力から受けた行データをインクリメンタルサーチして、選択した行を標準出力に返す」 コマンド。</p>
+<pre><code>ls -l | peco
+</code></pre><p><img src="./images/fish-6.gif" alt=""></p>
+<p>選んだディレクトリは標準出力されるてるけど、移動できてるわけではない。</p>
+<p>この特性を利用し、選択したディレクトリに移動できるようにする。</p>
+<pre><code>cd ( ls -1d */ | peco )
+</code></pre><p>これを fish のショートカットキーに割り当ててるみる。<code>fish/functions/peco_cd.fish</code>を以下のように作成する。</p>
+<pre><code>function peco_cd
+  set selected_dir (ls -1d */ | peco)
+  if [ $selected_dir ]
+    cd $selected_dir
+    commandline -f repaint
+  end
+end
+</code></pre><p><code>config.fish</code>に以下を追記し、<code>. ~/.config/fish/config.fish</code>で再読み込み</p>
+<pre><code>function fish_user_key_bindings
+  bind \cc &#39;peco_cd&#39; #追記
+end
+</code></pre><p><code>ctrl + c</code>で実行できるようになる。</p>
+<p><img src="./images/fish-7.gif" alt=""></p>
+<p>ちなみにターミナル標準機能で、<code>ctrl + i</code>を押すと似たようなことはできる。</p>
+<p><img src="./images/fish-8.gif" alt=""></p>
+<h2 id="peco-">peco プラグイン</h2>
+<ul>
+<li><a href="https://github.com/oh-my-fish/plugin-peco">oh-my-fish/plugin-peco: Browse your fish history with peco.</a></li>
+<li>入力したコマンド履歴を peco で検索できるようになる。</li>
+</ul>
+<p>インストール</p>
+<pre><code>fisher add oh-my-fish/plugin-peco
+</code></pre><p><code>~/.config/fish/config.fish</code>に以下を追記する。</p>
+<pre><code>set fish_plugins theme peco
+
+function fish_user_key_bindings
+  bind \cr &#39;peco_select_history (commandline -b)&#39;
+end
+</code></pre><p><code>ctrl + r</code>でコマンド履歴を表示、選択し再実行できる。</p>
+<p><img src="./images/fish-9.gif" alt=""></p>
+<h2 id="ghq-peco-">ghq + peco 連携プラグイン</h2>
+<ul>
+<li><a href="https://github.com/decors/fish-ghq">decors/fish-ghq: ghq completion and keybinding for fish shell</a></li>
+<li>ghq ラッパープラグインで補完とキーバインドを提供してくれ、インストール済みの peco や fzf といい感じに連携してくれる</li>
+</ul>
+<p>インストール</p>
+<pre><code>fisher add oh-my-fish/plugin-peco
+</code></pre><p><code>~/.config/fish/config.fish</code>に以下を追記（デフォルトは fzf）</p>
+<pre><code>set GHQ_SELECTOR peco
+</code></pre><p>ctrl + g で、ghq で管理されるリポジトリリストを peco で選択できるようになる。</p>
+<p><img src="./images/fish-a.gif" alt=""></p>
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/fish-based-terminal-environment/">fish shellベースのターミナル環境を整える</a></li>
+          <li><a href="/blog/moment-i18n/">moment.js で i18n 対応したり期間を文字列化する時の注意点</a></li>
+          <li><a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a></li>
+          <li><a href="/blog/angular-fire/">AngularFire使ってみた</a></li>
+          <li><a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a></li>
+          <li><a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a></li>
+          <li><a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a></li>
+          <li><a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a></li>
+          <li><a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a></li>
+          <li><a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a></li>
+          <li><a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a></li>
+          <li><a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a></li>
+          <li><a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a></li>
+          <li><a href="/blog/bitbar/">BitBar を試してみる</a></li>
+          <li><a href="/blog/angular-cli/">Angular CLI を試してみる</a></li>
+          <li><a href="/blog/riot/">はじめてのRiot.js</a></li>
+          <li><a href="/blog/facebook-flux/">はじめてのfacebook/flux</a></li>
+          <li><a href="/blog/reactjs/">はじめてのReact.js</a></li>
+          <li><a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a></li>
+          <li><a href="/blog/electron/">Electron さわってみた</a></li>
+          <li><a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a></li>
+          <li><a href="/blog/wunderline/">Wunderline を使ってみた</a></li>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2020-02-01</span>
+              <a href="/blog/fish-based-terminal-environment/">fish shellベースのターミナル環境を整える</a>
+            </li>
+            <li>
+              <span class="post-date">2018-02-06</span>
+              <a href="/blog/moment-i18n/">moment.js で i18n 対応したり期間を文字列化する時の注意点</a>
+            </li>
+            <li>
+              <span class="post-date">2018-01-10</span>
+              <a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-11-15</span>
+              <a href="/blog/angular-fire/">AngularFire使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-09-24</span>
+              <a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-07-20</span>
+              <a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-30</span>
+              <a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-15</span>
+              <a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-05-06</span>
+              <a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2017-03-08</span>
+              <a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a>
+            </li>
+            <li>
+              <span class="post-date">2017-02-01</span>
+              <a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a>
+            </li>
+            <li>
+              <span class="post-date">2016-12-21</span>
+              <a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a>
+            </li>
+            <li>
+              <span class="post-date">2016-08-23</span>
+              <a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a>
+            </li>
+            <li>
+              <span class="post-date">2016-07-05</span>
+              <a href="/blog/bitbar/">BitBar を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-30</span>
+              <a href="/blog/angular-cli/">Angular CLI を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-14</span>
+              <a href="/blog/riot/">はじめてのRiot.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-11</span>
+              <a href="/blog/facebook-flux/">はじめてのfacebook/flux</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-09</span>
+              <a href="/blog/reactjs/">はじめてのReact.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-05-18</span>
+              <a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-03-02</span>
+              <a href="/blog/electron/">Electron さわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2016-02-24</span>
+              <a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a>
+            </li>
+            <li>
+              <span class="post-date">2015-11-18</span>
+              <a href="/blog/wunderline/">Wunderline を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+
+<script type="text/javascript" src="/theme/cyokodog/js/bundle.js?"></script>
+
+
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/theme/cyokodog/index.jsx?'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

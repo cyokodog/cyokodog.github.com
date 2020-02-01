@@ -649,8 +649,8 @@ pre{
 	white-space: -o-pre-wrap;	/* Opera 7 */
 	word-wrap: break-word;		/* Internet Explorer 5.5+ */
 }
-code{
-	display:block;
+/* code{
+	display:block; */
 }
 
 /*
@@ -1710,19 +1710,3 @@ font-family: Raleway, sans-serif;
 #disqus_thread{
 	margin-top: 8em;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
