@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>TOC（目次メニュー）の実装方法について考えてみる | CYOKODOG</title>
+	<title>TypeScript | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -18,7 +18,7 @@
 
 
 </head>
-<body class="single single-post postid-232 single-format-standard logged-in " >
+<body class="single single-post postid-232 single-format-standard logged-in list" >
 	<div class="l-header">
 		<div class="u-layout-center">
       <div class="site-header">
@@ -67,403 +67,38 @@
 
   <div class="l-contents">
     <div class="u-layout-center">
-<div class="l-article">
-  <article class="article">
 
-    <div class="article__header">
-      <h1 class="article__title">
-        <a href="/blog/thinking-toc/" title="TOC（目次メニュー）の実装方法について考えてみる">TOC（目次メニュー）の実装方法について考えてみる</a>
-      </h1>
-      <ul class="article__info">
-        <li class="article__info__date">2015-03-09</li>
+    <div class="l-article">
+      <article class="article">
+
+<article class="article">
+  <div class="article__header">
+    <h1 class="article__title">
+      <a href="/blog/typescript-v3-8/" title="TypeScript v3.8 の新機能メモ">TypeScript v3.8 の新機能メモ</a>
+    </h1>
+    <ul class="article__info">
+      <li class="article__info__date">2020-03-11</li>
 <!--
-        <li class="article__info__category"><a href="/category/javascript/" rel="category tag">JavaScript</a></li>
+      <li class="article__info__category"><a href="/category/typescript/" rel="category tag">TypeScript</a></li>
 -->
-      </ul>
-    </div>
-    <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/thinking-toc/"><img src="http://lh4.googleusercontent.com/-O_NZPRs1P-U/VQHKXZnVZ0I/AAAAAAAAI5E/rncNpstSV-E/s800/tocjs.png"></a>
-</div></p>
-<p>みなさん、日々の勉強で得たナレッジはどこに記録されてますか？<br>
-自分の場合、少しでも気になって調べた事はとりあえずマークダウンで記述してテキストファイルに保存してます（閲覧は HTML 形式に変換したドキュメントをロカール web サーバや Bitbucket 越しに参照してます）。
-そんな調子で気軽にメモしてくと情報量がすぐに増えてしまうので、見出し要素ごとにカテゴライズされたコンテンツに素早く移動するための TOC（目次メニュー）は欠かせない機能です。<br>
-今回はこの目次メニューの実装方法について考えてみました。</p>
+    </ul>
+  </div>
+  <div class="article__body">
+    <p>TypeScript v3.8 の新機能をざっと試しながら確認したのでメモ。</p>
 
-<!--more-->
-<h2>UI の生成機能の実装方法について</h2>
+<!--
+    <a href="/blog/typescript-v3-8/" class="more-link">Read More</a>
+-->
+  </div>
 
-<p>目次メニューに限った話ではありませんが、UI を生成する実装を考えた時、UI はサイトの印象に強い影響を与えるデザインの一部でもあるため、本当の意味での汎用性のある UI 生成処理の実装は非常に難しいものだと感じています。</p>
+</article>
 
-<p>そうした汎用性を意識しすぎて機能過多な実装にするよりは、UI 生成機能はシンプルにし、生成処理に必要となる情報の提供を充実させた方が良いのかなと思ったりもします。</p>
-
-<p>そこで今回は以下の様に、「UI 生成に必要な情報の生成」「UI の生成」という単位で処理を分離し実装してみたいと思います。</p>
-
-<ol>
-<li>目次の対象となる見出し情報データの抽出・生成</li>
-<li>目次の親子情報の紐付け処理</li>
-<li>目次 UI の生成</li>
-</ol>
-
-<p>上記処理単位で API を用意することで、データの生成部である 1,2 は汎用的に使用できるようにし、3 の UI 生成についてはデフォルトで提供されてるもので問題なければそれを使用し、だめなら 1,2 で生成したデータを使用し独自に生成する、というコンセプトで目次生成ライブラリを作ってみたいと思います。</p>
-
-<h2>目次の対象となる見出し情報データの抽出・生成</h2>
-
-<p>マークダウンで記述したドキュメントあるいは、ブログ等の投稿記事の場合、そこに書かれたそれぞれの見出し要素は DOM ツリー上、兄弟関係にあるかと思います。
-その前提で「目次の対象となる見出し情報データの抽出・生成」処理の API を以下のように定義してみます。</p>
-
-<pre><code>function createHeadingArray(
-    startHeadingElement, // 目次の先頭となる見出し要素
-    fromHeadingLevel, // 目次に拾い上げる見出しの分類の範囲（from）
-    toHeadingLevel // 目次に拾い上げる見出しの分類の範囲（to）
-)
-return [
-    {
-        el: element, // 見出しの DOM 要素
-        level: number // 見出し分類レベル（例. h2 の場合は 2）
-    },
-    ...
-]
-</code></pre>
-
-<p><br>
-実装イメージとしては startHeadingElement を起点に後方の兄弟要素を順番に取得し、見出し要素だった場合は返却値である配列に順次格納していくという単純なものです。
-以下のように実装してみます。</p>
-
-<pre><code>// ヘッダー
-var TOC = {};
-TOC.createHeadingArray = createHeadingArray;
-
-// ボディ
-function createHeadingArray(
-    startHeadingElement,
-    fromHeadingLevel,
-    toHeadingLevel
-){
-    var _domToHeadingArray = function(arr, element){
-        if(!element) return;
-        var re = new RegExp('h([' + fromHeadingLevel + '-' + toHeadingLevel + '])+', 'i')
-        var headers = re.exec(element.tagName);
-        !headers|| headers.forEach(function(level, i){
-            if(!i) return;
-            arr.push({
-                level: level,
-                el: element
-            });
-        })
-        _domToHeadingArray(arr, element.nextElementSibling);
-        return arr;
-    }
-    return _domToHeadingArray([], startHeadingElement);
-}
-</code></pre>
-
-<p><br>
-返却値を配列にすることで、Array オブジェクトの持つ filter() メッド等が使用できるので、
-これを使い目次の対象としたくない見出し要素をオミットすることもできます。
-例えば自分の場合、コードのハイライト表示を行う jQuery プラグインを使用してる関係で h4 要素に code demo などと記述する場合があり、これをオミットするため以下のようにしてます。</p>
-
-<pre><code>var headingArray = TOC.createHeadingArray(
-    document.querySelector('body &gt; h2'), 2, 4
-).
-filter(function(v, i){
-    return !/\s(demo|code)\s/i.test(' '+v.el.textContent+' ');
-});
-</code></pre>
-
-<p><br>
-では、取得した見出し情報セットを使用し、TOC の UI を独自に生成してみます。</p>
-
-<pre><code>var ul = $('&lt;ul class="toc"/&gt;').appendTo('.sidebar');
-headingArray.forEach(function(data, i){
-    $('&lt;li/&gt;').
-    addClass('level-' + data.level). // クラス名を付与
-    html(
-        $('&lt;a href="javascript:void(0)"/&gt;').
-        on('click', function(){
-            $('html,body').animate({scrollTop: $(data.el).offset().top})
-        }).
-        text(data.el.textContent)
-    ).
-    appendTo(ul);
-});
-</code></pre>
-
-<p><br>
-li 要素に見出しレベル毎にクラス名を割り振ってるので、CSS を以下のように記述することで目次らしい UI にすることができます。</p>
-
-<pre><code>.toc .level-2{
-    margin-left: 0;
-}
-.toc .level-3{
-    margin-left: 16px;
-}
-.toc .level-4{
-    margin-left: 32px;
-}
-</code></pre>
-
-<p><a href="http://cyokodog.github.io/TocJS?01">DEMO</a></p>
-
-<h2>目次の親子情報の紐付け処理</h2>
-
-<p>前述の処理で生成した目次メニューは、１つの UL のみで構成された単純なもので、コンテンツとしての親子関係を持ってません。
-例えば、目次メニューをアコーディオン UI にしたい場合は、UL -&gt; LI -&gt; UL ・・・といった具合に目次メニューを入れ子構成にする必要があります。</p>
-
-<p>そこで前述の処理で生成した headingArray に対し、「目次の親子情報の紐付け処理」を行う機能を実装します。
-API は以下のように定義します。</p>
-
-<pre><code>function addRelationShip(headingArray)
-</code></pre>
-
-<p><br>
-引数として受け取った headingArray に対し、見出し要素間の親子情報である parentNode と children を追加する仕様にします。</p>
-
-<pre><code>[
-    {
-        el: element,
-        level: number,
-        parentNode: element // 親に当たる見出し要素
-        children: [
-            element, // 子に当たる見出し要素
-            ...
-        ]
-    },
-    ...
-]
-</code></pre>
-
-<p><br>
-実装方法は、見出し要素個別に親もしくは子要素を探してきますが、複数存在する可能性のある子供要素を見つけるより、１つしかありえない親要素を見つけるロジックの方が単純そうなので、以下のよう DOM ツリーの下方から遡り親要素を探してく実装にしてみました。</p>
-
-<pre><code>// ヘッダ
-TOC.addRelationShip = addRelationShip;
-
-// ボディ
-function addRelationShip(headingArray){
-    var len = headingArray.length;
-    for(var i = len-1; i &gt;= 0; i--){
-        if(i &gt; 0){
-            var _getParentNode = function(selfIndex){
-                for(var i = selfIndex; i &gt;= 0; i--){
-                    if(i &gt; 0){
-                        var beforeNode = headingArray[i-1];
-                        if(beforeNode.level &lt; headingArray[selfIndex].level) {
-                            return beforeNode;
-                        }
-                    }
-                }
-                return undefined;
-            }
-            var currentNode = headingArray[i];
-            var parentNode = _getParentNode(i);
-            if(parentNode){
-                currentNode.parentNode = parentNode;
-                parentNode.children = parentNode.children || [];
-                parentNode.children.push(currentNode);
-            }
-        }
-    }
-    return this;
-}
-</code></pre>
-
-<p><br>
-では、見出しの親子関係を参照し、UL を入れ子構成にした目次メニューを生成してみます。</p>
-
-<pre><code>・・・
-
-// 親子情報の紐付け
-TOC.addRelationShip(headingArray);
-
-// UI 生成
-var ul = $('&lt;ul/&gt;').appendTo('.sidebar');
-headingArray.forEach(function(data, i){
-    var container = ul;
-    if(data.parentNode){
-        container = data.parentNode.childrenContainer =
-            data.parentNode.childrenContainer ||
-            $('&lt;ul/&gt;').appendTo(data.parentNode.item)
-    }
-    data.item = 
-        $('&lt;li/&gt;').html(
-            $('&lt;a href="javascript:void(0)"/&gt;').
-            on('click', function(){
-                $('html,body').animate({scrollTop: $(data.el).offset().top})
-            }).
-            text(data.el.textContent)
-        ).
-        appendTo(container);
-</code></pre>
-
-<p><a href="http://cyokodog.github.io/TocJS?02">DEMO</a></p>
-
-<h2>目次 UI の生成</h2>
-
-<p>サイトイメージによって求める UI デザインが異なるとはいえ、ちょっとしたメモのストック場所としてページを使用してる場合、簡単な目次メニューぐらいはライブラリ側で生成してほしいところです。
-なので前述で実装した目次メニューを jQuery 非依存で動作するようにしライブラリの一機能としてみます。</p>
-
-<pre><code>//ヘッダ
-TOC.toTocUi = toTocUi;
-
-//ボディ
-function toTocUi(headingArray){
-    var ul = document.createElement('ul');
-    headingArray.forEach(function(v, i){
-        var container = ul;
-        if(v.parentNode){
-            container = v.parentNode.childrenContainer;
-            if(!container){
-                container = 
-                    v.parentNode.childrenContainer = 
-                        document.createElement('ul');
-                v.parentNode.item.appendChild(container);
-            }
-        }
-        var link = document.createElement('a');
-        link.href='javascript:void(0)';
-        link.textContent = v.el.textContent;
-        link.addEventListener('click', function(){
-            if(jQuery){
-                // jQuery が存在してた場合はスムーススクロール
-                $('head,body').animate({scrollTop:$(v.el).offset().top});
-            }
-            else{
-                v.el.scrollIntoView(true)
-            }
-        }, false)
-        var li = v.item = document.createElement('li');
-        li.appendChild(link);
-        container.appendChild(li);
-    })
-    return ul;
-}
-</code></pre>
-
-<p><br>
-以下のように使用します。</p>
-
-<pre><code>// 目次データセットの生成
-var headingArray = TOC.createHeadingArray(
-    document.querySelector('body &gt; h2'), 2, 4
-);
-
-// 目次の親子情報の紐付け
-TOC.addRelationShip(headingArray);
-
-// 目次 UI の挿入
-var toc = TOC.toTocUi(headingArray);
-document.querySelector('.sidebar').appendChild(toc);
-</code></pre>
-
-<p><a href="http://cyokodog.github.io/TocJS?03">DEMO</a></p>
-
-<h2>ソースコード</h2>
-
-<p>ソースは以下にあります。</p>
-
-<ul>
-<li><a href="https://github.com/cyokodog/TocJS">TocJS | GitHub</a></li>
-</ul>
-
-<h4>code</h4>
-
-<h5>script</h5>
-
-<pre><code>;(function(){
-    //namespace
-    window.TOC = {}
-
-    //header
-    TOC.createHeadingArray = createHeadingArray;
-    TOC.addRelationShip = addRelationShip;
-    TOC.toTocUi = toTocUi;
-
-    //body
-    function createHeadingArray(startHeadingElement, fromHeadingLevel, toHeadingLevel){
-        var _domToHeadingArray = function(arr, element){
-            if(!element) return;
-            var re = new RegExp('h([' + fromHeadingLevel + '-' + toHeadingLevel + '])+', 'i')
-            var headers = re.exec(element.tagName);
-            !headers|| headers.forEach(function(level, i){
-                if(!i) return;
-                arr.push({
-                    level: level,
-                    el: element
-                });
-            })
-            _domToHeadingArray(arr, element.nextElementSibling);
-            return arr;
-        }
-        return _domToHeadingArray([], startHeadingElement);
-    }
-    function addRelationShip(headingArray){
-        var len = headingArray.length;
-        for(var i = len-1; i &gt;= 0; i--){
-            if(i &gt; 0){
-                var _getParentNode = function(selfIndex){
-                    for(var i = selfIndex; i &gt;= 0; i--){
-                        if(i &gt; 0){
-                            var beforeNode = headingArray[i-1];
-                            if(beforeNode.level &lt; headingArray[selfIndex].level) {
-                                return beforeNode;
-                            }
-                        }
-                    }
-                    return undefined;
-                }
-                var currentNode = headingArray[i];
-                var parentNode = _getParentNode(i);
-                if(parentNode){
-                    currentNode.parentNode = parentNode;
-                    parentNode.children = parentNode.children || [];
-                    parentNode.children.push(currentNode);
-                }
-            }
-        }
-        return this;
-    }
-    function toTocUi(headingArray){
-        var ul = document.createElement('ul');
-        headingArray.forEach(function(v, i){
-            var container = ul;
-            if(v.parentNode){
-                container = v.parentNode.childrenContainer;
-                if(!container){
-                    container = v.parentNode.childrenContainer = document.createElement('ul');
-                    v.parentNode.item.appendChild(container);
-                }
-            }
-            var link = document.createElement('a');
-            link.href='javascript:void(0)';
-            link.textContent = v.el.textContent;
-            link.addEventListener('click', function(){
-                if(jQuery){
-                    $('head,body').animate({scrollTop:$(v.el).offset().top});
-                }
-                else{
-                    v.el.scrollIntoView(true)
-                }
-            }, false)
-            var li = v.item = document.createElement('li');
-            li.appendChild(link);
-            container.appendChild(li);
-        })
-        return ul;
-    }
-})();
-</code></pre>
-
-<h2>最後に</h2>
-
-<p>jQuery プラグインを実装する際、jQuery の DOM 機能が強力な故に、いきなり DOM をまさぐり、書き換え、目的とする UI の生成をしがちですが、デザインと機能とデータの分離を意識した実装にすることで、汎用処理としての再利用性を高めることができるかもしれません。
-今後はその辺も意識した実装を行っていきたいと思います。</p>
-
-
+      </article>
     </div>
 
-  </article>
-</div>
+
+
+
 
   <div class="l-page-nav">
     <div class="l-page-nav__body">
