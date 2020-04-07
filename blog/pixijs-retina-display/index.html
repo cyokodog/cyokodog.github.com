@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>Canvas, PixiJSからRetinaディスプレイに配慮した画像の切り出しを行う | CYOKODOG</title>
+	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+  <link href='/theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' href='/theme/cyokodog/css/app.min.css?a' type='text/css' media='all' />
+  <link rel='stylesheet' id='style-css'  href='/theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <!--<a class="fa fa-facebook-square" href="https://www.facebook.com/"></a>-->
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>JS DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/pixijs-retina-display/" title="Canvas, PixiJSからRetinaディスプレイに配慮した画像の切り出しを行う">Canvas, PixiJSからRetinaディスプレイに配慮した画像の切り出しを行う</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2020-04-07</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <p>PixiJS 管理下の Canvas を、Retina ディスプレイに配慮して画像として切り出す方法について調べた。</p>
+<!--more-->
+<h2 id="-">背景</h2>
+<ul>
+<li>案件で「PixiJS で作った簡易フォトショアプリにて、PixiJS 管理下の Canvas の特定を範囲を画像化して切り出す」という要件があり、以下条件で対応した。<ul>
+<li>Retina ディスプレイに配慮し、基本、縦横 2 倍のサイズで画像化する</li>
+<li>生成した画像を背景画像として使用する場合があり、この場合は等倍のサイズで画像化し、できる限りぼやけを低減させる</li>
+</ul>
+</li>
+<li>できたけど PixiJS の機能を経由して実現したので、内部的に Canvas に対して何が行われてるのかがはっきりと理解できておらずモヤっとしていた...... ので調べてみた</li>
+</ul>
+<h2 id="retina-">Retina ディスプレイとは</h2>
+<p>まず基本から...（以下を見てざっとまとめ</p>
+<ul>
+<li><a href="http://un-tech.jp/display-resolution/">「えーと、画像は全部 2 倍で作れば OK なんだよね？」を卒業しよう | un-Tech</a></li>
+<li><a href="https://parashuto.com/rriver/development/pixel-related-info-for-coping-with-retina-displays">いまさら聞けない Retina 対応のための「ピクセル」の話 | Rriver</a></li>
+</ul>
+<h3 id="ppi-dpi">ppi と dpi</h3>
+<ul>
+<li>ディスプレイは光を放つ点の集合でできており、この点を「ピクセル」という</li>
+<li>ディスプレイの広さの単位には「インチ」が用いらる</li>
+<li>インチは画面の対角線で長さで決まる<ul>
+<li>なので同じインチ数のディスプレイでも、アスペクト比（縦と横の長さの比率）が違えば、ディスプレイの面積は異なる</li>
+</ul>
+</li>
+<li>1 インチ辺りのピクセルの密度は、ppi（pixel par inch）で表す（ピクセル解像度と言う）</li>
+<li>1 インチ辺りのドットの密度は、dpi（dots par inch）で表す</li>
+</ul>
+<h3 id="-">物理解像度と論理解像度</h3>
+<ul>
+<li>ドットはディスプレイ上の物理的な「点」であり、「点」ごとに光を放っている</li>
+<li>iPhone4 以降、インチ数はそのままに、従来の 1 ドッドの面積を 2x2 ドッドで構成する高精細なディスプレイが登場した（2dpi）</li>
+<li>論理解像度では、この 2x2 ドッドを 1 ピクセルとして数えるため、iPhone4 は物理解像度は 640×960、論理解像度は 320×480 となる。</li>
+<li>このような物理解像度が論理解像度を上回るディスプレイを、Retina ディスプレイと呼ぶ（物理解像度と論理解像度が一致する状態のことは「ドットバイドット」と言う）</li>
+</ul>
+<h2 id="-retina-">画像の Retina ディスプレイ対応</h2>
+<ul>
+<li>Retina ディスプレイでは、画像の 1×1 ピクセルを 4 ドットに拡大して描画するので、論理解像度基準で画像を作ると輪郭がぼやけて表示されてしまう</li>
+<li>そのため 2dpi の Retina ディスプレイでぼやけさせないようにするには、縦横 2 倍の画像を作り、CSS 等で表示サイズを 1/2 に調整する必要がある</li>
+<li>例えば Retina ディスプレイに対応した背景画像を 640x200px で作った場合は、次のような CSS を適用する</li>
+</ul>
+<pre><code>{
+    background-size: 320px 100px;
+}
+</code></pre><ul>
+<li>ドットバイドットのディスプレイにとっては不要な処置とも言えるので、（手間を惜しまないのであれば）メディアクエリで次のように画像を出し分ける方法もある（CodeGrid で紹介されている）</li>
+</ul>
+<pre><code>@media screen and (min-resolution: 2dppx) { /* ... */ }
+@media screen and (resolution &gt;= 2dppx) { /* ... */ }
+</code></pre><ul>
+<li>dppx という記述は Retina ディスプレイが出始めた当初はできなかったらしく、ググると以下のような書き方が良く見つかるけど今は非推奨</li>
+</ul>
+<pre><code>@media screen and (-webkit-min-device-pixel-ratio: 2) { /* ... */ }
+</code></pre><h2 id="canvas-width-canvas-height-">Canvas.width, canvas.height によるサイズ指定（前置き</h2>
+<ul>
+<li><a href="http://www.cyokodog.net/pixijs_study/public/ex02.html#demo1">デモ</a></li>
+<li>まず、基準となるサイズの指定は Canvas の width, height で設定し、CSS の width, height は、基準サイズ上で描かれた Canvas の絵や Canvas 自体の大きさの見た目を拡縮させる意図で使用する</li>
+<li>CSS のみでサイズ設定しようとすると、次のように意図しない形状になってしまう</li>
+</ul>
+<pre><code>const size = 300;
+canvas.style.width = `${size}px`;
+canvas.style.height = `${size}px`;
+
+ctx.fillStyle = &quot;#0055aa&quot;;
+ctx.fillRect(0, 0, size, size);
+ctx.fillStyle = &quot;#557799&quot;;
+ctx.fillRect(20, 20, size - 40, size - 40);
+</code></pre><p><img width="319" src="images/01.png"></p>
+<ul>
+<li>原因は、Canvas 要素がデフォルトで持つ縦横サイズに対し、CSS で引き伸ばした表示にしようとするため。CSS を当てる場合は先に Canvas 要素のサイズを設定する。</li>
+</ul>
+<pre><code>// 最初に要素のサイズを固定してから...
+const canvasSize = 300;
+canvas.width = canvasSize;
+canvas.height = canvasSize;
+
+ctx.fillStyle = &quot;#0055aa&quot;;
+ctx.fillRect(0, 0, canvasSize, canvasSize);
+ctx.fillStyle = &quot;#557799&quot;;
+ctx.fillRect(20, 20, canvasSize - 40, canvasSize - 40);
+</code></pre><p><img width="315" src="images/02.png"></p>
+<pre><code>// CSSで見た目のサイズを設定する
+const cssSize = 150;
+canvas.style.width = `${cssSize}px`;
+canvas.style.height = `${cssSize}px`;
+</code></pre><p><img width="162" src="images/03.png"></p>
+<h2 id="canvas-retina-">Canvas の Retina ディスプレイ対応</h2>
+<ul>
+<li><a href="http://www.cyokodog.net/pixijs_study/public/ex02.html#demo2">デモ</a></li>
+<li>特になんの対策をすることなく Canvas を描画し、Retina ディスプレイで見てみるとぼやけた表示になってしまう</li>
+</ul>
+<pre><code>ctx.fillStyle = &quot;#557799&quot;;
+ctx.fillRect(20, 20, canvasSize - 40, canvasSize - 40);
+
+ctx.fillStyle = &quot;#aaccff&quot;;
+ctx.font = `${canvasSize - 40}px Arial`;
+ctx.textBaseline = &quot;top&quot;;
+
+ctx.fillText(&quot;あ&quot;, 20, 40);
+</code></pre><p><img width="200" src="images/04.png"></p>
+<ul>
+<li>一旦 Canvas を大きいサイズにしてから、CSS で縮小表示させることでぼやけを解消してみる、まずは Canvas サイズを大きくし...</li>
+</ul>
+<pre><code>// 最初に要素のサイズを固定してから...
+const canvasSize = 200;
+canvas.width = canvasSize;
+canvas.height = canvasSize;
+
+// 解像度に合わせた拡大率を指定する
+const scale = window.devicePixelRatio;
+ctx.scale(scale, scale);
+</code></pre><ul>
+<li>見切れてしまった...</li>
+</ul>
+<p><img width="200" src="images/05.png"></p>
+<ul>
+<li>setScale をした場合、Canvas のサイズは変らず Canvas の中身のみ拡大されるので見切れてしまう</li>
+<li>setScale する前に Canvas のサイズも大きくしておく（順番重要</li>
+</ul>
+<pre><code>const scale = window.devicePixelRatio;
+
+// 最初に要素のサイズを固定してから...
+const canvasSize = 200;
+canvas.width = canvasSize * scale;
+canvas.height = canvasSize * scale;
+
+// 拡大率を指定する
+ctx.scale(scale, scale);
+</code></pre><ul>
+<li>ぼやけて大きく表示された</li>
+</ul>
+<p><img width="400" src="images/06.png"></p>
+<ul>
+<li>CSS で本来表示したかった見た目のサイズに戻す</li>
+</ul>
+<pre><code>// scaleで拡縮した見た目になったcanvasをstyleで本来のcanvasサイズに戻す
+canvas.style.width = `${canvasSize}px`;
+canvas.style.height = `${canvasSize}px`;
+</code></pre><ul>
+<li>ぼやけが解消される</li>
+</ul>
+<p><img width="200" src="images/07.png"></p>
+<h2 id="pixijs-retina-">PixiJS の Retina ディスプレイの対応</h2>
+<ul>
+<li><a href="http://www.cyokodog.net/pixijs_study/public/ex03.html">デモ</a></li>
+<li>特に何も処置しなければ、Canvas で描画した時と同様にぼやける</li>
+</ul>
+<p><img width="200" src="images/08.png"></p>
+<ul>
+<li>resolution を指定すると...</li>
+</ul>
+<pre><code>const app = new PIXI.Application({
+    ...
+    resolution: window.devicePixelRatio || 1,
+});
+</code></pre><ul>
+<li>Canvas の scale と width と height の設定を同時にしてくれて、でっかく表示される</li>
+</ul>
+<p><img width="400" src="images/09.png"></p>
+<ul>
+<li>さらに autoDensity を指定すると、CSS で元のサイズの見た目に戻してくれる<ul>
+<li>ググると「autoResize を指定...」というのをよく見かけるけどこれは V4 の時の話で、V5 になって autoDensity に変わった（TS 使ってると、PixiJS のバージョンアップ時にこれ系の仕様変更はコンパイルエラーになるので便利</li>
+</ul>
+</li>
+</ul>
+<pre><code>const app = new PIXI.Application({
+    ...
+    resolution: window.devicePixelRatio || 1,
+    autoDensity: true, // 旧バージョンでは autoResize
+});
+</code></pre><p><img width="200" src="images/10.png"></p>
+<h2 id="canvas-">Canvas の特定範囲を画像としての切り出す</h2>
+<ul>
+<li>案件では、特定範囲だけ画像として切り出したいという要件だった</li>
+<li>PixiJS では提供されない機能のため Canvas を用いて自前で行う必要がある</li>
+<li>以下手順を踏む<ul>
+<li>特定の範囲を元 Canvas から別の Canvas に転写する</li>
+<li>転写した Canvas を画像変換する</li>
+</ul>
+</li>
+<li>この時、元 Canvas の width や height は<code>setScale</code>での拡大率が反映された値になっているので、切り出し位置やサイズもこの拡大率を考慮したものにする</li>
+</ul>
+<pre><code>const scale = window.devicePixelRatio || 1;
+
+// 切り出しはscale()で拡大したサイズを基準に行う必要がある。
+// 文字周辺の塗りつぶしエリアを切り出そうとした場合、
+// このエリアはCanvasに対し20pxのマージン位置に描画したので、
+// この位置に対しscale()の拡大率を掛けて切り出し範囲を求める。
+const srcCanvasX = 20 * scale;
+const srcCanvasY = 20 * scale;
+
+// srcCanvasは切り出し元のCanvas
+const srcCanvasWidth = srcCanvas.width - 40 * scale;
+const srcCanvasHeight = srcCanvas.height - 40 * scale;
+
+const distCanvasX = 0;
+const distCanvasY = 0;
+const distWidth = srcCanvasWidth;
+const distHeight = srcCanvasHeight;
+
+// distCanvasは転写先のCanvas
+distCanvas.width = distWidth;
+distCanvas.height = distHeight;
+distCtx.clearRect(0, 0, distWidth, distHeight);
+
+distCtx.drawImage(
+  // 切り出し元のCanvasを指定
+  srcCanvas,
+
+  // 切り出す位置とサイズ
+  srcCanvasX,
+  srcCanvasY,
+  srcCanvasWidth,
+  srcCanvasHeight,
+
+  // 転写先Canvasにおける転写物の位置とサイズ
+  distCanvasX,
+  distCanvasY,
+  distWidth,
+  distHeight
+);
+</code></pre><ul>
+<li>Retina ディスプレイの場合、拡大したサイズで Canvas に転写される</li>
+</ul>
+<p><img width="320" src="images/11.png"></p>
+<ul>
+<li>画像変換して、Retina ディスプレイの場合は 1/2 に縮小し使用する</li>
+</ul>
+<pre><code>// distImageは生成するImg要素
+distImage.src = distCanvas.toDataURL(&quot;image/png&quot;);
+distImage.style.width = `${distWidth / scale}px`;
+distImage.style.height = `${distHeight / scale}px`;
+</code></pre><p><img width="160" src="images/12.png"></p>
+<h2 id="-">等倍サイズでの切り出し</h2>
+<p>案件では</p>
+<blockquote>
+<p>対象画像を背景画像として使用する場合は、等倍のサイズでなるべく画像をぼやけさせずに画像化する</p>
+</blockquote>
+<p>という要件だった（画像を利用する側で background-size が使用できない、画像サイズがかなりでかいので容量を抑えたい、という事情がある）</p>
+<ul>
+<li>前述転写処理における転写元の Canvas は、Retina ディスプレイの場合のみ<code>window.devicePixelRatio</code>倍で setScale()で拡大していたけど、これを常に<code>setScale(2, 2)</code>とする</li>
+<li>この元 Canvas を常に 1/2 にして画像を生成することで、等倍の画像化でも画質のぼやけ改善を見込める</li>
+</ul>
+<pre><code>// 倍率は2固定
+const scale = 2;
+
+const srcCanvasX = 20 * scale;
+const srcCanvasY = 20 * scale;
+const srcCanvasWidth = srcCanvas.width - 40 * scale;
+const srcCanvasHeight = srcCanvas.height - 40 * scale;
+
+const distCanvasX = 0;
+const distCanvasY = 0;
+
+// 転写先Canvasは1/2にする
+const distWidth = srcCanvasWidth / scale;
+const distHeight = srcCanvasHeight / scale;
+
+// distCanvasは転写先のCanvas
+distCanvas.width = distWidth;
+distCanvas.height = distHeight;
+distCtx.clearRect(0, 0, distWidth, distHeight);
+
+distCtx.drawImage(
+  // srcCanvasは切り出し元のCanvas
+  srcCanvas,
+
+  // 切り出す位置とサイズ
+  srcCanvasX,
+  srcCanvasY,
+  srcCanvasWidth,
+  srcCanvasHeight,
+
+  // 転写先Canvasにおける転写物の位置とサイズ
+  distCanvasX,
+  distCanvasY,
+  distWidth,
+  distHeight
+);
+
+// 画像化して、CSSでリサイズせずそのまま使う
+distImage.src = distCanvas.toDataURL(&quot;image/png&quot;);
+</code></pre><ul>
+<li>ぼやけがちょっとマシになった等倍サイズの画像が生成される</li>
+</ul>
+<p><img width="160" src="images/13.png"></p>
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/typescript/">TypeScript</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/pixijs-retina-display/">Canvas, PixiJSからRetinaディスプレイに配慮した画像の切り出しを行う</a></li>
+          <li><a href="/blog/typescript-v3-8/">TypeScript v3.8 の新機能メモ</a></li>
+          <li><a href="/blog/fish-based-terminal-environment/">fish shellベースのターミナル環境を整える</a></li>
+          <li><a href="/blog/moment-i18n/">moment.js で i18n 対応したり期間を文字列化する時の注意点</a></li>
+          <li><a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a></li>
+          <li><a href="/blog/angular-fire/">AngularFire使ってみた</a></li>
+          <li><a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a></li>
+          <li><a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a></li>
+          <li><a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a></li>
+          <li><a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a></li>
+          <li><a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a></li>
+          <li><a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a></li>
+          <li><a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a></li>
+          <li><a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a></li>
+          <li><a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a></li>
+          <li><a href="/blog/bitbar/">BitBar を試してみる</a></li>
+          <li><a href="/blog/angular-cli/">Angular CLI を試してみる</a></li>
+          <li><a href="/blog/riot/">はじめてのRiot.js</a></li>
+          <li><a href="/blog/facebook-flux/">はじめてのfacebook/flux</a></li>
+          <li><a href="/blog/reactjs/">はじめてのReact.js</a></li>
+          <li><a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a></li>
+          <li><a href="/blog/electron/">Electron さわってみた</a></li>
+          <li><a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a></li>
+          <li><a href="/blog/wunderline/">Wunderline を使ってみた</a></li>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2020-04-07</span>
+              <a href="/blog/pixijs-retina-display/">Canvas, PixiJSからRetinaディスプレイに配慮した画像の切り出しを行う</a>
+            </li>
+            <li>
+              <span class="post-date">2020-03-11</span>
+              <a href="/blog/typescript-v3-8/">TypeScript v3.8 の新機能メモ</a>
+            </li>
+            <li>
+              <span class="post-date">2020-02-01</span>
+              <a href="/blog/fish-based-terminal-environment/">fish shellベースのターミナル環境を整える</a>
+            </li>
+            <li>
+              <span class="post-date">2018-02-06</span>
+              <a href="/blog/moment-i18n/">moment.js で i18n 対応したり期間を文字列化する時の注意点</a>
+            </li>
+            <li>
+              <span class="post-date">2018-01-10</span>
+              <a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-11-15</span>
+              <a href="/blog/angular-fire/">AngularFire使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-09-24</span>
+              <a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-07-20</span>
+              <a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-30</span>
+              <a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-15</span>
+              <a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-05-06</span>
+              <a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2017-03-08</span>
+              <a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a>
+            </li>
+            <li>
+              <span class="post-date">2017-02-01</span>
+              <a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a>
+            </li>
+            <li>
+              <span class="post-date">2016-12-21</span>
+              <a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a>
+            </li>
+            <li>
+              <span class="post-date">2016-08-23</span>
+              <a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a>
+            </li>
+            <li>
+              <span class="post-date">2016-07-05</span>
+              <a href="/blog/bitbar/">BitBar を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-30</span>
+              <a href="/blog/angular-cli/">Angular CLI を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-14</span>
+              <a href="/blog/riot/">はじめてのRiot.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-11</span>
+              <a href="/blog/facebook-flux/">はじめてのfacebook/flux</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-09</span>
+              <a href="/blog/reactjs/">はじめてのReact.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-05-18</span>
+              <a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-03-02</span>
+              <a href="/blog/electron/">Electron さわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2016-02-24</span>
+              <a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a>
+            </li>
+            <li>
+              <span class="post-date">2015-11-18</span>
+              <a href="/blog/wunderline/">Wunderline を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+
+<script type="text/javascript" src="/theme/cyokodog/js/bundle.js?"></script>
+
+
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/theme/cyokodog/index.jsx?'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+
