@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>引っ越してきました | CYOKODOG</title>
+	<title>foreverとAutomator.appでMac起動時にHTTPサーバを自動起動する | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,34 +72,113 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/first-post/" title="引っ越してきました">引っ越してきました</a>
+        <a href="/blog/forever-http/" title="foreverとAutomator.appでMac起動時にHTTPサーバを自動起動する">foreverとAutomator.appでMac起動時にHTTPサーバを自動起動する</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2013-02-25</li>
+        <li class="article__info__date">2020-04-08</li>
 <!--
-        <li class="article__info__category"><a href="/category/info/" rel="category tag">Information</a></li>
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
       </ul>
     </div>
     <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/first-post/"><img src="http://lh3.googleusercontent.com/-LXtjcV5sLig/VFio5IZKUkI/AAAAAAAAIQ0/6eKjogWRBv4/s144/cyokodog.png"></a>
-</div></p>
-<p>
-こんにちは cyokodog（ちょこドッグ）です。</p>
-
-<p>ちょこドッグなら <strong>cho</strong>kodog だろとよく言われますが、<strong>cyo</strong>kodog 派（少数派）ですのでよろしくお願いします。
-（サイコドッグと思われてたこともありますｗ）</p>
-
+    <p>Node.js ベースで HTTP サーバを常時起動する方法を調べた。</p>
 <!--more-->
-<p>
-2008 年頃からはてなダイアリーでしばらく書いてましたが、markdown 記法にあこがれつい最近 tumblr に引っ越したばかりでした。ですが、ちょっとブログをサボってたらいつの間にか編集画面の UI が変更されていて（個人的に）使いづらくなってしまったので、こっち（AppFog）に引っ越すことにしました。</p>
+<h2 id="-">動機</h2>
+<ul>
+<li>技術知見をカテゴリ別に書き溜めた md ファイルを、動的にマークダウンパーサーで HTML に変換し表示する Web アプリをローカルで動かしていた（以前の Mac で</li>
+<li>Mac にバンドルされた Apache の HTTP を使ってたけど、Apache 使いたくないのと、Node.js だったらいろいろ試せて便利そうなので、Node.js で動かすように切り替えてみようと思った</li>
+</ul>
+<h2 id="forever-http-">forever で HTTP サーバを動かす</h2>
+<h3 id="forever">forever</h3>
+<ul>
+<li><a href="https://github.com/foreversd/forever">foreversd/forever: A simple CLI tool for ensuring that a given script runs continuously (i.e. forever)</a></li>
+<li>Node アプリを daemon 化できる npm モジュール（ターミナル閉じても動きつづける）</li>
+<li>アプリが落ちた場合に自動的にアプリを再起動してくれる</li>
+<li>グローバルにインストール</li>
+</ul>
+<pre><code class="lang-bash">$ [sudo] npm install forever -g
+</code></pre>
+<h3 id="http-">HTTP サーバを起動するアプリを書く</h3>
+<ul>
+<li>以下を server.js という名前で保存</li>
+</ul>
+<pre><code class="lang-js">const static = require(&quot;node-static&quot;);
+const http = require(&quot;http&quot;);
 
-<p>古巣のはてなに戻ってはてなブログに移行すれば markdown 記法も使えたのですが、こちらだと WordPress や PHP といろいろ活用できそうだったのでこっちにしました。</p>
+const file = new static.Server(&quot;./&quot;);
+http
+  .createServer((request, response) =&gt; {
+    request
+      .addListener(&quot;end&quot;, () =&gt; {
+        file.serve(request, response);
+      })
+      .resume();
+  })
+  .listen(8099); // 好きなポートを指定
+</code></pre>
+<h3 id="http-">HTTP サーバの実行、停止、確認</h3>
+<ul>
+<li>以下で、実行、停止、確認ができる</li>
+</ul>
+<pre><code class="lang-bash"># 起動
+forever start server.js
 
-<p>今後ともよろしくお願いします。</p>
+# 停止
+forever stop server.js
 
+# 再起動
+forever restart server.js
 
+# foreverで実行しているプロセスのリスト
+forever list
+
+# すべてのプロセスを停止
+forever stopall
+</code></pre>
+<h2 id="http-app-">HTTP サーバを起動する.app ファイルを作る</h2>
+<h3 id="automator-app">Automator.app</h3>
+<ul>
+<li>ワークフローを自動化できる Mac の標準アプリケーション</li>
+<li>定義したワークフローを<code>.app</code>ファイル化し、任意のショートカットキーで実行することもできる</li>
+<li>HTTP サーバを起動するシェルファイル（<code>start_http.sh</code>）を実行する<code>.app</code>ファイル（<code>start_http.app</code>）を作ってみる</li>
+</ul>
+<h3 id="start_http-sh">start_http.sh</h3>
+<ul>
+<li>以下シェルファイルを作成</li>
+</ul>
+<pre><code class="lang-bash">#!/bin/sh
+
+forever start server.js
+</code></pre>
+<ul>
+<li>実行権を与える</li>
+</ul>
+<pre><code class="lang-bash">chmod +x start_http.sh
+</code></pre>
+<h3 id="start_http-app">start_http.app</h3>
+<ul>
+<li>Automator.app を起動し「アプリケーション」を選択</li>
+</ul>
+<p><img src="./images/01.png" alt=""></p>
+<ul>
+<li>左メニューで「シェルスクリプトを実行」をダブルクリック</li>
+<li>以下画像のように、シェルの起動コマンドを記述し<code>start_http.app</code>という名前で保存</li>
+</ul>
+<pre><code>cd /Users/cyokodog/http/
+/usr/local/bin/fish start_http.sh
+</code></pre><p><img src="./images/02.png" alt=""></p>
+<ul>
+<li>生成した<code>start_http.app</code>をダブルクリックすると HTTP サーバが起動する</li>
+</ul>
+<h2 id="mac-http-">Mac 起動時に HTTP サーバを起動する</h2>
+<ul>
+<li>システム環境設定 -&gt; ユーザとグループ -&gt; ログイン項目 で、<code>start_http.app</code>を追加する</li>
+</ul>
+<p><img src="./images/03.png" alt=""></p>
+<ul>
+<li>Mac 起動時に HTTP サーバが起動するようになる</li>
+</ul>
 
     </div>
 
