@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>jQuery | CYOKODOG</title>
+	<title>Enum の代わりに使う union 型 | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -67,167 +67,222 @@
 
   <div class="l-contents">
     <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
 
-    <div class="l-article">
-      <article class="article">
-
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/extablefilter/" title="汎用性重視のテーブルフィルタリング系 jQuery プラグイン">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2013-03-06</li>
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/typescript-enum-replacement/" title="Enum の代わりに使う union 型">Enum の代わりに使う union 型</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2020-07-30</li>
 <!--
-      <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
+        <li class="article__info__category"><a href="/category/typescript/" rel="category tag">TypeScript</a></li>
 -->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/extablefilter/"><img src="http://lh6.googleusercontent.com/-nDflK8r6694/VGPTmW8pBDI/AAAAAAAAIT8/1Wld1mWJRZU/s144/filter.png"></a>
-</div></p>
-<p>
-汎用性を重視したテーブルフィルタリング系の jQuery プラグインです。<br>
-実装の基本思想は以前書いた「<a href="http://www.cyokodog.net/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>」に基づいてます。</p>
+      </ul>
+    </div>
+    <div class="article__body">
+    <ul>
+<li>Enum の代わりに union 型を使おうという風潮があるらしい</li>
+<li>TypeScript v3.4 から使える<code>const assertion</code>を用いると、使い勝手を損なわず Enum の代わりに union 型が使えるらしい</li>
+</ul>
+<!--more-->
+<h2 id="enum-">Enum とは</h2>
+<ul>
+<li>列挙型とも呼ばれる</li>
+<li>TS にはあって JS には無いもの、他の言語（C、C#、Java とか）にもある</li>
+<li>定数をひとまとめに定義できる</li>
+</ul>
+<pre><code class="lang-ts">enum Card {
+  Clubs, // 0
+  Diamonds, // 1
+  Hearts, // 2
+  Spades, // 3
+}
+const card: Card = Card.Hearts;
+console.log(card); // 2
+</code></pre>
+<ul>
+<li>上記のように値には連番が振られる</li>
+<li>意味のある分かりやすい値をもたせたい場合は、文字列や任意の数値を設定することもできる</li>
+</ul>
+<pre><code class="lang-ts">enum Card {
+  Clubs = &quot;clubs&quot;,
+  Diamonds = &quot;diamonds&quot;,
+  Hearts = &quot;hearts&quot;,
+  Spades = &quot;spades&quot;,
+}
 
+console.log(Card.Diamonds); // diamonds
+</code></pre>
+<ul>
+<li>enum は型と値の役割を兼ねるので、次のような書き方ができる</li>
+</ul>
+<pre><code class="lang-ts">enum Color {
+  None,
+  Red,
+  Black,
+}
+const getCardColor = (card: Card): Color =&gt; {
+  if ([Card.Diamonds, Card.Hearts].some((v) =&gt; v === card)) {
+    return Color.Red;
+  }
+  if ([Card.Clubs, Card.Spades].some((v) =&gt; v === card)) {
+    return Color.Black;
+  }
+  return Color.None;
+};
+const color = getCardColor(Card.Clubs); // Color.Black
+</code></pre>
+<ul>
+<li>単純に文字列を使用するより、エディタを使ったリファクタが楽になる点もうれしい</li>
+</ul>
+<h2 id="enum-">Enum は使わないほうが良いよという話</h2>
+<ul>
+<li>使わないほうが良い理由は、以下サイトに説明されている<ul>
+<li><a href="https://www.kabuku.co.jp/developers/good-bye-typescript-enum">さようなら、TypeScript enum | Kabuku Developers Blog</a></li>
+<li><a href="https://engineering.linecorp.com/ja/blog/typescript-enum-tree-shaking/">TypeScript の enum を使わないほうがいい理由を、Tree-shaking の観点で紹介します - LINE ENGINEERING</a></li>
+<li><a href="https://2ality.com/2020/02/enum-alternatives-typescript.html">Alternatives to enums in TypeScript</a></li>
+</ul>
+</li>
+<li>これらを読んで思ったこと<ul>
+<li>「使用されてない Enum が Tree-shaking で除去されない」のは気持ち悪いけど、使用してないのはコンパイルオプションや lint でコケさせるので実害は無さそう</li>
+<li><code>const enum</code>使ったことなかったけど、コンパイルオプションとの組み合わせ次第では、ハマるみたいなので、使うなら普通の enum で良さそう</li>
+<li>enum をアプリの外部に公開する意図が無く、普通の使い方をしてる分には使っても実害はなさそう</li>
+</ul>
+</li>
+</ul>
+<h2 id="enum-union-">Enum の代わりに union 型を使う</h2>
+<ul>
+<li>Enum の代わりに union 型を使うことを推奨されている（twitter や英語圏の記事とかで時々見かける）</li>
+<li>前述のサンプルを union 型で書くと以下ようなコードが思いつくけど、typo しやすそうだし、リファクタもしずらそうでなんか嫌だ</li>
+</ul>
+<pre><code class="lang-ts">type Card = &quot;clubs&quot; | &quot;diamonds&quot; | &quot;hearts&quot; | &quot;spade&quot;;
+type Color = &quot;none&quot; | &quot;red&quot; | &quot;black&quot;;
+const getCardColor = (card: Card): Color =&gt; {
+  // ここの配列の中身はtypoしても検出されない
+  if ([&quot;diamonds&quot;, &quot;hearts&quot;].some((v) =&gt; v === card)) {
+    return &quot;red&quot;;
+  }
+  // ここの配列の中身はtypoしても検出されない
+  if ([&quot;clubs&quot;, &quot;spade&quot;].some((v) =&gt; v === card)) {
+    return &quot;black&quot;;
+  }
+  return &quot;none&quot;;
+};
+const color = getCardColor(&quot;clubs&quot;); // black
+</code></pre>
+<ul>
+<li>しかし、オブジェクトリテラルに const assertion を併用すれば、ほぼほぼ enum と同じように書くことができる</li>
+</ul>
+<h2 id="const-assertion-">const assertion とは</h2>
+<ul>
+<li>例えば、特定の値しか代入できないリテラル型の宣言は、以下のように書ける</li>
+</ul>
+<pre><code class="lang-ts">type Foo = &quot;foo&quot;;
+const foo: Foo = &quot;foo&quot;;
+const foo2: Foo = &quot;foo2&quot;; // エラー
+</code></pre>
+<ul>
+<li><code>typeof</code>で変数に格納された値から、その値の型の判別はできるけど、この場合リテラル型とは判定されない</li>
+</ul>
+<pre><code class="lang-ts">const foo: Foo = &quot;foo&quot;;
+type Foo = typeof foo; // string型
+const foo2: Foo = &quot;bar&quot;; //　foo 以外の値が設定できちゃう
+</code></pre>
+<ul>
+<li>const assertion を使えうとリテラル型として扱われる</li>
+</ul>
+<pre><code class="lang-ts">const foo: Foo = &quot;foo&quot; as const;
+type Foo = typeof foo; // `foo`のみを設定できるリテラル型
+const foo2: Foo = &quot;bar&quot;; // foo以外を設定したらエラー
+</code></pre>
+<h2 id="const-assertion-enum-">const assertion を使って enum っぽく書く</h2>
+<ul>
+<li><code>as const</code>と<code>typeof</code>、<code>keyof</code>演算子を使って、オブジェクトリテラルの型エイリアスを宣言する</li>
+</ul>
+<pre><code class="lang-ts">const Card = {
+  Clubs: &quot;clubs&quot;,
+  Diamonds: &quot;diamonds&quot;,
+  Hearts: &quot;hearts&quot;,
+  Spades: &quot;spades&quot;,
+} as const;
 
-<!--
-    <a href="/blog/extablefilter/" class="more-link">Read More</a>
--->
-  </div>
+// 以下は type Card = &quot;clubs&quot; | &quot;diamonds&quot; | &quot;hearts&quot; | &quot;spades&quot; と同じ
+type Card = typeof Card[keyof typeof Card];
 
-</article>
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/fitbar-doc/" title="ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2014-06-24</li>
-<!--
-      <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
--->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><div class="article__eyecatch">
-    <a href="http://www.cyokodog.net/blog/fitbar-doc/"><img src="https://lh4.googleusercontent.com/-S-Pb_sbFBHE/U6mVBZqVshI/AAAAAAAAHag/fO2FtcbxDJE/s800/fitbar01.png"></a>
-  </div></p>
-<p>管理者向け画面などで、画面下部にコマンドボタンを配置した際、画面に表示するデータ量が多いとコマンドボタンが画面の表示枠内に収まらず不便に・・・かと言って position:fixed で固定表示すると、データ量が少ない場合に不格好に見えてしまう・・・そんな経験は無いでしょうか？<br>
-Fitbar は、ツールバーやナビゲーションメニューを画面のスクロール位置に応じ上部又は下部に固定表示させることができる jQuery プラグインです。
-<a href="https://github.com/cyokodog/jquery.sitekit">jQuery Sitekit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
+const Color = {
+  None: 0,
+  Red: 1,
+  Black: 2,
+} as const;
 
+// 以下は type Color = 0 | 1 | 2 と同じ
+type Color = typeof Color[keyof typeof Color];
+</code></pre>
+<ul>
+<li>上記の<code>typeof</code>、<code>keyof</code>演算子を小分けして書くと、以下のような意味合いになる</li>
+</ul>
+<pre><code class="lang-ts">// type CardType = {
+//     readonly Clubs: &quot;clubs&quot;;
+//     readonly Diamonds: &quot;diamonds&quot;;
+//     readonly Hearts: &quot;hearts&quot;;
+//     readonly Spades: &quot;spades&quot;;
+// }
+type CardType = typeof Card;
 
-<!--
-    <a href="/blog/fitbar-doc/" class="more-link">Read More</a>
--->
-  </div>
+// type CardKey = &quot;Clubs&quot; | &quot;Diamonds&quot; | &quot;Hearts&quot; | &quot;Spades&quot;
+type CardKey = keyof CardType;
 
-</article>
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/jquery-simple-table-filter/" title="jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2013-02-25</li>
-<!--
-      <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
--->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/jquery-simple-table-filter/"><img src="http://lh6.googleusercontent.com/-nDflK8r6694/VGPTmW8pBDI/AAAAAAAAIT8/1Wld1mWJRZU/s144/filter.png"></a>
-</div></p>
-<p>ちょっと業務で必要になったので、jQuery によるテーブルフィルタリング処理の実装を考えてみます。<br>
-まずはなるべくシンプルで、フィルタ条件の入力フィールドとかもプラグインが勝手に生成するんじゃなくて、利用者側が準備する仕様にしたいと思います。</p>
+// type Card = &quot;clubs&quot; | &quot;diamonds&quot; | &quot;hearts&quot; | &quot;spades&quot;
+type Card = CardType[CardKey];
+</code></pre>
+<ul>
+<li>これで enum と同じように利用できるようになる</li>
+</ul>
+<pre><code class="lang-ts">const getCardColor = (card: Card): Color =&gt; {
+  if ([Card.Diamonds, Card.Hearts].some((v) =&gt; v === card)) {
+    return Color.Red;
+  }
+  if ([Card.Clubs, Card.Spades].some((v) =&gt; v === card)) {
+    return Color.Black;
+  }
+  return Color.None;
+};
+const color = getCardColor(Card.Clubs); // Color.Black
+</code></pre>
+<h2 id="enum-">Enum っぽさにこだわらない書き方</h2>
+<ul>
+<li>定義値の変更時の保守性という意味では、エディタベースの自動修正ができない分、オブジェクトリテラルで書いた場合より劣るけど、以下のような書き方でもタイプセーフにはなる</li>
+</ul>
+<pre><code class="lang-ts">const redCards = [&quot;diamonds&quot;, &quot;hearts&quot;] as const;
+const blackCards = [&quot;clubs&quot;, &quot;spades&quot;] as const;
+type Card = typeof redCards[number] | typeof blackCards[number];
 
+const colors = [&quot;none&quot;, &quot;red&quot;, &quot;black&quot;] as const;
+type Color = typeof colors[number];
 
-<!--
-    <a href="/blog/jquery-simple-table-filter/" class="more-link">Read More</a>
--->
-  </div>
+const getCardColor = (card: Card): Color =&gt; {
+  if (redCards.some((v) =&gt; v === card)) {
+    return &quot;red&quot;;
+  }
+  if (blackCards.some((v) =&gt; v === card)) {
+    return &quot;black&quot;;
+  }
+  return &quot;none&quot;;
+};
+const color = getCardColor(&quot;clubs&quot;); // black
+</code></pre>
+<h2 id="-">感想</h2>
+<ul>
+<li>普通な使い方してる分には、not string enum が一番楽な気がする...</li>
+<li>けど世の流れにのって union 型に切り替えていこうと思う</li>
+</ul>
 
-</article>
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/jquery-sitekit/" title="Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2013-07-03</li>
-<!--
-      <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
--->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><p>なにか近頃なにもやる気が起きずブログも更新してませんでしたが、ぼちぼちはじめようかなと思います。だいぶ前に作った jQuery プラグインの紹介です。大したものじゃありませんが、よかったら使ってみてください。<br></p>
-
-<!--
-    <a href="/blog/jquery-sitekit/" class="more-link">Read More</a>
--->
-  </div>
-
-</article>
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/jquery19-browser/" title="jQuery 1.9 で $.browser が使えなくなってしまった対策">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2013-02-27</li>
-<!--
-      <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
--->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/jquery19-browser/"><img src="https://lh5.googleusercontent.com/-vI1tcYWBmwk/UU8O8432nwI/AAAAAAAAERY/xRSHIeSiOkQ/s800/jquery1-9.jpg"></a>
-</div></p>
-<p>
-jQuery 1.9 になってとうとう $.browser が使えなくなってしまいましたね。
-もともと非推奨ということもあり、個人的にはプラグインを実装する時などは極力使用しないようにしてましたが、実際使えなくなってしまうと、動かなくなってしまうプラグインって結構多いんじゃないかなぁって気がします。</p>
-
-
-<!--
-    <a href="/blog/jquery19-browser/" class="more-link">Read More</a>
--->
-  </div>
-
-</article>
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
-      <a href="/blog/keyinfo-doc/" title="入力キーの種類を調べることができる jQuery プラグイン">入力キーの種類を調べることができる jQuery プラグイン</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2013-11-25</li>
-<!--
-      <li class="article__info__category"><a href="/category/jquery/" rel="category tag">jQuery</a></li>
--->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><p>Keyinfo は、入力キーの種類を調べることができる jQuery プラグインです。
-<a href="/web/20150911211412/https://github.com/cyokodog/jquery.utility-kit">jQuery Utility Kit</a> の一機能として、もしくは単独の jQuery プラグインとして使用することができます。</p>
-
-<!--
-    <a href="/blog/keyinfo-doc/" class="more-link">Read More</a>
--->
-  </div>
-
-</article>
-
-      </article>
     </div>
 
-
-
-
+  </article>
+</div>
 
   <div class="l-page-nav">
     <div class="l-page-nav__body">
