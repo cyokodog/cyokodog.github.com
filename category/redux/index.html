@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>foreverとAutomator.appでMac起動時にHTTPサーバを自動起動する | CYOKODOG</title>
+	<title>Redux | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -18,7 +18,7 @@
 
 
 </head>
-<body class="single single-post postid-232 single-format-standard logged-in " >
+<body class="single single-post postid-232 single-format-standard logged-in list" >
 	<div class="l-header">
 		<div class="u-layout-center">
       <div class="site-header">
@@ -67,123 +67,101 @@
 
   <div class="l-contents">
     <div class="u-layout-center">
-<div class="l-article">
-  <article class="article">
 
-    <div class="article__header">
-      <h1 class="article__title">
-        <a href="/blog/forever-http/" title="foreverとAutomator.appでMac起動時にHTTPサーバを自動起動する">foreverとAutomator.appでMac起動時にHTTPサーバを自動起動する</a>
-      </h1>
-      <ul class="article__info">
-        <li class="article__info__date">2020-04-08</li>
+    <div class="l-article">
+      <article class="article">
+
+<article class="article">
+  <div class="article__header">
+    <h1 class="article__title">
+      <a href="/blog/redux-toolkit-async-thunk/" title="Redux Toolkit の AsyncThunk をさわってみる">Redux Toolkit の AsyncThunk をさわってみる</a>
+    </h1>
+    <ul class="article__info">
+      <li class="article__info__date">2020-06-04</li>
 <!--
-        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+      <li class="article__info__category"><a href="/category/redux/" rel="category tag">Redux</a></li>
 -->
-      </ul>
-    </div>
-    <div class="article__body">
-    <p>Node.js ベースで HTTP サーバを常時起動する方法を調べた。</p>
-<!--more-->
-<h2 id="-">動機</h2>
+    </ul>
+  </div>
+  <div class="article__body">
+    <p><a href="/blog/redux-tookit/">Redux Toolkit をさわってみる</a> のつづき。createAsyncThunk とは</p>
 <ul>
-<li>技術知見をカテゴリ別に書き溜めた md ファイルを、動的にマークダウンパーサーで HTML に変換し表示する Web アプリをローカルで動かしていた（以前の Mac で</li>
-<li>Mac にバンドルされた Apache の HTTP を使ってたけど、Apache 使いたくないのと、Node.js だったらいろいろ試せて便利そうなので、Node.js で動かすように切り替えてみようと思った</li>
-</ul>
-<h2 id="forever-http-">forever で HTTP サーバを動かす</h2>
-<h3 id="forever">forever</h3>
-<ul>
-<li><a href="https://github.com/foreversd/forever">foreversd/forever: A simple CLI tool for ensuring that a given script runs continuously (i.e. forever)</a></li>
-<li>Node アプリを daemon 化できる npm モジュール（ターミナル閉じても動きつづける）</li>
-<li>アプリが落ちた場合に自動的にアプリを再起動してくれる</li>
-<li>グローバルにインストール</li>
-</ul>
-<pre><code class="lang-bash">$ [sudo] npm install forever -g
-</code></pre>
-<h3 id="http-">HTTP サーバを起動するアプリを書く</h3>
-<ul>
-<li>以下を server.js という名前で保存</li>
-</ul>
-<pre><code class="lang-js">const static = require(&quot;node-static&quot;);
-const http = require(&quot;http&quot;);
-
-const file = new static.Server(&quot;./&quot;);
-http
-  .createServer((request, response) =&gt; {
-    request
-      .addListener(&quot;end&quot;, () =&gt; {
-        file.serve(request, response);
-      })
-      .resume();
-  })
-  .listen(8099); // 好きなポートを指定
-</code></pre>
-<h3 id="http-">HTTP サーバの実行、停止、確認</h3>
-<ul>
-<li>以下で、実行、停止、確認ができる</li>
-</ul>
-<pre><code class="lang-bash"># 起動
-forever start server.js
-
-# 停止
-forever stop server.js
-
-# 再起動
-forever restart server.js
-
-# foreverで実行しているプロセスのリスト
-forever list
-
-# すべてのプロセスを停止
-forever stopall
-</code></pre>
-<h2 id="http-app-">HTTP サーバを起動する.app ファイルを作る</h2>
-<h3 id="automator-app">Automator.app</h3>
-<ul>
-<li>ワークフローを自動化できる Mac の標準アプリケーション</li>
-<li>定義したワークフローを<code>.app</code>ファイル化し、任意のショートカットキーで実行することもできる</li>
-<li>HTTP サーバを起動するシェルファイル（<code>start_http.sh</code>）を実行する<code>.app</code>ファイル（<code>start_http.app</code>）を作ってみる</li>
-</ul>
-<h3 id="start_http-sh">start_http.sh</h3>
-<ul>
-<li>以下シェルファイルを作成</li>
-</ul>
-<pre><code class="lang-bash">#!/bin/sh
-
-forever start server.js
-</code></pre>
-<ul>
-<li>実行権を与える</li>
-</ul>
-<pre><code class="lang-bash">chmod +x start_http.sh
-</code></pre>
-<h3 id="start_http-app">start_http.app</h3>
-<ul>
-<li>Automator.app を起動し「アプリケーション」を選択</li>
-</ul>
-<p><img src="./images/01.png" alt=""></p>
-<ul>
-<li>左メニューで「シェルスクリプトを実行」をダブルクリック</li>
-<li>以下画像のように、シェルの起動コマンドを記述し<code>start_http.app</code>という名前で保存</li>
-</ul>
-<pre><code>cd /Users/cyokodog/http/
-/usr/local/bin/fish start_http.sh
-</code></pre><p><img src="./images/02.png" alt=""></p>
-<ul>
-<li>生成した<code>start_http.app</code>をダブルクリックすると HTTP サーバが起動する</li>
-</ul>
-<h2 id="mac-http-">Mac 起動時に HTTP サーバを起動する</h2>
-<ul>
-<li>システム環境設定 -&gt; ユーザとグループ -&gt; ログイン項目 で、<code>start_http.app</code>を追加する</li>
-</ul>
-<p><img src="./images/03.png" alt=""></p>
-<ul>
-<li>Mac 起動時に HTTP サーバが起動するようになる</li>
+<li>Redux Toolkit の機能の 1 つで、Redux Toolkit v1.3.0 から使える</li>
+<li>非同期処理に対応した ActionCreator を生成する関数</li>
 </ul>
 
+<!--
+    <a href="/blog/redux-toolkit-async-thunk/" class="more-link">Read More</a>
+-->
+  </div>
+
+</article>
+<article class="article">
+  <div class="article__header">
+    <h1 class="article__title">
+      <a href="/blog/redux-tookit/" title="Redux Toolkitをさわってみる">Redux Toolkitをさわってみる</a>
+    </h1>
+    <ul class="article__info">
+      <li class="article__info__date">2020-05-28</li>
+<!--
+      <li class="article__info__category"><a href="/category/redux/" rel="category tag">Redux</a></li>
+-->
+    </ul>
+  </div>
+  <div class="article__body">
+    <p>Redux Toolkit とは</p>
+<ul>
+<li>Redux を使いやすく簡素なものにするために作られた公式のヘルパーライブラリ</li>
+<li><a href="https://redux.js.org/style-guide/style-guide#priority-b-rules-strongly-recommended">Redux Style Guide</a>でも利用を推奨している</li>
+<li>TypeScript 製のためコード補完が効き TypeScript との相性がよい</li>
+<li>reducer と state をまとめて書けて action creator を書く必要がない</li>
+<li><a href="https://github.com/immerjs/immer">immer</a> が組み込まれてるため、状態変更ロジックを簡素にできる（immutable な状態を維持してくれる）</li>
+<li><a href="https://github.com/reduxjs/redux-thunk">Redux Thunk</a> が標準 middleware として組み込まれている（非同期処理を書きたい時に使用する）</li>
+<li><a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd/related?hl=ja">Redux DevTools Extension</a> 用の設定が不要</li>
+</ul>
+
+<!--
+    <a href="/blog/redux-tookit/" class="more-link">Read More</a>
+-->
+  </div>
+
+</article>
+<article class="article">
+  <div class="article__header">
+    <h1 class="article__title">
+      <a href="/blog/redux-toolkit-entity-adapter/" title="Redux Toolkit の EntityAdapter をさわってみる">Redux Toolkit の EntityAdapter をさわってみる</a>
+    </h1>
+    <ul class="article__info">
+      <li class="article__info__date">2020-07-09</li>
+<!--
+      <li class="article__info__category"><a href="/category/redux/" rel="category tag">Redux</a></li>
+-->
+    </ul>
+  </div>
+  <div class="article__body">
+    <p><a href="/blog/redux-toolkit-async-thunk/">Redux Toolkit の AsyncThunk をさわってみる</a> のつづき。</p>
+<p>EntityAdapter とは</p>
+<ul>
+<li><a href="https://redux-toolkit.js.org/api/createEntityAdapter">createEntityAdapter | Redux Toolkit</a></li>
+<li>NgRx メンテナによって作成された@ngrx/entity ライブラリから、Redux Toolkit に移植された API</li>
+<li>Redux Toolkit v1.3.0 で追加された</li>
+<li><a href="https://github.com/reduxjs/redux-toolkit/pull/374">https://github.com/reduxjs/redux-toolkit/pull/374</a></li>
+<li>エンティティ操作用のアダプターを生成してくれ、CRUD(create, read, update, delete)操作の機能を提供してくれる</li>
+</ul>
+
+<!--
+    <a href="/blog/redux-toolkit-entity-adapter/" class="more-link">Read More</a>
+-->
+  </div>
+
+</article>
+
+      </article>
     </div>
 
-  </article>
-</div>
+
+
+
 
   <div class="l-page-nav">
     <div class="l-page-nav__body">
