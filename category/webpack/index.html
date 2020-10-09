@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>Google App Engine for Java 入門 ＋ Struts2 デプロイ手順 | CYOKODOG</title>
+	<title>Webpack | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -18,7 +18,7 @@
 
 
 </head>
-<body class="single single-post postid-232 single-format-standard logged-in " >
+<body class="single single-post postid-232 single-format-standard logged-in list" >
 	<div class="l-header">
 		<div class="u-layout-center">
       <div class="site-header">
@@ -67,261 +67,38 @@
 
   <div class="l-contents">
     <div class="u-layout-center">
-<div class="l-article">
-  <article class="article">
 
-    <div class="article__header">
-      <h1 class="article__title">
-        <a href="/blog/first-appengine-and-struts2/" title="Google App Engine for Java 入門 ＋ Struts2 デプロイ手順">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
-      </h1>
-      <ul class="article__info">
-        <li class="article__info__date">2014-03-02</li>
+    <div class="l-article">
+      <article class="article">
+
+<article class="article">
+  <div class="article__header">
+    <h1 class="article__title">
+      <a href="/blog/code-splitting-and-async-component/" title="Code Splitting と非同期コンポーネント">Code Splitting と非同期コンポーネント</a>
+    </h1>
+    <ul class="article__info">
+      <li class="article__info__date">2020-10-10</li>
 <!--
-        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+      <li class="article__info__category"><a href="/category/webpack/" rel="category tag">Webpack</a></li>
 -->
-      </ul>
-    </div>
-    <div class="article__body">
-    <div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/first-appengine-and-struts2/"><img src="https://lh5.googleusercontent.com/-KfG7vrTqsYI/UxC14k0yjQI/AAAAAAAAGic/ACNmKX8e2mY/s800/logo.png"></a>
-</div>
-<p>
-<a href="http://www.cyokodog.net/blog/first-struts2/">前回のエントリ</a>で作成した Struts2 のサンプルプログラムのデモを <a href="https://www.openshift.com/">Openshift</a>、<a href="https://www.appfog.com/">AppFog</a>、<a href="https://www.heroku.com/">Heroku</a> といった Java の動く PaaS で公開できないかなぁとちょっと調べてみたのですが、Eclipse で開発したらその場でポンっとデプロイできる Google App Engine が一番手軽でいいんじゃないか・・・と言うことで<a href="http://d.hatena.ne.jp/cyokodog/20090716/GAE01">約４年ぶりに</a> Google App Engine をさわってみました。<br>
-そんな訳で Google App Engine for Java の導入手順と合わせ、Struts2 のデプロイ手順もまとめてみました。</p>
-
-<!--more-->
-
-<h2>開発環境の準備</h2>
-
-<p>32ビット版 Windows 環境に開発環境を構築します。以下については「<a href="http://www.cyokodog.net/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>」の導入手順を参照ください。</p>
-
-<ul>
-<li>Eclipse Kepler（4.3）</li>
-<li>Pleiades（Eclipse の日本語化プラグイン）</li>
-<li>JDK（Java SE 7u51）</li>
-<li>Struts2（2.3.16）</li>
-</ul>
-
-<p>次にGoogle App エンジンの SDK と Eclipse プラグインを準備します。</p>
-
-<ul>
-<li>Google App エンジン Java SDK（1.9.0）</li>
-<li>Google プラグイン Eclipse</li>
-</ul>
-
-<h2>App エンジン SDK ／ Eclipse プラグインの導入</h2>
-
-<p>Eclipse を起動します。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-29H_s1PxPy8/Uw9fVeJidHI/AAAAAAAAGdQ/S-509nrYT4Y/s400/a01.png" alt="install"></p>
-
-<p>ツールバーの[ヘルプ][新規ソフトウェアのインストール]を選択すると設定画面が表示されるので、[作業対象] に [http://dl.google.com/eclipse/plugin/4.3] と入力してエンターキーを押します。プラグインの一覧が表示されるので、以下を選択し[次へ]をクリックします。</p>
-
-<ul>
-<li>Google プラグイン Eclipse(required)</li>
-<li>Google App エンジン Java SDK 1.9.0</li>
-</ul>
-
-<p><img src="https://lh3.googleusercontent.com/-4AJgUZg09QA/Uw9fTxakYwI/AAAAAAAAGdA/n-UhHBc4Avo/s400/a02.png" alt="install"></p>
-
-<p>[次へ]をクリックします。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-hYKOfNrjEMM/Uw9fT5a8dsI/AAAAAAAAGdI/qDeTdwE9f1w/s400/a03.png" alt="install"></p>
-
-<p>[使用条件の条項に同意します] を選択し [完了] をクリックします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-Yo4lMmAQqBI/Uw9fU245gYI/AAAAAAAAGdU/B3MKDZYh_Kw/s400/a04.png" alt="install"></p>
-
-<p>インストールが始まります。</p>
-
-<h3>ダウロードして導入する方法</h3>
-
-<p>上記手順でエラーが出てしまう場合は、マニュアルでダウンロードしたのちインストールします。</p>
-
-<ul>
-<li><a href="https://developers.google.com/appengine/downloads?hl=ja#Google_App_Engine_SDK_for_Java">https://developers.google.com/appengine/downloads?hl=ja#Google_App_Engine_SDK_for_Java</a>より SDK をダウンロードし解凍</li>
-<li><a href="http://dl.google.com/eclipse/plugin/core/4.3/zips/gpe-e43-latest-updatesite.zip">http://dl.google.com/eclipse/plugin/core/4.3/zips/gpe-e43-latest-updatesite.zip</a> をダウンロードし解凍</li>
-<li>ツールバーの[ヘルプ][新規ソフトウェアのインストール]で設定画面を表示し、[追加][ローカル]で解凍したフォルダを指定</li>
-<li>あとは前述と同様の手順</li>
-</ul>
-
-<h2>サーブレットを動かしてみる</h2>
-
-<p><img src="https://lh3.googleusercontent.com/-Y6ec0INiL3g/UxCt80KX_XI/AAAAAAAAGh8/4J4-KY4LxXA/s400/c01.png" alt="first app"></p>
-
-<p>ツールバーにグーグルのアイコンができるのでこれをクリックし「新規 Web アプリケーションプロジェクト」を選択します。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-WkMvSwRnhQU/Uw9faMR2jBI/AAAAAAAAGd0/CcNagGuFYu4/s400/c02.png" alt="first app"></p>
-
-<p>設定画面が表示されるので、[プロジェクト名] に [HelloGae]、[パッケージ] に [hello]、[Google Web ツールキットを使用] のチェックをはずします。また、SDK名が「App Engine – x.x.x」と表示されてない場合（手動でダウンロード時）は、[SDKの構成]をクリックし、ローカルディスク上にある SDK のパスを指定します。[完了]をクリックするとアプリケーションの雛形が生成されます。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-Z3DDW-QuuHk/Uw9faOPXXKI/AAAAAAAAGdk/VwKpOrNqJvo/s400/c03.png" alt="first app"></p>
-
-<p>プロジェクトエクスプローラの [HelloGae] を選択した状態で右クリック、[実行][Web アプリケーション]を選択します。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-l6-0_XRMPWI/Uw9faX6P9dI/AAAAAAAAGdw/gwFyiUKtbhs/s400/c04.png" alt="first app"></p>
-
-<p>http://localhost:8888/ にアクセスすると [HelloGae] というリンクが表示されるのでクリック。hello パッケージの HelloGaeServlet.java 実行され [Hello, world] と表示されます。</p>
-
-<h2>App エンジンにデプロイ領域を作成する</h2>
-
-<p><a href="https://appengine.google.com/">https://appengine.google.com/</a> にアクセスします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-4oIUtOSVH98/Uw9mFWz9WrI/AAAAAAAAGfY/BLI4eMp6sY4/s400/e01.png" alt="app setting"></p>
-
-<p>[Create Application] をクリックします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-MrPCFHHQeZo/Uw9mFdXXjgI/AAAAAAAAGfQ/JqmLBX9rgj8/s400/e02.png" alt="app setting"></p>
-
-<p>[国] に [日本]、[携帯サービス会社] に 自分の携帯電話会社のドメイン、[メールアドレス] に @以降を除いた値を入力し、[確認コードを送信] をクリックします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-Pbv9FHsFXIY/Uw9mFUzbWAI/AAAAAAAAGfU/GyfqSpZVvm4/s800/e03.png" alt="app setting"></p>
-
-<p>携帯電話に確認コードが送信されてくるので、[確認コード] を入力し、[確認] をクリックします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-IjVKqNq7Umk/Uw9mGsRUsJI/AAAAAAAAGfw/zOTDX5fwG24/s400/e04.png" alt="app setting"></p>
-
-<p>[Application Identifier] に アプリケーション URL の一部となる有効な ID を指定します（ここでは my-hello-gae と入力）。[Check Availability] をクリックすることで使用可能かチェックできます。<br>
-[Application Title] にアプリケーションのタイトルを指定します。<br>
-[I accept these terms.] をチェックし、[Create Application] をクリックします。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-12xnmlfUlnE/Uw9mGu2voEI/AAAAAAAAGfk/npmTioO_qH0/s400/e05.png" alt="app setting"></p>
-
-<p>作成完了のメッセージが表示されます。<a href="https://appengine.google.com/">https://appengine.google.com/</a> にアクセスします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-VEruUfadCdo/Uw9mGocGIfI/AAAAAAAAGfs/BrUmJGuIBBg/s400/e06.png" alt="app setting"></p>
-
-<p>作成したアプリケーション名がリストに表示され、追加作成可能なアプリケーション数が表示されます。</p>
-
-<h2>App エンジンにデプロイする</h2>
-
-<p>Eclipse から App エンジンにアプリケーションをデプロイします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-CI9hi1PP0sk/Uw9mLqryPfI/AAAAAAAAGf8/Ihf2wFL55dM/s400/d00.png" alt="deploy"></p>
-
-<p>プロジェクトエクスプローラの [HelloGae] を選択した状態で右クリック、[プロパティ]を選択します。設定画面が表示されるので [Google][App エンジン]を選択し、[アプリケーションID] に App エンジン上で作成したアプリケーション ID を指定します（ここでは my-hello-gae）。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-ba08L-kYR_A/Uw9mLw9eSdI/AAAAAAAAGgE/4zWcZPnAnKs/s400/d01.png" alt="deploy"></p>
-
-<p>プロジェクトエクスプローラの [HelloGae] を選択した状態で右クリック、[Google][App エンジンへデプロイ]を選択します。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-2Oei-YwJmx4/Uw9mMAMshqI/AAAAAAAAGgM/3Xphyou9nKY/s400/d02.png" alt="deploy"></p>
-
-<p>Google へのログイン画面が表示されるので、ログインします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-ff4kWrhV61U/Uw9mMTiBXII/AAAAAAAAGgQ/uiS4wMSp6z0/s400/d03.png" alt="deploy"></p>
-
-<p>[承認する]をクリックします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-27EFBdl4OWg/Uw9mMkQawnI/AAAAAAAAGgc/iVwN7awXujc/s400/d04.png" alt="deploy"></p>
-
-<p>[Launch app in browser after successful deploy] のチェックをはずし、[配置]をクリックします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-tPAoVx6RlQY/Uw9mNHb2nbI/AAAAAAAAGgo/dhky8Tx25p4/s400/d05.png" alt="deploy"></p>
-
-<p><a href="https://appengine.google.com/">https://appengine.google.com/</a> にアクセスすると、[Status] が [Running] なっているのでこれをクリックします。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-JemsThCXVtA/Uw9mNDrNiNI/AAAAAAAAGgk/AP-RAHNcOLA/s400/d06.png" alt="deploy"></p>
-
-<p>App エンジン上でアプリケーションが実行されてることが確認できます。</p>
-
-<p><div class="for-top"><a href="http://my-hello-gae.appspot.com/" class="demo external" target="_blank">Demo</a></div></p>
-
-<h2>Struts2 を App エンジン用にカスタマイズする</h2>
-
-<p>「<a href="http://www.cyokodog.net/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>」で作成した Struts2 のサンプルプログラムをApp エンジンで動くようにカスタマイズします。
-まずはローカル環境で動くようにします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-5pr6dTcPUIw/UxCnA1T6UxI/AAAAAAAAGhQ/gPFPioq-q5w/s400/f01.png" alt="struts2"></p>
-
-<p>グーグルのアイコンから「新規 Web アプリケーションプロジェクト」を選択し、[プロジェクト名] に [HelloGaeStruts2]、[パッケージ] に [hello]、[Google Web ツールキットを使用] のチェックをはずしプロジェクトを作成します。</p>
-
-<p>src フォルダの hello パッケージ内の [HelloGaeStruts2Servlet.java]と、war フォルダ直下の [index.html] を削除します。</p>
-
-<p>「<a href="http://www.cyokodog.net/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>」で使用したファイルを以下のようコピーし、jar ファイルについてはビルドパスに追加します。</p>
-
-<ul>
-<li>[WebContent] 直下に作成した jsp ファイル → [war] 直下にコピー</li>
-<li>[WebContent/WEB-INF/lib] 直下の asm-3.3.jar を除く jar ファイル → [war/WEB-INF/lib] 直下にコピー</li>
-<li>jar ファイル全てを選択した状態で右クリックし、[ビルドパス][ビルドパスに追加]を選択</li>
-<li>[Java リソース/src] 直下の struts.properties、struts.xml → [src] 直下にコピー</li>
-<li>[Java リソース/src/hello] 直下の java ファイル → [src/hello] 直下にコピー</li>
-</ul>
-
-<p>パッケージ名を freemakeer.core とし TextBlock.java を作成します。ソースが長いので内容については以下リンク先をご覧ください。</p>
-
-<p><a href="https://github.com/cyokodog/JAVA_STUDY/blob/master/HelloGaeStruts2/src/freemarker/core/TextBlock.java">TextBlock.java のソース</a></p>
-
-<p>パッケージ名を listener とし OgnlListener.java を作成します。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">package</span><span class="pln"> listener</span><span class="pun">;</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="kwd">import</span><span class="pln"> javax</span><span class="pun">.</span><span class="pln">servlet</span><span class="pun">.</span><span class="typ">ServletContextEvent</span><span class="pun">;</span></li><li class="L3"><span class="kwd">import</span><span class="pln"> javax</span><span class="pun">.</span><span class="pln">servlet</span><span class="pun">.</span><span class="typ">ServletContextListener</span><span class="pun">;</span></li><li class="L4"><span class="kwd">import</span><span class="pln"> ognl</span><span class="pun">.</span><span class="typ">OgnlRuntime</span><span class="pun">;</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">OgnlListener</span><span class="pln"> </span><span class="kwd">implements</span><span class="pln"> </span><span class="typ">ServletContextListener</span><span class="pun">{</span></li><li class="L7"><span class="pln">&nbsp;</span></li><li class="L8"><span class="pln">    </span><span class="lit">@Override</span></li><li class="L9"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> contextDestroyed</span><span class="pun">(</span><span class="typ">ServletContextEvent</span><span class="pln"> arg0</span><span class="pun">){</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="pln">    </span><span class="lit">@Override</span></li><li class="L3"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> contextInitialized</span><span class="pun">(</span><span class="typ">ServletContextEvent</span><span class="pln"> arg0</span><span class="pun">){</span></li><li class="L4"><span class="pln">        </span><span class="typ">OgnlRuntime</span><span class="pun">.</span><span class="pln">setSecurityManager</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">);</span></li><li class="L5"><span class="pln">    </span><span class="pun">}</span></li><li class="L6"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 360px;"></textarea></div></div></div>
-
-<p>[war/WEB-INF/appengine-web.xml] を以下のよう変更します。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;?</span><span class="pln">xml version</span><span class="pun">=</span><span class="str">"1.0"</span><span class="pln"> encoding</span><span class="pun">=</span><span class="str">"utf-8"</span><span class="pun">?&gt;</span></li><li class="L1"><span class="tag">&lt;appengine-web-app</span><span class="pln"> </span><span class="atn">xmlns</span><span class="pun">=</span><span class="atv">"http://appengine.google.com/ns/1.0"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;application&gt;</span><span class="pln">hello-gae-struts2</span><span class="tag">&lt;/application&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;version&gt;</span><span class="pln">1</span><span class="tag">&lt;/version&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;threadsafe&gt;</span><span class="pln">true</span><span class="tag">&lt;/threadsafe&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;system-properties&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"java.util.logging.config.file"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"WEB-INF/logging.properties"</span><span class="tag">/&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"file.encoding"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"UTF-8"</span><span class="pln"> </span><span class="tag">/&gt;</span></li><li class="L8"><span class="pln">        </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"DEFAULT_ENCODING"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"UTF-8"</span><span class="pln"> </span><span class="tag">/&gt;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;/system-properties&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;sessions-enabled&gt;</span><span class="pln">true</span><span class="tag">&lt;/sessions-enabled&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;ssl-enabled&gt;</span><span class="pln">true</span><span class="tag">&lt;/ssl-enabled&gt;</span></li><li class="L2"><span class="tag">&lt;/appengine-web-app&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 288px;"></textarea></div></div></div>
-
-<p>[war/WEB-INF/web.xml] を以下のよう変更します。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;?</span><span class="pln">xml version</span><span class="pun">=</span><span class="str">"1.0"</span><span class="pln"> encoding</span><span class="pun">=</span><span class="str">"utf-8"</span><span class="pun">?&gt;</span></li><li class="L1"><span class="tag">&lt;web-app</span><span class="pln"> </span><span class="atn">xmlns:xsi</span><span class="pun">=</span><span class="atv">"http://www.w3.org/2001/XMLSchema-instance"</span></li><li class="L2"><span class="atn">xmlns</span><span class="pun">=</span><span class="atv">"http://java.sun.com/xml/ns/javaee"</span></li><li class="L3"><span class="atn">xmlns:web</span><span class="pun">=</span><span class="atv">"http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"</span></li><li class="L4"><span class="atn">xsi:schemaLocation</span><span class="pun">=</span><span class="atv">"http://java.sun.com/xml/ns/javaee</span></li><li class="L5"><span class="atv">http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"</span><span class="pln"> </span><span class="atn">version</span><span class="pun">=</span><span class="atv">"2.5"</span><span class="tag">&gt;</span></li><li class="L6"><span class="pln">    </span><span class="tag">&lt;display-name&gt;</span><span class="pln">Hello Struts2</span><span class="tag">&lt;/display-name&gt;</span></li><li class="L7"><span class="pln">    </span><span class="tag">&lt;filter&gt;</span></li><li class="L8"><span class="pln">        </span><span class="tag">&lt;filter-name&gt;</span><span class="pln">struts2</span><span class="tag">&lt;/filter-name&gt;</span></li><li class="L9"><span class="pln">        </span><span class="tag">&lt;filter-class&gt;</span><span class="pln">org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</span><span class="tag">&lt;/filter-class&gt;</span></li><li class="L0"><span class="pln">        </span><span class="tag">&lt;init-param&gt;</span></li><li class="L1"><span class="pln">            </span><span class="tag">&lt;param-name&gt;</span><span class="pln">actionPackages</span><span class="tag">&lt;/param-name&gt;</span></li><li class="L2"><span class="pln">            </span><span class="tag">&lt;param-value&gt;</span><span class="pln">hello</span><span class="tag">&lt;/param-value&gt;</span></li><li class="L3"><span class="pln">        </span><span class="tag">&lt;/init-param&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;/filter&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;filter-mapping&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;filter-name&gt;</span><span class="pln">struts2</span><span class="tag">&lt;/filter-name&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;url-pattern&gt;</span><span class="pln">/*</span><span class="tag">&lt;/url-pattern&gt;</span></li><li class="L8"><span class="pln">    </span><span class="tag">&lt;/filter-mapping&gt;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;listener&gt;</span></li><li class="L0"><span class="pln">        </span><span class="tag">&lt;listener-class&gt;</span><span class="pln">listener.OgnlListener</span><span class="tag">&lt;/listener-class&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;/listener&gt;</span></li><li class="L2"><span class="tag">&lt;/web-app&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 468px;"></textarea></div></div></div>
-
-<p>以下のような構成になります。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-rLQSQv9LuXE/UxCnBYGeT4I/AAAAAAAAGhU/W39eOcwUq58/s800/f02.png" alt="struts2"></p>
-
-<p>プロジェクトエクスプローラの [HelloGaeStruts2] を選択した状態で右クリック、[実行][Web アプリケーション]を選択します。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-DY_urdexX1o/UxCnA-AY1XI/AAAAAAAAGhM/2EpVkNanPOk/s640/f03.png" alt="struts2"></p>
-
-<p>http://localhost:8888/login.action にアクセスすると Struts2 のアプリケーションが実行されます。</p>
-
-<h2>Struts2 を App エンジンにデプロイする</h2>
-
-<p><a href="https://appengine.google.com/">https://appengine.google.com/</a> にアクセス後、[Create Application] をクリックし、Struts2 アプリ用のデプロイ領域を作成します（ここでは [Application Idenfifier] を hello-gae-struts2 、[Application Title] を Hello Struts2 とします）。</p>
-
-<p>Eclipse を一旦終了し、eclipse.ini をテキストエディタで開きます。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-7UMZntghk60/UxCnCE-7ejI/AAAAAAAAGhg/AKq-amer4fE/s400/g01.png" alt="struts2"></p>
-
-<p>[-vmargs] と記述されてる箇所の１行上に、以下のよう JDK の javaw.exe のパスを記述します（この記述が無いとデプロイ時に jsp がコンパイルエラーになります）。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">-</span><span class="pln">vm</span></li><li class="L1"><span class="pln">C</span><span class="pun">:</span><span class="pln">\IDE\jdk1</span><span class="pun">.</span><span class="lit">7.0</span><span class="pln">_51\b</span><span class="kwd">in</span><span class="pln">\javaw</span><span class="pun">.</span><span class="pln">exe</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
-
-<p>テキストエディタを閉じ、Eclipse を実行します。</p>
-
-<p>プロジェクトエクスプローラの [HelloGae] を選択、右クリック[プロパティ][Google][App エンジン]を選択し、[アプリケーションID] に App エンジン上で作成したアプリケーション ID を指定（ここでは hello-gae-struts2）。<br>
-同様に右クリック [Google][App エンジンへデプロイ]でデプロイします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-fnCtFHTj01U/UxCnCCkx29I/AAAAAAAAGhk/RZ7fGHzN9sc/s640/g02.png" alt="struts2"></p>
-
-<p>http://hello-gae-struts2.appspot.com/login.action にアクセスすると App エンジン上で Struts2 のアプリケーションが実行されます。</p>
-
-<p><div class="for-top"><a href="http://hello-gae-struts2.appspot.com/login.action" class="demo external" target="_blank">Demo</a></div></p>
-
-<h2>サンプルソース</h2>
-
-<p>こちらからどうぞ。App エンジンで Struts2 を使用する場合はこれを雛形にすると楽かと思います。</p>
-
-<ul>
-<li><a href="https://github.com/cyokodog/JAVA_STUDY/tree/master/HelloGae">HelloGae – GitHub</a></li>
-<li><a href="https://github.com/cyokodog/JAVA_STUDY/tree/master/HelloGaeStruts2">HelloGaeStruts2 – GitHub</a></li>
-</ul>
-
-<h2>参考にしたサイト</h2>
-
-<ul>
-<li><a href="http://appengine.keicode.com/devenv/google-plugin-eclipse.php">Google Plugin for Eclipse を zip からインストールする方法 – Google App Engine 入門</a></li>
-<li><a href="http://blog.as-toybox.com/archives/193">GAE/j用struts2環境構築 – ASのおもちゃ箱開発ブログ</a></li>
-<li><a href="http://atmarkplant-dj.blogspot.sg/2012/01/google-app-enginestruts2.html">Google App Engine(Struts2 との連携) </a></li>
-<li><a href="https://groups.google.com/forum/#!topic/google-app-engine-japan/ymbsf-1Mf4I">java-sdk-1.7.5でJSPが含まれるプロジェクトをデプロイできない – Googleグループ</a></li>
-<li><a href="https://groups.google.com/forum/#!msg/google-app-engine-japan/c9P0cif5VQY/X6X8Zl6Pp_kJ">gae/j 1.8.7でJSPコンパイルエラーが原因でデプロイできない – Googleグループ</a></li>
-<li><a href="http://ten-speed-bicycle.blogspot.jp/2013/01/cannot-get-system-java-compiler-please.html">Cannot get the System Java Compiler. Please use a JDK, not a JRE. I have set the build path to JDK – Life is like a ten-speed bicycle </a></li>
-</ul>
-
-
+    </ul>
+  </div>
+  <div class="article__body">
+    <p>Code Splitting と非同期コンポーネントを案件（と趣味プロで少々）で使用したのでメモっておく(webpack + TS + Vue3 / React で使用)</p>
+
+<!--
+    <a href="/blog/code-splitting-and-async-component/" class="more-link">Read More</a>
+-->
+  </div>
+
+</article>
+
+      </article>
     </div>
 
-  </article>
-</div>
+
+
+
 
   <div class="l-page-nav">
     <div class="l-page-nav__body">

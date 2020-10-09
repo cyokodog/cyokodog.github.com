@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>Google App Engine for Java 入門 ＋ Struts2 デプロイ手順 | CYOKODOG</title>
+	<title>Code Splitting と非同期コンポーネント | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,251 +72,442 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/first-appengine-and-struts2/" title="Google App Engine for Java 入門 ＋ Struts2 デプロイ手順">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+        <a href="/blog/code-splitting-and-async-component/" title="Code Splitting と非同期コンポーネント">Code Splitting と非同期コンポーネント</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2014-03-02</li>
+        <li class="article__info__date">2020-10-10</li>
 <!--
-        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+        <li class="article__info__category"><a href="/category/webpack/" rel="category tag">Webpack</a></li>
 -->
       </ul>
     </div>
     <div class="article__body">
-    <div class="article__eyecatch">
-  <a href="http://www.cyokodog.net/blog/first-appengine-and-struts2/"><img src="https://lh5.googleusercontent.com/-KfG7vrTqsYI/UxC14k0yjQI/AAAAAAAAGic/ACNmKX8e2mY/s800/logo.png"></a>
-</div>
-<p>
-<a href="http://www.cyokodog.net/blog/first-struts2/">前回のエントリ</a>で作成した Struts2 のサンプルプログラムのデモを <a href="https://www.openshift.com/">Openshift</a>、<a href="https://www.appfog.com/">AppFog</a>、<a href="https://www.heroku.com/">Heroku</a> といった Java の動く PaaS で公開できないかなぁとちょっと調べてみたのですが、Eclipse で開発したらその場でポンっとデプロイできる Google App Engine が一番手軽でいいんじゃないか・・・と言うことで<a href="http://d.hatena.ne.jp/cyokodog/20090716/GAE01">約４年ぶりに</a> Google App Engine をさわってみました。<br>
-そんな訳で Google App Engine for Java の導入手順と合わせ、Struts2 のデプロイ手順もまとめてみました。</p>
-
+    <p>Code Splitting と非同期コンポーネントを案件（と趣味プロで少々）で使用したのでメモっておく(webpack + TS + Vue3 / React で使用)</p>
 <!--more-->
-
-<h2>開発環境の準備</h2>
-
-<p>32ビット版 Windows 環境に開発環境を構築します。以下については「<a href="http://www.cyokodog.net/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>」の導入手順を参照ください。</p>
-
+<h2 id="code-splitting-">Code Splitting とは</h2>
 <ul>
-<li>Eclipse Kepler（4.3）</li>
-<li>Pleiades（Eclipse の日本語化プラグイン）</li>
-<li>JDK（Java SE 7u51）</li>
-<li>Struts2（2.3.16）</li>
+<li>Webpack 等のバンドラーでバンドル処理時に、コードをチャンクファイルに分割すること</li>
+<li>Webpack の場合<ul>
+<li>Dynamic Import で非同期でモジュールを読み込もうとすると、Webpack がファイルを分割してくれる<ul>
+<li>モジュールを読み込む時用の URL 設定が必要になる<ul>
+<li>(バンドルファイルの出力先をルート URL の物理パスとしてる場合は不要)</li>
 </ul>
-
-<p>次にGoogle App エンジンの SDK と Eclipse プラグインを準備します。</p>
-
+</li>
+</ul>
+</li>
+<li>複数エントリパス毎にバンドルする場合、共通で利用しているモジュールを別ファイルに切り出してくれる<ul>
+<li>明示的な設定が必要</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>メリット</p>
 <ul>
-<li>Google App エンジン Java SDK（1.9.0）</li>
-<li>Google プラグイン Eclipse</li>
+<li>バンドルファイルが巨大化しがちな SPA において、ファイルを分割することで初期表示を早くできる</li>
+<li>非同期で得られるデータを要するコンポーネントの描画時、データ取得状態を把握するためのフラグ管理が不要になる</li>
 </ul>
-
-<h2>App エンジン SDK ／ Eclipse プラグインの導入</h2>
-
-<p>Eclipse を起動します。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-29H_s1PxPy8/Uw9fVeJidHI/AAAAAAAAGdQ/S-509nrYT4Y/s400/a01.png" alt="install"></p>
-
-<p>ツールバーの[ヘルプ][新規ソフトウェアのインストール]を選択すると設定画面が表示されるので、[作業対象] に [http://dl.google.com/eclipse/plugin/4.3] と入力してエンターキーを押します。プラグインの一覧が表示されるので、以下を選択し[次へ]をクリックします。</p>
-
+<p>デメリット</p>
 <ul>
-<li>Google プラグイン Eclipse(required)</li>
-<li>Google App エンジン Java SDK 1.9.0</li>
+<li>分割した数だけファイルの読み込み回数が増える<ul>
+<li>ファイルのリクエスト数に比例して増えるオーバーヘッド、ネットワークがボトルネックにならないよう分割のバランスに考慮する必要がある</li>
 </ul>
-
-<p><img src="https://lh3.googleusercontent.com/-4AJgUZg09QA/Uw9fTxakYwI/AAAAAAAAGdA/n-UhHBc4Avo/s400/a02.png" alt="install"></p>
-
-<p>[次へ]をクリックします。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-hYKOfNrjEMM/Uw9fT5a8dsI/AAAAAAAAGdI/qDeTdwE9f1w/s400/a03.png" alt="install"></p>
-
-<p>[使用条件の条項に同意します] を選択し [完了] をクリックします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-Yo4lMmAQqBI/Uw9fU245gYI/AAAAAAAAGdU/B3MKDZYh_Kw/s400/a04.png" alt="install"></p>
-
-<p>インストールが始まります。</p>
-
-<h3>ダウロードして導入する方法</h3>
-
-<p>上記手順でエラーが出てしまう場合は、マニュアルでダウンロードしたのちインストールします。</p>
-
+</li>
+</ul>
+<h2 id="-">担当案件で採用した新規機能の構成</h2>
+<p><img width="3412" alt="image.png (860.4 kB)" src="https://drive.google.com/uc?id=1qmbbQmINzw1DsaeOdanitjqneZO8J4LO"></p>
+<p>※青いところが新規に追加実装している部分。グレーのところは昔からある既存実装部分で、平行して細かな機能追加・修正が常時行われているプロジェクト</p>
 <ul>
-<li><a href="https://developers.google.com/appengine/downloads?hl=ja#Google_App_Engine_SDK_for_Java">https://developers.google.com/appengine/downloads?hl=ja#Google_App_Engine_SDK_for_Java</a>より SDK をダウンロードし解凍</li>
-<li><a href="http://dl.google.com/eclipse/plugin/core/4.3/zips/gpe-e43-latest-updatesite.zip">http://dl.google.com/eclipse/plugin/core/4.3/zips/gpe-e43-latest-updatesite.zip</a> をダウンロードし解凍</li>
-<li>ツールバーの[ヘルプ][新規ソフトウェアのインストール]で設定画面を表示し、[追加][ローカル]で解凍したフォルダを指定</li>
-<li>あとは前述と同様の手順</li>
+<li>技術構成<ul>
+<li>Vue3.0.0（Vue2.5.16 -&gt; Vue3.0.0-rc.9 -&gt; Vue3.0.0 の順で移行）</li>
+<li>TypeScript v4.0.2</li>
+<li>Webpack v4.42.1</li>
 </ul>
-
-<h2>サーブレットを動かしてみる</h2>
-
-<p><img src="https://lh3.googleusercontent.com/-Y6ec0INiL3g/UxCt80KX_XI/AAAAAAAAGh8/4J4-KY4LxXA/s400/c01.png" alt="first app"></p>
-
-<p>ツールバーにグーグルのアイコンができるのでこれをクリックし「新規 Web アプリケーションプロジェクト」を選択します。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-WkMvSwRnhQU/Uw9faMR2jBI/AAAAAAAAGd0/CcNagGuFYu4/s400/c02.png" alt="first app"></p>
-
-<p>設定画面が表示されるので、[プロジェクト名] に [HelloGae]、[パッケージ] に [hello]、[Google Web ツールキットを使用] のチェックをはずします。また、SDK名が「App Engine – x.x.x」と表示されてない場合（手動でダウンロード時）は、[SDKの構成]をクリックし、ローカルディスク上にある SDK のパスを指定します。[完了]をクリックするとアプリケーションの雛形が生成されます。</p>
-
-<p><img src="https://lh3.googleusercontent.com/-Z3DDW-QuuHk/Uw9faOPXXKI/AAAAAAAAGdk/VwKpOrNqJvo/s400/c03.png" alt="first app"></p>
-
-<p>プロジェクトエクスプローラの [HelloGae] を選択した状態で右クリック、[実行][Web アプリケーション]を選択します。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-l6-0_XRMPWI/Uw9faX6P9dI/AAAAAAAAGdw/gwFyiUKtbhs/s400/c04.png" alt="first app"></p>
-
-<p>http://localhost:8888/ にアクセスすると [HelloGae] というリンクが表示されるのでクリック。hello パッケージの HelloGaeServlet.java 実行され [Hello, world] と表示されます。</p>
-
-<h2>App エンジンにデプロイ領域を作成する</h2>
-
-<p><a href="https://appengine.google.com/">https://appengine.google.com/</a> にアクセスします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-4oIUtOSVH98/Uw9mFWz9WrI/AAAAAAAAGfY/BLI4eMp6sY4/s400/e01.png" alt="app setting"></p>
-
-<p>[Create Application] をクリックします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-MrPCFHHQeZo/Uw9mFdXXjgI/AAAAAAAAGfQ/JqmLBX9rgj8/s400/e02.png" alt="app setting"></p>
-
-<p>[国] に [日本]、[携帯サービス会社] に 自分の携帯電話会社のドメイン、[メールアドレス] に @以降を除いた値を入力し、[確認コードを送信] をクリックします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-Pbv9FHsFXIY/Uw9mFUzbWAI/AAAAAAAAGfU/GyfqSpZVvm4/s800/e03.png" alt="app setting"></p>
-
-<p>携帯電話に確認コードが送信されてくるので、[確認コード] を入力し、[確認] をクリックします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-IjVKqNq7Umk/Uw9mGsRUsJI/AAAAAAAAGfw/zOTDX5fwG24/s400/e04.png" alt="app setting"></p>
-
-<p>[Application Identifier] に アプリケーション URL の一部となる有効な ID を指定します（ここでは my-hello-gae と入力）。[Check Availability] をクリックすることで使用可能かチェックできます。<br>
-[Application Title] にアプリケーションのタイトルを指定します。<br>
-[I accept these terms.] をチェックし、[Create Application] をクリックします。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-12xnmlfUlnE/Uw9mGu2voEI/AAAAAAAAGfk/npmTioO_qH0/s400/e05.png" alt="app setting"></p>
-
-<p>作成完了のメッセージが表示されます。<a href="https://appengine.google.com/">https://appengine.google.com/</a> にアクセスします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-VEruUfadCdo/Uw9mGocGIfI/AAAAAAAAGfs/BrUmJGuIBBg/s400/e06.png" alt="app setting"></p>
-
-<p>作成したアプリケーション名がリストに表示され、追加作成可能なアプリケーション数が表示されます。</p>
-
-<h2>App エンジンにデプロイする</h2>
-
-<p>Eclipse から App エンジンにアプリケーションをデプロイします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-CI9hi1PP0sk/Uw9mLqryPfI/AAAAAAAAGf8/Ihf2wFL55dM/s400/d00.png" alt="deploy"></p>
-
-<p>プロジェクトエクスプローラの [HelloGae] を選択した状態で右クリック、[プロパティ]を選択します。設定画面が表示されるので [Google][App エンジン]を選択し、[アプリケーションID] に App エンジン上で作成したアプリケーション ID を指定します（ここでは my-hello-gae）。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-ba08L-kYR_A/Uw9mLw9eSdI/AAAAAAAAGgE/4zWcZPnAnKs/s400/d01.png" alt="deploy"></p>
-
-<p>プロジェクトエクスプローラの [HelloGae] を選択した状態で右クリック、[Google][App エンジンへデプロイ]を選択します。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-2Oei-YwJmx4/Uw9mMAMshqI/AAAAAAAAGgM/3Xphyou9nKY/s400/d02.png" alt="deploy"></p>
-
-<p>Google へのログイン画面が表示されるので、ログインします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-ff4kWrhV61U/Uw9mMTiBXII/AAAAAAAAGgQ/uiS4wMSp6z0/s400/d03.png" alt="deploy"></p>
-
-<p>[承認する]をクリックします。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-27EFBdl4OWg/Uw9mMkQawnI/AAAAAAAAGgc/iVwN7awXujc/s400/d04.png" alt="deploy"></p>
-
-<p>[Launch app in browser after successful deploy] のチェックをはずし、[配置]をクリックします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-tPAoVx6RlQY/Uw9mNHb2nbI/AAAAAAAAGgo/dhky8Tx25p4/s400/d05.png" alt="deploy"></p>
-
-<p><a href="https://appengine.google.com/">https://appengine.google.com/</a> にアクセスすると、[Status] が [Running] なっているのでこれをクリックします。</p>
-
-<p><img src="https://lh5.googleusercontent.com/-JemsThCXVtA/Uw9mNDrNiNI/AAAAAAAAGgk/AP-RAHNcOLA/s400/d06.png" alt="deploy"></p>
-
-<p>App エンジン上でアプリケーションが実行されてることが確認できます。</p>
-
-<p><div class="for-top"><a href="http://my-hello-gae.appspot.com/" class="demo external" target="_blank">Demo</a></div></p>
-
-<h2>Struts2 を App エンジン用にカスタマイズする</h2>
-
-<p>「<a href="http://www.cyokodog.net/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>」で作成した Struts2 のサンプルプログラムをApp エンジンで動くようにカスタマイズします。
-まずはローカル環境で動くようにします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-5pr6dTcPUIw/UxCnA1T6UxI/AAAAAAAAGhQ/gPFPioq-q5w/s400/f01.png" alt="struts2"></p>
-
-<p>グーグルのアイコンから「新規 Web アプリケーションプロジェクト」を選択し、[プロジェクト名] に [HelloGaeStruts2]、[パッケージ] に [hello]、[Google Web ツールキットを使用] のチェックをはずしプロジェクトを作成します。</p>
-
-<p>src フォルダの hello パッケージ内の [HelloGaeStruts2Servlet.java]と、war フォルダ直下の [index.html] を削除します。</p>
-
-<p>「<a href="http://www.cyokodog.net/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>」で使用したファイルを以下のようコピーし、jar ファイルについてはビルドパスに追加します。</p>
-
+</li>
+<li><p>3 つのエントリポイントが必要</p>
 <ul>
-<li>[WebContent] 直下に作成した jsp ファイル → [war] 直下にコピー</li>
-<li>[WebContent/WEB-INF/lib] 直下の asm-3.3.jar を除く jar ファイル → [war/WEB-INF/lib] 直下にコピー</li>
-<li>jar ファイル全てを選択した状態で右クリックし、[ビルドパス][ビルドパスに追加]を選択</li>
-<li>[Java リソース/src] 直下の struts.properties、struts.xml → [src] 直下にコピー</li>
-<li>[Java リソース/src/hello] 直下の java ファイル → [src/hello] 直下にコピー</li>
+<li>アダプター層<ul>
+<li>本体アプリとフォトショもどきアプリとの連携、本体側 API との連携を行う</li>
 </ul>
-
-<p>パッケージ名を freemakeer.core とし TextBlock.java を作成します。ソースが長いので内容については以下リンク先をご覧ください。</p>
-
-<p><a href="https://github.com/cyokodog/JAVA_STUDY/blob/master/HelloGaeStruts2/src/freemarker/core/TextBlock.java">TextBlock.java のソース</a></p>
-
-<p>パッケージ名を listener とし OgnlListener.java を作成します。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="kwd">package</span><span class="pln"> listener</span><span class="pun">;</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="kwd">import</span><span class="pln"> javax</span><span class="pun">.</span><span class="pln">servlet</span><span class="pun">.</span><span class="typ">ServletContextEvent</span><span class="pun">;</span></li><li class="L3"><span class="kwd">import</span><span class="pln"> javax</span><span class="pun">.</span><span class="pln">servlet</span><span class="pun">.</span><span class="typ">ServletContextListener</span><span class="pun">;</span></li><li class="L4"><span class="kwd">import</span><span class="pln"> ognl</span><span class="pun">.</span><span class="typ">OgnlRuntime</span><span class="pun">;</span></li><li class="L5"><span class="pln">&nbsp;</span></li><li class="L6"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">OgnlListener</span><span class="pln"> </span><span class="kwd">implements</span><span class="pln"> </span><span class="typ">ServletContextListener</span><span class="pun">{</span></li><li class="L7"><span class="pln">&nbsp;</span></li><li class="L8"><span class="pln">    </span><span class="lit">@Override</span></li><li class="L9"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> contextDestroyed</span><span class="pun">(</span><span class="typ">ServletContextEvent</span><span class="pln"> arg0</span><span class="pun">){</span></li><li class="L0"><span class="pln">    </span><span class="pun">}</span></li><li class="L1"><span class="pln">&nbsp;</span></li><li class="L2"><span class="pln">    </span><span class="lit">@Override</span></li><li class="L3"><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> contextInitialized</span><span class="pun">(</span><span class="typ">ServletContextEvent</span><span class="pln"> arg0</span><span class="pun">){</span></li><li class="L4"><span class="pln">        </span><span class="typ">OgnlRuntime</span><span class="pun">.</span><span class="pln">setSecurityManager</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">);</span></li><li class="L5"><span class="pln">    </span><span class="pun">}</span></li><li class="L6"><span class="pun">}</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 360px;"></textarea></div></div></div>
-
-<p>[war/WEB-INF/appengine-web.xml] を以下のよう変更します。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;?</span><span class="pln">xml version</span><span class="pun">=</span><span class="str">"1.0"</span><span class="pln"> encoding</span><span class="pun">=</span><span class="str">"utf-8"</span><span class="pun">?&gt;</span></li><li class="L1"><span class="tag">&lt;appengine-web-app</span><span class="pln"> </span><span class="atn">xmlns</span><span class="pun">=</span><span class="atv">"http://appengine.google.com/ns/1.0"</span><span class="tag">&gt;</span></li><li class="L2"><span class="pln">    </span><span class="tag">&lt;application&gt;</span><span class="pln">hello-gae-struts2</span><span class="tag">&lt;/application&gt;</span></li><li class="L3"><span class="pln">    </span><span class="tag">&lt;version&gt;</span><span class="pln">1</span><span class="tag">&lt;/version&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;threadsafe&gt;</span><span class="pln">true</span><span class="tag">&lt;/threadsafe&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;system-properties&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"java.util.logging.config.file"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"WEB-INF/logging.properties"</span><span class="tag">/&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"file.encoding"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"UTF-8"</span><span class="pln"> </span><span class="tag">/&gt;</span></li><li class="L8"><span class="pln">        </span><span class="tag">&lt;property</span><span class="pln"> </span><span class="atn">name</span><span class="pun">=</span><span class="atv">"DEFAULT_ENCODING"</span><span class="pln"> </span><span class="atn">value</span><span class="pun">=</span><span class="atv">"UTF-8"</span><span class="pln"> </span><span class="tag">/&gt;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;/system-properties&gt;</span></li><li class="L0"><span class="pln">    </span><span class="tag">&lt;sessions-enabled&gt;</span><span class="pln">true</span><span class="tag">&lt;/sessions-enabled&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;ssl-enabled&gt;</span><span class="pln">true</span><span class="tag">&lt;/ssl-enabled&gt;</span></li><li class="L2"><span class="tag">&lt;/appengine-web-app&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 288px;"></textarea></div></div></div>
-
-<p>[war/WEB-INF/web.xml] を以下のよう変更します。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">&lt;?</span><span class="pln">xml version</span><span class="pun">=</span><span class="str">"1.0"</span><span class="pln"> encoding</span><span class="pun">=</span><span class="str">"utf-8"</span><span class="pun">?&gt;</span></li><li class="L1"><span class="tag">&lt;web-app</span><span class="pln"> </span><span class="atn">xmlns:xsi</span><span class="pun">=</span><span class="atv">"http://www.w3.org/2001/XMLSchema-instance"</span></li><li class="L2"><span class="atn">xmlns</span><span class="pun">=</span><span class="atv">"http://java.sun.com/xml/ns/javaee"</span></li><li class="L3"><span class="atn">xmlns:web</span><span class="pun">=</span><span class="atv">"http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"</span></li><li class="L4"><span class="atn">xsi:schemaLocation</span><span class="pun">=</span><span class="atv">"http://java.sun.com/xml/ns/javaee</span></li><li class="L5"><span class="atv">http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"</span><span class="pln"> </span><span class="atn">version</span><span class="pun">=</span><span class="atv">"2.5"</span><span class="tag">&gt;</span></li><li class="L6"><span class="pln">    </span><span class="tag">&lt;display-name&gt;</span><span class="pln">Hello Struts2</span><span class="tag">&lt;/display-name&gt;</span></li><li class="L7"><span class="pln">    </span><span class="tag">&lt;filter&gt;</span></li><li class="L8"><span class="pln">        </span><span class="tag">&lt;filter-name&gt;</span><span class="pln">struts2</span><span class="tag">&lt;/filter-name&gt;</span></li><li class="L9"><span class="pln">        </span><span class="tag">&lt;filter-class&gt;</span><span class="pln">org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</span><span class="tag">&lt;/filter-class&gt;</span></li><li class="L0"><span class="pln">        </span><span class="tag">&lt;init-param&gt;</span></li><li class="L1"><span class="pln">            </span><span class="tag">&lt;param-name&gt;</span><span class="pln">actionPackages</span><span class="tag">&lt;/param-name&gt;</span></li><li class="L2"><span class="pln">            </span><span class="tag">&lt;param-value&gt;</span><span class="pln">hello</span><span class="tag">&lt;/param-value&gt;</span></li><li class="L3"><span class="pln">        </span><span class="tag">&lt;/init-param&gt;</span></li><li class="L4"><span class="pln">    </span><span class="tag">&lt;/filter&gt;</span></li><li class="L5"><span class="pln">    </span><span class="tag">&lt;filter-mapping&gt;</span></li><li class="L6"><span class="pln">        </span><span class="tag">&lt;filter-name&gt;</span><span class="pln">struts2</span><span class="tag">&lt;/filter-name&gt;</span></li><li class="L7"><span class="pln">        </span><span class="tag">&lt;url-pattern&gt;</span><span class="pln">/*</span><span class="tag">&lt;/url-pattern&gt;</span></li><li class="L8"><span class="pln">    </span><span class="tag">&lt;/filter-mapping&gt;</span></li><li class="L9"><span class="pln">    </span><span class="tag">&lt;listener&gt;</span></li><li class="L0"><span class="pln">        </span><span class="tag">&lt;listener-class&gt;</span><span class="pln">listener.OgnlListener</span><span class="tag">&lt;/listener-class&gt;</span></li><li class="L1"><span class="pln">    </span><span class="tag">&lt;/listener&gt;</span></li><li class="L2"><span class="tag">&lt;/web-app&gt;</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 468px;"></textarea></div></div></div>
-
-<p>以下のような構成になります。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-rLQSQv9LuXE/UxCnBYGeT4I/AAAAAAAAGhU/W39eOcwUq58/s800/f02.png" alt="struts2"></p>
-
-<p>プロジェクトエクスプローラの [HelloGaeStruts2] を選択した状態で右クリック、[実行][Web アプリケーション]を選択します。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-DY_urdexX1o/UxCnA-AY1XI/AAAAAAAAGhM/2EpVkNanPOk/s640/f03.png" alt="struts2"></p>
-
-<p>http://localhost:8888/login.action にアクセスすると Struts2 のアプリケーションが実行されます。</p>
-
-<h2>Struts2 を App エンジンにデプロイする</h2>
-
-<p><a href="https://appengine.google.com/">https://appengine.google.com/</a> にアクセス後、[Create Application] をクリックし、Struts2 アプリ用のデプロイ領域を作成します（ここでは [Application Idenfifier] を hello-gae-struts2 、[Application Title] を Hello Struts2 とします）。</p>
-
-<p>Eclipse を一旦終了し、eclipse.ini をテキストエディタで開きます。</p>
-
-<p><img src="https://lh4.googleusercontent.com/-7UMZntghk60/UxCnCE-7ejI/AAAAAAAAGhg/AKq-amer4fE/s400/g01.png" alt="struts2"></p>
-
-<p>[-vmargs] と記述されてる箇所の１行上に、以下のよう JDK の javaw.exe のパスを記述します（この記述が無いとデプロイ時に jsp がコンパイルエラーになります）。</p>
-
-<div class="ex-code-prettify ex-code-prettify-hide-demo"><div class="demo-area" style="display: none;"><span class="demo-title-area"><span class="demo-title">DEMO</span></span></div><div class="code-area hide-demo"><div class="ex-code-prettify-contents"><div class="ex-code-prettify-tools"><span class="title"></span><span class="ex-code-prettify-edit-tools"><a href="#" class="ex-code-prettify-back">BACK</a></span><span class="ex-code-prettify-view-tools"><a href="#" class="ex-code-prettify-raw">RAW</a></span></div><pre class="ex-code-prettify prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><span class="pun">-</span><span class="pln">vm</span></li><li class="L1"><span class="pln">C</span><span class="pun">:</span><span class="pln">\IDE\jdk1</span><span class="pun">.</span><span class="lit">7.0</span><span class="pln">_51\b</span><span class="kwd">in</span><span class="pln">\javaw</span><span class="pun">.</span><span class="pln">exe</span></li></ol></pre><textarea readonly="" style="font-family: monospace; font-size: 13px; line-height: normal; height: 90px;"></textarea></div></div></div>
-
-<p>テキストエディタを閉じ、Eclipse を実行します。</p>
-
-<p>プロジェクトエクスプローラの [HelloGae] を選択、右クリック[プロパティ][Google][App エンジン]を選択し、[アプリケーションID] に App エンジン上で作成したアプリケーション ID を指定（ここでは hello-gae-struts2）。<br>
-同様に右クリック [Google][App エンジンへデプロイ]でデプロイします。</p>
-
-<p><img src="https://lh6.googleusercontent.com/-fnCtFHTj01U/UxCnCCkx29I/AAAAAAAAGhk/RZ7fGHzN9sc/s640/g02.png" alt="struts2"></p>
-
-<p>http://hello-gae-struts2.appspot.com/login.action にアクセスすると App エンジン上で Struts2 のアプリケーションが実行されます。</p>
-
-<p><div class="for-top"><a href="http://hello-gae-struts2.appspot.com/login.action" class="demo external" target="_blank">Demo</a></div></p>
-
-<h2>サンプルソース</h2>
-
-<p>こちらからどうぞ。App エンジンで Struts2 を使用する場合はこれを雛形にすると楽かと思います。</p>
-
+</li>
+<li>例外エラー通知アプリ<ul>
+<li>Vue を利用。本体アプリに存在する機能で、同機能を移植し、アダプター層とフォトショもどきアプリで使う</li>
+</ul>
+</li>
+<li>フォトショもどきアプリ<ul>
+<li>Vue を利用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Code Splitting する箇所</p>
 <ul>
-<li><a href="https://github.com/cyokodog/JAVA_STUDY/tree/master/HelloGae">HelloGae – GitHub</a></li>
-<li><a href="https://github.com/cyokodog/JAVA_STUDY/tree/master/HelloGaeStruts2">HelloGaeStruts2 – GitHub</a></li>
+<li>例外エラー通知アプリとフォトショもどきアプリで Vue を使用している<ul>
+<li>Vue を含むチャンクファイルを生成し、両アプリからはこの Vue を参照する</li>
 </ul>
-
-<h2>参考にしたサイト</h2>
-
+</li>
+<li>フォトショもどきアプリ初期化時に、非同期データの取得や Canvas のマウント待ちがある<ul>
+<li>フラグ管理したくないので Dynamic Import（非同期コンポーネント）を使用する</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="-">複数エントリポイントで利用する共通モジュールのチャンク化</h2>
 <ul>
-<li><a href="http://appengine.keicode.com/devenv/google-plugin-eclipse.php">Google Plugin for Eclipse を zip からインストールする方法 – Google App Engine 入門</a></li>
-<li><a href="http://blog.as-toybox.com/archives/193">GAE/j用struts2環境構築 – ASのおもちゃ箱開発ブログ</a></li>
-<li><a href="http://atmarkplant-dj.blogspot.sg/2012/01/google-app-enginestruts2.html">Google App Engine(Struts2 との連携) </a></li>
-<li><a href="https://groups.google.com/forum/#!topic/google-app-engine-japan/ymbsf-1Mf4I">java-sdk-1.7.5でJSPが含まれるプロジェクトをデプロイできない – Googleグループ</a></li>
-<li><a href="https://groups.google.com/forum/#!msg/google-app-engine-japan/c9P0cif5VQY/X6X8Zl6Pp_kJ">gae/j 1.8.7でJSPコンパイルエラーが原因でデプロイできない – Googleグループ</a></li>
-<li><a href="http://ten-speed-bicycle.blogspot.jp/2013/01/cannot-get-system-java-compiler-please.html">Cannot get the System Java Compiler. Please use a JDK, not a JRE. I have set the build path to JDK – Life is like a ten-speed bicycle </a></li>
+<li>webpack.config.js に splitChunks の設定を書くと、複数エントリポイントで共通で利用されているモジュールがチャンクファイルとしてまとめられて出力される</li>
+<li>チャンクファイルはデフォルトでは、node_modules 配下のモジュール or その他の場所のモジュール、で分けてまとめられる</li>
+<li>但し、30Kb 未満のモジュールは対象外となる</li>
 </ul>
+<pre><code>...
+  entry: {
+    foo: path.resolve(__dirname, &quot;./src/foo.ts&quot;),
+    bar: path.resolve(__dirname, &quot;./src/bar.ts&quot;),
+  },
+  output: {
+    path: path.resolve(__dirname, &quot;./public/scripts&quot;),
+    filename: &quot;[name].bundle.js&quot;,
+  },
+  optimization: {
+    splitChunks: {
+      chunks: &quot;all&quot;,
+    },
+  },
+};
+</code></pre><p>foo.ts、bar.ts において、node_modules 配下とそれ以外の場所で、30Kb 以上のモジュールを利用していた場合、以下のように 3 つのバンドルファイルができる</p>
+<pre><code>foo.bundle.js
+bar.bundle.js
+vendors~bar~foo.bundle.js // node_modules配下のモジュール
+bar~foo.bundle.js // node_modules配下以外のモジュール
+</code></pre><ul>
+<li>vendors~bar~foo.bundle.js 、bar~foo.bundle.js というファイル名から、foo.bundle.js と bar.bundle.js から参照されていることが分かる</li>
+<li>もし、foo.bundle.js からしか参照されてない場合は、vendors~foo.bundle という名前になる</li>
+<li>モジュールの束ね方やファイル名を調整することもできる<ul>
+<li>詳細: <a href="https://webpack.js.org/plugins/split-chunks-plugin/">https://webpack.js.org/plugins/split-chunks-plugin/</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="vendors-">vendors 接頭辞を除去する</h3>
+<pre><code>{
+  splitChunks: {
+    chunks: &quot;all&quot;,
+    cacheGroups: {
+      vendors: false, // vendorsという接頭辞を除去する
+    },
+  }
+}
 
+// 出力結果
+bar~foo.bundle.js // node_modules配下か否かは無関係に、共通利用されている全てのモジュールがバンドルされる
+</code></pre><h3 id="vendors-commons-">vendors 接頭辞を commons にする</h3>
+<p>この設定を追加した場合、（デフォルト設定が上書きされ）node_modules 配下以外のモジュールは対象外になるので、node_modules 以外に切り出したいモジュールがある場合は、cacheGroups にそれらモジュールを配置しているパスを別途設定する必要がある。</p>
+<pre><code>{
+  splitChunks: {
+    cacheGroups: {
+      commons: { // 接頭辞をcommonsにする
+        test: /[\\/]node_modules[\\/]/, // 対象パスを指定
+        chunks: &quot;all&quot;,
+      },
+    },
+  },
+}
+
+// 出力結果
+commons~bar~foo.bundle.js // vendors 接頭辞が commons 接頭辞になる
+</code></pre><h3 id="-">ファイル名の接続子を - にする</h3>
+<p>ファイル名に<code>~</code>が含まれてると、AWS の CloudFront で問題になる場合があるらしい</p>
+<pre><code>{
+  automaticNameDelimiter: &quot;-&quot;, // ファイル名の接続子を - にする
+  splitChunks: {
+    chunks: &quot;all&quot;,
+  }
+}
+
+// 出力結果
+vendors-bar-foo.bundle.js // ~ -&gt; - になる
+bar-foo.bundle.js
+</code></pre><h3 id="-">ファイル名にモジュール名を含める</h3>
+<p><code>name</code>プロパティを使うと、モジュール情報・設定値を参照でき、それらを元にファイル名を決定することができる。</p>
+<pre><code>{
+  splitChunks: {
+    cacheGroups: {
+      commons: {
+        test: /[\\/]node_modules[\\/]/,
+
+        // モジュール情報を引数にとりファイル名を決めることもできる
+        // 以下ではモジュール名をファイル名に含めている
+        name(module, chunks, cacheGroupKey) {
+          const moduleFileName = module
+            .identifier()
+            .split(&quot;/&quot;)
+            .reduceRight((item) =&gt; item);
+          const allChunksNames = chunks.map((item) =&gt; item.name).join(&quot;~&quot;);
+          return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
+        },
+        chunks: &quot;all&quot;,
+      },
+    },
+  },
+}
+
+// 出力結果
+commons-foo-moment.js.bundle.js // foo が moment.js を使っていた場合
+commons-foo~bar-lodash.js.bundle.js // foo と bar が lodash.js を使っていた場合
+</code></pre><p>※ CodeGrid でも<a href="https://app.codegrid.net/entry/2018-catch-up-webpack-2">詳しく紹介されてた</a>ことに後から気づいた... けど、バージョン違いのせいか微妙に挙動が違っていた（commons 接頭辞とか<code>chunks:initial</code>の扱いとか）</p>
+<h3 id="-">チャンク化されたモジュールの読み込み</h3>
+<ul>
+<li>チャンク化されたモジュールは script タグで事前に読み込んでおく必要がある</li>
+<li>この事前読み込みを忘れてもエラーはでず、foo.bundle.js や bar.bundle.js も実行されないので注意が必要</li>
+</ul>
+<pre><code class="lang-html">&lt;!-- foo.html --&gt;
+&lt;script src=&quot;./scripts/vendors~bar~foo.bundle.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./scripts/vendors~foo.bundle.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./scripts/foo.bundle.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- bar.html --&gt;
+&lt;script src=&quot;./scripts/vendors~bar~foo.bundle.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;./scripts/bar.bundle.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<h2 id="dynamic-import">Dynamic Import</h2>
+<ul>
+<li>以下のような構文で動的にモジュールをインポートすることができる</li>
+</ul>
+<pre><code class="lang-ts">import(&quot;./lib/moment&quot;).then((Moment) =&gt; {
+  const m = Moment.default();
+  console.log(m.format(&quot;YYYY-MM-DD HH:mm:ss&quot;));
+});
+</code></pre>
+<ul>
+<li>対象となったモジュールは、<code>0.bundle.js</code>といった連番が付与されたファイル名で別チャンクとして出力され、コード実行時に動的に取得される</li>
+<li>その際、モジュールが置かれてる場所を実行コードが知っている必要があるため、webpack.config.js に<code>publicPath</code>の設定をしておく必要がある</li>
+<li>例えば、バンドルファイルの出力先が<code>./public/scripts</code>で、公開 URL の物理パスが<code>./public/</code>であった場合は、次のような設定となる</li>
+</ul>
+<pre><code class="lang-js">{
+  ...
+  output: {
+    path: path.resolve(__dirname, &quot;./public/scripts&quot;),
+    filename: &quot;[name].bundle.js&quot;,
+    publicPath: &quot;/scripts/&quot;,
+  }
+}
+</code></pre>
+<ul>
+<li>この設定を忘れると、ルートパス（<code>./public/</code>）にモジュールを取得しにいくため、実行時に 404 エラーになる</li>
+<li>TypeScript で Dynamic Import を使う場合は、<code>--module</code>オプションに<code>es2020</code>, <code>esnext</code>, <code>commonjs</code>, <code>amd</code>, <code>system</code>, <code>umd</code>のいずれかを指定する必要がある<ul>
+<li>※ webpack の<code>splitChunks.chunks</code>の設定値は Dynamic Import に特に影響はなさそう（<code>initial</code>でも普通に使える）</li>
+</ul>
+</li>
+</ul>
+<h2 id="-">非同期コンポーネント</h2>
+<ul>
+<li>Dynamic Import で取得されるコンポーネントのことを（Vue のサイトでは）Async Components（非同期コンポーネント）と呼んでいるっぽい<ul>
+<li>Vue<ul>
+<li><a href="https://v3.vuejs.org/guide/component-dynamic-async.html#using-with-suspense">Dynamic &amp; Async Components | Vue.js</a></li>
+<li><a href="https://v3.vuejs.org/guide/migration/async-components.html#overview">Async Components | Vue.js</a></li>
+</ul>
+</li>
+<li>React<ul>
+<li><a href="https://ja.reactjs.org/docs/code-splitting.html">コード分割 – React</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SPA では Router でページを振り分ける際、各ページを非同期コンポーネントとして取得する使い方がよく紹介される</li>
+<li>コンポーネント側が、非同期で得られるデータを要する前提である場合、フラグ管理が不要になるというメリットもある</li>
+</ul>
+<h3 id="-vue3-">フラグを使って非同期データが得られるまで、子コンポーネントを実行しないようにする例（Vue3）</h3>
+<pre><code>&lt;script lang=&quot;ts&quot;&gt;
+import Foo from &quot;./Foo.vue&quot;;
+
+export default defineComponent({
+  components: {
+    Foo,
+  },
+  setup() {
+    const settings = ref(null);
+    const hasSettings = computed(() =&gt; !!settings.value);
+    fetchSettings().then((res) =&gt; (settings.value = res));
+    return {
+      settings,
+      hasSettings,
+    };
+  },
+});
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- settingsがnullの状態でFooは実行されない --&gt;
+  &lt;Foo v-if=&quot;hasSettings&quot; :settings=&quot;settings&quot; /&gt;
+&lt;/template&gt;
+</code></pre><h3 id="defineasynccomponent-">defineAsyncComponent による非同期コンポーネント</h3>
+<p><code>defineAsyncComponent</code>を使い、非同期処理を待った上で、Dynamic Import したコンポーネントを返すようにする（フラグ管理が不要）</p>
+<pre><code>&lt;script lang=&quot;ts&quot;&gt;
+const settings = ref(null);
+const settingsAsPromise = fetchSettings().then((res) =&gt; (settings.value = res))
+
+const Foo = defineAsyncComponent(async() =&gt; {
+  await settingsAsPromise;
+  return import(&#39;./Foo.vue&#39;);
+});
+
+export default defineComponent({
+  components: {
+    Foo,
+  },
+  setup() {
+    return {
+      settings
+    };
+  },
+});
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;!-- settingsがnullの状態でFooは実行されない --&gt;
+  &lt;Foo :settings=&quot;settings&quot; /&gt;
+&lt;/template&gt;
+</code></pre><p><code>defineAsyncComponent</code>にオブジェクトを指定することで、ロード中、エラー時に表示するコンポーネントや、タイムアウト時間等を指定できる</p>
+<pre><code class="lang-ts">const Foo = defineAsyncComponent({
+  loader: async () =&gt; {
+    await settingsAsPromise;
+    return import(&quot;./Foo.vue&quot;);
+  },
+  // loader()のPromiseが完了するまで表示される
+  loadingComponent: Loading,
+
+  // いろいろ試したけど、どーすればこれが呼ばれるのかがわからない...
+  errorComponent: ExceptionError,
+
+  // ロード時間がこれを超過するとonErrorCaptured()が呼ばれる
+  timeout: 300,
+
+  // componentの読み込みの開始を遅らせる
+  delay: 3000,
+
+  onError(_error, _retry, _fail, _attempts) {
+    // 上記 loader() 内でエラーが発生すると呼ばれる
+    console.log(&quot;onError&quot;, _error);
+  },
+});
+
+export default defineComponent({
+  components: {
+    Foo,
+  },
+  setup() {
+    onErrorCaptured((e) =&gt; {
+      // 非同期コンポーネント内でエラーが発生すると呼ばれる
+      return false;
+    });
+    return {
+      settings,
+    };
+  },
+});
+</code></pre>
+<h3 id="async-setup-">async setup()による非同期コンポーネント</h3>
+<ul>
+<li>データ取得処理を非同期コンポーネント側に書いても馴染むのであれば、コンポーネントを<code>async setup(){ ... }</code>で定義し、その中でデータ取得処理をするという方法もある</li>
+</ul>
+<pre><code class="lang-ts">export default defineComponent({
+  async setup() {
+    const bar = await fetchBar();
+    return {
+      ...
+    };
+  },
+});
+</code></pre>
+<ul>
+<li>親コンポーネント側で<code>&lt;Suspense&gt;</code>と<code>&lt;template #default&gt;</code>で囲うと、データ取得後に非同期コンポーネントが描画され、データ取得中は<code>&lt;template #fallback&gt;</code>内が表示される</li>
+</ul>
+<pre><code class="lang-html">&lt;Suspense&gt;
+  &lt;template #default&gt;
+    &lt;Bar /&gt;
+  &lt;/template&gt;
+  &lt;template #fallback&gt; Loading Bar... &lt;/template&gt;
+&lt;/Suspense&gt;
+</code></pre>
+<h2 id="react-named-export-">React で named export された非同期コンポーネントを扱う</h2>
+<ul>
+<li>React で Router を併用し、非同期コンポーネントを扱う方法が以下に書かれている<ul>
+<li><a href="https://ja.reactjs.org/docs/code-splitting.html#named-exports">コード分割 – React</a></li>
+</ul>
+</li>
+<li>Redux を併用した場合だと以下のように書ける</li>
+</ul>
+<pre><code class="lang-tsx">import React, { Suspense } from &quot;react&quot;;
+import { BrowserRouter as Router, Route, Switch } from &quot;react-router-dom&quot;;
+
+import Home from &quot;./containers/Home&quot;;
+import { useDispatch } from &quot;react-redux&quot;;
+import { AppDispatch } from &quot;./store&quot;;
+
+const TodoLoader: React.FC = () =&gt; {
+  const dispatch: AppDispatch = useDispatch();
+  const Todo = React.lazy(async () =&gt; {
+    await dispatch(loadTasks()); // redux によるデータ取得を待つ
+    return import(&quot;./containers/Todo&quot;);
+  });
+  return &lt;Todo /&gt;;
+};
+
+export const App: React.FC = () =&gt; {
+  return (
+    &lt;Router&gt;
+      &lt;Suspense fallback={&lt;div&gt;初期化中...&lt;/div&gt;}&gt;
+        &lt;Switch&gt;
+          &lt;Route exact path=&quot;/&quot; component={Home} /&gt;
+          &lt;Route exact path=&quot;/todo&quot; component={TodoLoader} /&gt;
+        &lt;/Switch&gt;
+      &lt;/Suspense&gt;
+    &lt;/Router&gt;
+  );
+};
+</code></pre>
+<ul>
+<li>React の場合、Vue の SFC と違って TSX で普通のモジュールとして書けるので、以下のような理由で named export したくなる<ul>
+<li><a href="https://typescript-jp.gitbook.io/deep-dive/main-1/defaultisbad">Avoid Export Default - TypeScript Deep Dive 日本語版</a></li>
+<li><a href="https://engineering.linecorp.com/ja/blog/you-dont-need-default-export/">なぜ default export を使うべきではないのか？ - LINE ENGINEERING</a></li>
+</ul>
+</li>
+<li>が、ドキュメントを見ると次のように言っており、モジュールファイルを 1 つ増やさないとならないようで面倒...<ul>
+<li><a href="https://ja.reactjs.org/docs/code-splitting.html#named-exports">https://ja.reactjs.org/docs/code-splitting.html#named-exports</a></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>React.lazy は現在デフォルトエクスポートのみサポートしています。インポートしたいモジュールが名前付きエクスポートを使用している場合、それをデフォルトとして再エクスポートする中間モジュールを作成できます。</p>
+</blockquote>
+<ul>
+<li>しかし、Dynamic Import 時に次のような<code>default</code>関数持つオブジェクトを返すようにすれば、named export にも対応できる</li>
+</ul>
+<pre><code class="lang-ts">const TodoLoader: React.FC = () =&gt; {
+  const Todo = React.lazy(async () =&gt; {
+    // データ取得処理
+
+    const module = await import(&quot;./containers/Todo&quot;);
+    return {
+      default: () =&gt; module.Todo({}),
+    };
+  });
+  return &lt;Todo /&gt;;
+};
+</code></pre>
+<ul>
+<li>非同期コンポーネントが props を欲しがってる場合は、次のように渡せる</li>
+</ul>
+<pre><code class="lang-ts">const TodoLoader: React.FC = () =&gt; {
+  const Todo = React.lazy(async () =&gt; {
+    const tasks = await fetchTasks();
+    const module = await import(&quot;./containers/Todo&quot;);
+    return {
+      default: () =&gt; module.Todo({ tasks }), // propsとしてtasksを渡す
+    };
+  });
+  return &lt;Todo /&gt;;
+};
+</code></pre>
 
     </div>
 
