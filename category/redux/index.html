@@ -74,6 +74,31 @@
 <article class="article">
   <div class="article__header">
     <h1 class="article__title">
+      <a href="/blog/http-302-status/" title="セッション切れ時のフロント側の制御について">セッション切れ時のフロント側の制御について</a>
+    </h1>
+    <ul class="article__info">
+      <li class="article__info__date">2020-10-16</li>
+<!--
+      <li class="article__info__category"><a href="/category/redux/" rel="category tag">Redux</a></li>
+-->
+    </ul>
+  </div>
+  <div class="article__body">
+    <p>開発中の SPA ベースのアプリにおいて「API 呼び出し時、サーバでセッション切れを起こしていた場合は、フロント側でエラーメッセージを表示した後ログイン画面へ遷移させる」という処理が正常に動いていないという、以下のような指摘を受けた。</p>
+<ul>
+<li>セッション切れの際は認証プロキシがレスポンステータス 302 を返している</li>
+<li>フロント側で 302 をキャッチした時の分岐が書かれていないため処理が止まっているのでは？</li>
+</ul>
+
+<!--
+    <a href="/blog/http-302-status/" class="more-link">Read More</a>
+-->
+  </div>
+
+</article>
+<article class="article">
+  <div class="article__header">
+    <h1 class="article__title">
       <a href="/blog/redux-tookit/" title="Redux Toolkitをさわってみる">Redux Toolkitをさわってみる</a>
     </h1>
     <ul class="article__info">
@@ -104,31 +129,6 @@
 <article class="article">
   <div class="article__header">
     <h1 class="article__title">
-      <a href="/blog/redux-toolkit-async-thunk/" title="Redux Toolkit の AsyncThunk をさわってみる">Redux Toolkit の AsyncThunk をさわってみる</a>
-    </h1>
-    <ul class="article__info">
-      <li class="article__info__date">2020-06-04</li>
-<!--
-      <li class="article__info__category"><a href="/category/redux/" rel="category tag">Redux</a></li>
--->
-    </ul>
-  </div>
-  <div class="article__body">
-    <p><a href="/blog/redux-tookit/">Redux Toolkit をさわってみる</a> のつづき。createAsyncThunk とは</p>
-<ul>
-<li>Redux Toolkit の機能の 1 つで、Redux Toolkit v1.3.0 から使える</li>
-<li>非同期処理に対応した ActionCreator を生成する関数</li>
-</ul>
-
-<!--
-    <a href="/blog/redux-toolkit-async-thunk/" class="more-link">Read More</a>
--->
-  </div>
-
-</article>
-<article class="article">
-  <div class="article__header">
-    <h1 class="article__title">
       <a href="/blog/redux-toolkit-entity-adapter/" title="Redux Toolkit の EntityAdapter をさわってみる">Redux Toolkit の EntityAdapter をさわってみる</a>
     </h1>
     <ul class="article__info">
@@ -151,6 +151,31 @@
 
 <!--
     <a href="/blog/redux-toolkit-entity-adapter/" class="more-link">Read More</a>
+-->
+  </div>
+
+</article>
+<article class="article">
+  <div class="article__header">
+    <h1 class="article__title">
+      <a href="/blog/redux-toolkit-async-thunk/" title="Redux Toolkit の AsyncThunk をさわってみる">Redux Toolkit の AsyncThunk をさわってみる</a>
+    </h1>
+    <ul class="article__info">
+      <li class="article__info__date">2020-06-04</li>
+<!--
+      <li class="article__info__category"><a href="/category/redux/" rel="category tag">Redux</a></li>
+-->
+    </ul>
+  </div>
+  <div class="article__body">
+    <p><a href="/blog/redux-tookit/">Redux Toolkit をさわってみる</a> のつづき。createAsyncThunk とは</p>
+<ul>
+<li>Redux Toolkit の機能の 1 つで、Redux Toolkit v1.3.0 から使える</li>
+<li>非同期処理に対応した ActionCreator を生成する関数</li>
+</ul>
+
+<!--
+    <a href="/blog/redux-toolkit-async-thunk/" class="more-link">Read More</a>
 -->
   </div>
 
@@ -187,17 +212,19 @@
           <li><a href="/category/jquery/">jQuery</a></li>
           <li><a href="/category/info/">Information</a></li>
           <li><a href="/category/life/">Life</a></li>
-          <li><a href="/category/javascript/">JavaScript</a></li>
           <li><a href="/category/redux/">Redux</a></li>
-          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
           <li><a href="/category/typescript/">TypeScript</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
           <li><a href="/category/cloud-service/">Cloud Service</a></li>
+          <li><a href="/category/http/">HTTP</a></li>
         </ul>
       </div>
   
       <div class="wp-widget">
         <div class="wp-widget__header">Recent Posts</div>
         <ul>
+          <li><a href="/blog/http-302-status/">セッション切れ時のフロント側の制御について</a></li>
           <li><a href="/blog/code-splitting-and-async-component/">Code Splitting と非同期コンポーネント</a></li>
           <li><a href="/blog/typescript-enum-replacement/">Enum の代わりに使う union 型</a></li>
           <li><a href="/blog/redux-toolkit-entity-adapter/">Redux Toolkit の EntityAdapter をさわってみる</a></li>
@@ -344,6 +371,10 @@
       <div class="wp-widget">
         <div class="wp-widget__header" id="allPosts">All Posts</div>
           <ul>
+            <li>
+              <span class="post-date">2020-10-16</span>
+              <a href="/blog/http-302-status/">セッション切れ時のフロント側の制御について</a>
+            </li>
             <li>
               <span class="post-date">2020-10-10</span>
               <a href="/blog/code-splitting-and-async-component/">Code Splitting と非同期コンポーネント</a>
