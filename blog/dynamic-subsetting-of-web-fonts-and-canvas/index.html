@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+	<meta http-equiv="Content-Language" content="ja" />
+	<meta name="keywords" content="jquery,javascript,css" />
+	<meta name="description" content="" />
+	<title>動的サブセッティング下でのWebフォントのCanvasへの適用方法 | CYOKODOG</title>
+	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!--
+	<link href='http://fonts.googleapis.com/css?family=Raleway:300' rel='stylesheet' type='text/css'>-->
+
+  <link href='/theme/cyokodog/raleway.css' rel='stylesheet' type='text/css'>
+  <link rel='stylesheet' href='/theme/cyokodog/css/app.min.css?a' type='text/css' media='all' />
+  <link rel='stylesheet' id='style-css'  href='/theme/cyokodog/index.css' type='text/css' media='all' />
+
+
+</head>
+<body class="single single-post postid-232 single-format-standard logged-in " >
+	<div class="l-header">
+		<div class="u-layout-center">
+      <div class="site-header">
+        <a class="site-header__logo" href="/">
+          <img src="https://lh4.googleusercontent.com/-u47wdUJYuNk/Tuiz2w6sLuI/AAAAAAAAEGA/v0cmgN4ZysU/s144/DSC01588.JPG"/>
+        </a>
+        <div class="site-header__text">
+          <h1>
+            <a href="/">CYOKODOG</a>
+            <span class="social-icons">
+              <a class="fa fa-github-square" href="https://github.com/cyokodog"></a>
+              <a class="fa fa-twitter-square" href="https://twitter.com/cyokodog"></a>
+              <!--<a class="fa fa-facebook-square" href="https://www.facebook.com/"></a>-->
+              <a class="fa fa-google-plus-square" href="https://plus.google.com/u/0/115524754009910942363/posts"></a>
+            </span>
+          </h1>
+          <h2>JS DEVELOPER BLOG
+          </h2>
+        </div>
+
+<!--         <div class="site-header__search">
+          <form class="searchForm" action="http://www.google.com/search" method="get">
+            <input class="searchForm__queryData" name="q" type="hidden"/>
+            <input class="searchForm__query" type="text" id="s" value=""/>
+          </form>
+			  </div>
+ -->
+      </div>
+    </div>
+	</div>
+
+	<div class="l-site-nav">
+		<div class="u-layout-center">
+			<div class="tab site-nav">
+        <ul>
+          <li class="page_item ">
+            <a href="/">HOME</a>
+          </li>
+          <li class="page_item current_page_parent">
+            <a href="/blog/">BLOG</a>
+          </li>
+        </ul>
+      </div>
+		</div>
+	</div>
+
+  <div class="l-contents">
+    <div class="u-layout-center">
+<div class="l-article">
+  <article class="article">
+
+    <div class="article__header">
+      <h1 class="article__title">
+        <a href="/blog/dynamic-subsetting-of-web-fonts-and-canvas/" title="動的サブセッティング下でのWebフォントのCanvasへの適用方法">動的サブセッティング下でのWebフォントのCanvasへの適用方法</a>
+      </h1>
+      <ul class="article__info">
+        <li class="article__info__date">2022-07-13</li>
+<!--
+        <li class="article__info__category"><a href="" rel="category tag"></a></li>
+-->
+      </ul>
+    </div>
+    <div class="article__body">
+    <p>CodeGrid で、Canvas への文字描画で Web フォントを適用する方法について書いた。</p>
+<ul>
+<li><a href="https://www.codegrid.net/series/2022-webfont-on-canvas">Canvas の Web フォント描画で活用する CSS Font Loading API | CodeGrid</a></li>
+</ul>
+<p>このシリーズでは、Google Fonts の静的サブセッティング下での適用方法を扱ったけど、動的サブセッティング下での解説は予定してないのでこちらに書いておく。</p>
+<!--more-->
+<h2 id="web-">Web フォントの基本的な仕組み</h2>
+<p>まず、Canvas 云々は置いといて、以下が Web フォントの基本的な仕組み（ほぼ CodeGrid に書いた内容）</p>
+<h3 id="-fontface-">フォントリストへの FontFace オブジェクトの追加</h3>
+<ul>
+<li>要素に Web フォントを適用するには以下前提がある<ul>
+<li>フォントソースとフォント名を紐付けた<code>FontFace</code>オブジェクトが、フォントリスト（<code>document.fonts</code>）内にある</li>
+<li><code>FontFace</code>の持つフォントソースからフォントデータが読み込まれている必要がある</li>
+</ul>
+</li>
+<li><code>FontFace</code>を追加する方法は 2 つある<ul>
+<li>CSS で<code>@font-face</code>ルールを書く<ul>
+<li><code>@font-face</code>の定義と同等の設定を持つ<code>FontFace</code>オブジェクトが自動的に生成され、フォントリストに追加される</li>
+<li>追加されるのを待つには、<code>document.fonts.ready</code>（Promise）を参照する（但し、これが有効なのは初期描画時点のみ）</li>
+</ul>
+</li>
+<li>JS で<code>FontFace</code>オブジェクトを生成しフォントリストに追加する<ul>
+<li><code>document.fonts.add(new FontFace(....))</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="-fontface-">動的サブセッティングの FontFace オブジェクトの追加方法</h3>
+<ul>
+<li><strong>基本的には</strong>、「Web フォントが適用された要素を見つけたタイミング」で、その文字を含むフォントデータを得るためのフォントソースを API から得て「フォントリストに追加」する<ul>
+<li>（静的サブセッテイングの場合は、すべてのサブセットを最初からフォントリストに読み込む）</li>
+</ul>
+</li>
+<li>「 Web フォントが適用された要素を見つける」のは、<ul>
+<li>Web フォントサービスが提供する独自実装された JS で、サービスを利用するにはこの JS の読み込みが必要</li>
+<li>（静的サブセッテイングの場合は、ブラウザが勝手にやる）</li>
+</ul>
+</li>
+<li>「フォントリストに追加」する方法は、上記 JS の実装により異なる<ul>
+<li>JS だったり（<code>document.fonts.add</code>）</li>
+<li>CSS にまかせたり（<code>&lt;style&gt;@font-face{...}&lt;/style&gt;</code>を<code>&lt;head&gt;</code>に append）</li>
+<li>（静的サブセッテイングの場合は、ブラウザが勝手にやる）</li>
+</ul>
+</li>
+</ul>
+<h3 id="-">フォントデータの読み込み要求</h3>
+<ul>
+<li>ブラウザは次の条件でフォントデータの読み込みを試みる（試みはするけど実際に読み込まれるとは限らない）<ul>
+<li>フォントリスト内のフォントが適用された要素を検出した時<ul>
+<li>動的サブセッティング提供の JS がフォントリストの追加をするのは、要素へのフォント適用を検出した時なので、結果としてブラウザによる読み込み要求の対象となる</li>
+<li>ちなみに Canvas への Web フォント描画も検出対象になる、Web フォントで描画されないけど....（詳しくは CodeGrid）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>document.fonts.laod(...)</code>、<code>fontFace.load()</code>が実行された時<ul>
+<li>動的サブセッティングのサービスによっては、この<code>load()</code>メソッドで読み込み要求する実装もある</li>
+</ul>
+</li>
+</ul>
+<h3 id="-">フォントデータの読み込み条件</h3>
+<ul>
+<li>ブラウザによるフォント適用の検出があった時、または、<code>document.fonts.laod(...)</code>が実行された時、以下条件に一致する<code>FontFace</code>をフォントリスト内から見つけると、その<code>FontFace</code>のフォントソースからフォントデータを読み込む（<code>fontFace.load()</code>の場合は以下 1 つ目の条件のみが適用される）<ul>
+<li><code>FontFace.status</code>が<code>unloaded</code>であること</li>
+<li>対象フォントと<code>FontFace.family</code>が一致していること</li>
+<li>対象「文字列」内のいずれかの文字が<code>FontFace.unicodeRange</code>内にあること<ul>
+<li>静的サブセッティングではサブセット内に存在するフォントデータの範囲を、この<code>unicodeRange</code>に設定する</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="typesquare-web-">TypeSquare 下での Web フォントの利用</h2>
+<p>動的サブセッティング下で Canvas 描画するには、フォントの検出＆読み込みをする独自 JS が、どのようにして Web フォントを適用しているかを知ることが大事。なので、Canvas でない要素に Web フォントを適用した時の挙動を調べる。</p>
+<h3 id="-js-">独自 JS の読み込み</h3>
+<pre><code class="lang-html">&lt;script type=&quot;text/javascript&quot;
+src=&quot;//typesquare.com/3/tsad/script/ja/typesquare.js?5cedf0....&amp;auto_load_font=true&quot;
+charset=&quot;utf-8&quot;&gt;
+</code></pre>
+<p><code>auto_load_font=true</code>クエリの指定で、動的な Web フォントの適用も検出対象となる。</p>
+<h3 id="-font-face-fontface-">@font-face -&gt; FontFace の追加</h3>
+<p>初期レンダリングの時点で、Web フォントがどの要素にも割り当てられてなければ、<code>@font-face</code>の定義も、フォントリスト内の<code>FontFace</code>も存在しない状態になる。</p>
+<p>初期レンダリングの時点の割り当てや、動的な割り当てを検出すると、その都度<code>@font-face</code>の定義を含む<code>&lt;style&gt;</code>が<code>&lt;head&gt;</code>内に append され、この定義を反映した<code>FontFace</code>がフォントリストにも追加される。以下は、<code>a</code>という 1 文字に<code>Suzumushi</code>というフォントを割り当てた時に、append された<code>@font-face</code>と<code>FontFace</code>。</p>
+<p><code>@font-face</code>
+<img src="./images/image.png" alt=""></p>
+<p><code>FontFace</code>
+<img src="./images/image-1.png" alt=""></p>
+<p><code>status</code>が<code>loaded</code>になっているのは append により、フォントの検出と取得が生じ、<code>unloaded</code> -&gt; <code>loading</code> -&gt; <code>loaded</code>という遷移をしたため。また、<code>uncode-range</code>デスクプリタが指定されていないため、<strong><code>unicodeRange</code>は全文字範囲（<code>U+0-10FFFF</code>）が指定された状態</strong>になる。</p>
+<p>必要になった文字は、<code>fonts[str]=YQ%3D%3D</code>というクエリで指定される。<code>YQ%3D%3D</code>は文字列の値であり、この場合<code>a</code>に相当する。検出文字列が<code>abc</code>であれば<code>YWJj</code>という値が指定される（どういう変換なのかはよくわからない）</p>
+<h3 id="-">フォントデータの重複読み込みの抑止</h3>
+<p>静的サブセッティング下では、利用可能性のある全てのサブセットを、<code>unicodeRange</code>による<code>@font-face</code>で指定されている前提があるため、重複読み込みを抑止する機能が自動的に働く。</p>
+<p>しかし、動的サブセッティングの場合、必要となったフォントデータのフォントソースの参照を、動的にフォントリスト内に追加する構成なので、上記のような自動的な抑止機能は働かない。提供された JS 内で抑止処置がされてなければ、重複読み込みは発生してしまう。</p>
+<h3 id="-">検出文字列が以前の検出結果とぴったり一致してる場合</h3>
+<p>TypeSquare 場合は、検出文字列が以前の検出結果とぴったり一致してる場合のみ、重複読み込みが抑止される。
+たとえば、<code>a</code>という文字に Web フォント指定し、3 回非同期で表示した場合、</p>
+<p><img src="./images/image-2.png" alt=""></p>
+<p><code>a</code>に相当する<code>YQ%3D%3D</code>という値がクエリで指定されたフォントソース（<code>src</code>）の定義を含む<code>@font-face</code>が、3 つ append される。</p>
+<p><img src="./images/image-3.png" alt=""></p>
+<p><code>&lt;style&gt;</code>タグをまたいだ同じ定義内容である上記の 3 つ<code>@font-face</code>は、<strong>定義内容が同じなため 1 つの<code>FontFace</code>オブジェクトとしてまとめられ、フォントリスト内に追加される</strong>（ブラウザがそういう挙動を示す）。</p>
+<p><img src="./images/image-4.png" alt=""></p>
+<p>しかし、仮に、次のように同一<code>&lt;style&gt;</code>タグ内に同じ定義の<code>@font-face</code>が 3 つ存在した場合は、</p>
+<p><img src="./images/image-5.png" alt=""></p>
+<p><code>FontFace</code>オブジェクトも 3 つ生成される。</p>
+<p><img src="./images/image-6.png" alt=""></p>
+<p>ので、JS で重複読み込みを抑止しているというより、ブラウザの気が効いていて、結果として抑止されているという感じ。</p>
+<h3 id="-">既にフォントデータを取得した文字が検出結果に含まれていた場合</h3>
+<p>たとえば、<code>ab</code>という文字のフォントは取得済みな状態で、新たな検出結果が<code>abc</code>という文字列だった場合、必要なフォントデータは<code>c</code>のみだけど<code>abc</code>を含むフォントデータが返される。
+ので、取得済みかどうかは関係なく、<code>fonts[str]</code>に指定する文字数が増える程、読み込みデータ量も増える結果となる。</p>
+<h2 id="typesquare-canvas-web-">TypeSquare 下での Canvas への Web フォントの適用</h2>
+<p>Canvas に Web フォントを適用するには、描画文字に対応するフォントデータが、読み込み済みの状態になっている必要がある。そのため、静的サブセティング下では、<code>FontFaceSet#load</code>を使い、事前に生成されたフォントリストの定義内容をもとにフォントデータの読み込みを行う。</p>
+<p>一方、動的サブセッティング下の場合、初期段階では、フォントリスト自体が空の状態のため、以下の一連の処理が必要になる。</p>
+<ol>
+<li>フォントを適用したい任意の文字列を指定することで、そのフォントデータが得られるフォントソースを返す、Web フォントサービスが提供する API の実行</li>
+<li>1 で得たフォントソースを指定した<code>FontFace</code>オブジェクトの生成とフォントリストへの追加</li>
+<li>フォントデータの読み込み実行と、読み込み待ち</li>
+<li>Web フォントを適用した文字列の Canvas への描画</li>
+</ol>
+<h3 id="-">フォントデータの読み込み待ち問題</h3>
+<p>TypeSquare では、1 を行うための<code>window.Ts.loadFontAsync(FontObj)</code>という API が用意されている。</p>
+<ul>
+<li><a href="https://typesquare.com/service/api_reference/">API リファレンス | Web フォント TypeSquare [タイプスクウェア]</a></li>
+</ul>
+<p><code>window.Ts</code>は、<code>//typesquare.com/3/tsad/script/ja/typesquare.js?....</code>を読み込むことで追加される。</p>
+<p>ドキュメントサイトに掲載されている利用例をみると、次のような実装になっている。</p>
+<pre><code class="lang-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    &lt;script
+      type=&quot;text/javascript&quot;
+      src=&quot;//typesquare.com/3/tsst/script/ja/typesquare.js?5a2e354934b04540b59d7612ac1e029f&amp;onload=false&quot;
+      charset=&quot;utf-8&quot;
+    &gt;&lt;/script&gt;
+    &lt;style type=&quot;text/css&quot; rel=&quot;stylesheet&quot;&gt;
+      body {
+        font-family: &quot;Folk Bold&quot;;
+        margin: 15px;
+      }
+      .t1 {
+        font-size: 34px;
+        line-height: 1.5;
+      }
+    &lt;/style&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+      const fontasync = function () {
+        const callbackId = Date.now();
+        Ts.loadFontAsync({
+          cssName: &quot;Folk Bold&quot;,
+          text: document.getElementById(&quot;target&quot;).innerText,
+          hasHint: false,
+          outputType: &quot;json&quot;,
+          callbackId: callbackId,
+          callback: callbackJson,
+        });
+      };
+      const callbackJson = function (params) {
+        const styleElement = document.createElement(&quot;style&quot;);
+        styleElement.setAttribute(&quot;type&quot;, &quot;text/css&quot;);
+        styleElement.setAttribute(&quot;rel&quot;, &quot;stylesheet&quot;);
+        const data = JSON.parse(params.data);
+        const data_object = JSON.parse(data.res);
+        styleElement.innerHTML =
+          &quot;@font-face {font-family: &#39;&quot; +
+          data_object[&quot;fontFamily&quot;] +
+          &quot;&#39;; font-weight: &quot; +
+          data_object[&quot;font-weight&quot;] +
+          &quot;;src: url(data:font/woff;base64,&quot; +
+          data_object[&quot;src&quot;] +
+          &quot;);}&quot;;
+        document.head.appendChild(styleElement);
+      };
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+      &lt;input
+        class=&quot;btn&quot;
+        type=&quot;button&quot;
+        onclick=&quot;fontasync();&quot;
+        value=&quot;API Method の フォント取得機能を利用してフォントをロード&quot;
+      /&gt;
+      &lt;input
+        class=&quot;btn&quot;
+        type=&quot;button&quot;
+        onclick=&quot;document.location.reload();&quot;
+        value=&quot;このサンプルを再読み込みする&quot;
+      /&gt;
+      &lt;p id=&quot;target&quot; class=&quot;t1&quot;&gt;
+        TypeSquareはあなたのウェブサイトデザインを一新します。
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>サービスが提供する JS と同じように、動的に<code>@font-face</code>の定義を含む<code>&lt;style&gt;</code>を<code>&lt;head&gt;</code>内に append していることが分かる。</p>
+<p>また、</p>
+<blockquote>
+<ul>
+<li>&quot;;src: url(data:font/woff;base64,&quot; ,&quot; + data_object[&#39;src&#39;] +&quot;);}&quot;;</li>
+</ul>
+</blockquote>
+<p>という記述から分かるように、この API を利用した場合は、base64 形式でフォントデータが返される。</p>
+<p>この処置により、前述手順の 1, 2 を行ったことになる。Canvas でなければ必要な処理は以上で済む。しかし、Canvas の場合は、3 の「フォントデータの読み込み実行と、読み込み待ち」が必要であり、上記のように実装してしまうと、ややこしくなる。</p>
+<p>まず、「フォントデータの読み込み実行」には、<code>@font-face</code>の設定がフォントリストに反映されるのをまつ必要があるが、これには<code>FontFaceSet.ready</code>は使えない。<code>FontFaceSet.ready</code>は、初期レンダリングの際のみにしか使えないので。</p>
+<p>なので、この状態で無理にでも 3 の処理を行うには、<code>auto_load_font=true</code>でサービスが提供する JS を読み込んでおき、適当な要素で Web フォントを適用した文字列を追加することで、提供 JS にその検出とフォントデータの読み込みを実行させ、<code>document.font</code>の<code>loadingdone</code>イベントを listen して、読み込み完了を待つ必要ある。</p>
+<pre><code class="lang-js">// フォントの読み込みを行わせるためのダミーテキスト
+const $dummyText = document.createElement(&#39;div&#39;);
+$dummyText.innerHTML = text;
+$dummyText.style.fontFamily = res.fontFamily;
+
+const loadingDoneHandle = () =&gt; {
+  document.fonts.removeEventListener(&#39;loadingdone&#39;, loadingDoneHandle);
+  $dummyArea.removeChild($dummyText);
+  ...
+};
+document.fonts.addEventListener(&#39;loadingdone&#39;, loadingDoneHandle);
+
+// laoding -&gt; loadingdoneを発火させるためのappend
+$dummyArea.appendChild($dummyText);
+</code></pre>
+<p>テキストフィールドでユーザが指定した文字列を<code>input</code>イベントで拾って、リアルタイムに Web フォントで描画するような、連続実行が想定されるケースでは、JS と CSS で処理が分断される上記のような実装だと、一連のリクエストをひと括りでまとめ処理するのが厄介になる。</p>
+<h3 id="-js-">フォントリストの追加とフォントデータの読み込みを JS で処理する</h3>
+<p>Canvas 描画のように、フォント読み込み後に JS でなにかしらの処理をしたい場合は、フォントリストの追加も、フォントデータの読み込みも、全部 JS でやってしまったほうが良い。</p>
+<p>次のように、<code>new FontFace(...)</code>と<code>FontFaceSet#add</code>を使えばそれが可能であり、スムーズに Canvas の描画処理につなげることができる。</p>
+<pre><code class="lang-js">window.Ts.loadFontAsync({
+  cssName: fontFamily,
+  text,
+  hasHint: false,
+  outputType: &quot;json&quot;,
+  callbackId: Date.now(),
+  callback: async (params) =&gt; {
+    const data = JSON.parse(params.data);
+    const res = JSON.parse(data.res);
+    const fontFace = new FontFace(
+      res.fontFamily,
+      `url(data:font/woff;base64,${res.src})`,
+      {
+        fontWeight: res[&quot;font-weight&quot;],
+      }
+    );
+    document.fonts.add(fontFace); // フォントリストの追加
+    await fontFace.load(); // フォントデータの読み込み
+
+    // Canvas描画処理
+  },
+});
+</code></pre>
+<h3 id="-">フォントデータの重複読み込みの抑止</h3>
+<p>フォントデータの重複読み込みを抑止するには、単純に、API に投げた文字を記録しておき、その文字をクエリから除去して API を実行するようにすればよい。</p>
+<pre><code class="lang-js">const loadedStrings = [];
+const trimLoadedString = (text) =&gt; {
+  return text
+    .split(&quot;&quot;)
+    .filter((str) =&gt; loadedStrings.includes(str) === false)
+    .join(&quot;&quot;);
+};
+const addToLoadedStrings = (text) =&gt; {
+  loadedStrings.push(...text.split(&quot;&quot;));
+};
+
+const loadFont = async (fontFamily, text) =&gt; {
+  if (text === &quot;&quot;) {
+    return;
+  }
+  return new Promise((resolve) =&gt; {
+    const targetStrings = trimLoadedString(text); // 読み込み済み文字の除去
+    if (targetStrings === &quot;&quot;) {
+      resolve();
+      return;
+    }
+    window.Ts.loadFontAsync({
+      cssName: fontFamily,
+      text: targetStrings,
+      hasHint: false,
+      outputType: &quot;json&quot;,
+      callbackId: Date.now(),
+      callback: async (params) =&gt; {
+        const data = JSON.parse(params.data);
+        const res = JSON.parse(data.res);
+        const fontFace = new FontFace(
+          res.fontFamily,
+          `url(data:font/woff;base64,${res.src})`,
+          {
+            fontWeight: res[&quot;font-weight&quot;],
+          }
+        );
+        document.fonts.add(fontFace);
+        await fontFace.load();
+        addToLoadedStrings(targetStrings); // 読み込み済み文字の記録
+        resolve();
+      },
+    });
+  });
+};
+
+$textInput.addEventListener(&quot;input&quot;, function (event) {
+  loadFont(&quot;Suzumushi&quot;, this.value).then(() =&gt; {
+    // Canvasの描画
+  });
+});
+</code></pre>
+<p>（上記の実装だと、unloaded or loaded の 2 つの状態管理しかしてないので、loading 中にリクエストがくると重複読み込みしてしまう。ので、静的サブセッティングのように laoding 状態のリクエストには、その Promise の解決を待つといった工夫をしたほうがより良い）</p>
+<h2 id="adobe-fonts-web-">Adobe Fonts 下での Web フォントの利用</h2>
+<p>Adobe Fonts の場合、フォントデータの読み込みを動的 or 静的で選べるが、日本語フォントの場合は動的しか選べない。</p>
+<h3 id="-js-">独自 JS の読み込み</h3>
+<p>サイト上で、次のようなコードをコピペするよう指示される。これによってフォント検出＆取得をする独自 JS が読み込まれる。</p>
+<pre><code class="lang-js">(function (d) {
+  var config = {
+      kitId: &quot;.....&quot;,
+      scriptTimeout: 3000,
+      async: true,
+    },
+    h = d.documentElement,
+    t = setTimeout(function () {
+      h.className = h.className.replace(/\bwf-loading\b/g, &quot;&quot;) + &quot; wf-inactive&quot;;
+    }, config.scriptTimeout),
+    tk = d.createElement(&quot;script&quot;),
+    f = false,
+    s = d.getElementsByTagName(&quot;script&quot;)[0],
+    a;
+  h.className += &quot; wf-loading&quot;;
+  tk.src = &quot;https://use.typekit.net/&quot; + config.kitId + &quot;.js&quot;;
+  tk.async = true;
+  tk.onload = tk.onreadystatechange = function () {
+    a = this.readyState;
+    if (f || (a &amp;&amp; a != &quot;complete&quot; &amp;&amp; a != &quot;loaded&quot;)) return;
+    f = true;
+    clearTimeout(t);
+    try {
+      Typekit.load(config);
+    } catch (e) {}
+  };
+  s.parentNode.insertBefore(tk, s);
+})(document);
+</code></pre>
+<h3 id="-unicoderange-">英数字の事前読み込みと unicodeRange の設定</h3>
+<p>上記処置により、利用頻度の高い英数字は、そのサブセットをフォントリストに追加された状態になる。</p>
+<p><img src="./images/image-7.png" alt=""></p>
+<p><code>status</code>が<code>loaded</code>になっており、フォントデータの読み込みも済んだ状態になっている。また、<code>unicodeRange</code>には、フォントデータとして保持している個別の文字が設定されている。</p>
+<p>独自 JS は、これらの状態から読み込み状態を判断できるようで、例えば、Web フォントを適用した英数字を append しても、フォントデータの読み込みは行われずに、Web フォントが適用される。</p>
+<p><img src="./images/image-8.png" alt=""></p>
+<h3 id="-">フォントデータの重複読み込みの抑止</h3>
+<p>逆に、英数字以外の文字の場合は、新たなフォントデータが読み込まれる。</p>
+<p><img src="./images/image-9.png" alt=""></p>
+<p>フォントリストにも、それに対応する<code>FontFace</code>が追加される。</p>
+<p><img src="./images/image-10.png" alt=""></p>
+<p>（追加された<code>FonfFace</code>の<code>unicodeRange</code>を見ると、英数字が含まれているので、もしかしたら、毎回英数字を含んだフォントデータを返してるのかもしれないけど、基本的には）この処置によって必要になったフォントデータを取得しているのが分かる。</p>
+<p>さらに、一度利用した文字で、再度を Web フォントを適用し描画した場合、フォントデータは読み込まれず、不要な重複読み込みが抑止されているのが分かる。</p>
+<p><img src="./images/image-11.png" alt=""></p>
+<h2 id="adobe-fonts-canvas-web-">Adobe Fonts 下での Canvas への Web フォントの適用</h2>
+<p>Adobe Fonts の場合は、フォントデータを取得するための API が公開されていない。ので、フォントデータの事前読み込みをするには、以下のいずれかの方法を選択する必要がある。</p>
+<ul>
+<li>独自 JS が呼んでいる API の仕様を解析して、自身の JS から直接呼ぶ</li>
+<li>Web フォントを当てた適当な要素を append して、独自 JS にフォントデータを読み込ませる</li>
+</ul>
+<p>前者の場合、仕様が変わったらアウトだし、API のリクエストパラメータを見る限り、とても解析する気にはなれない。</p>
+<pre><code>URL: https://use.typekit.net/af/292347/00000000000000007735eae8/30/m?features=ALL&amp;v=4&amp;chunks=259.266&amp;state=127&amp;order=0
+</code></pre><p>一方、後者の場合、フォントデータの読み込み完了タイミングを得る必要があるが、TypeSquare のように、<code>document.fonts</code>の<code>loadingdone</code>イベントを使うことはできない。独自 JS では<code>FontFace#load</code>による読み込みをしているようで、<code>loadingdone</code>イベントが発火しない模様。</p>
+<p>また、英数字のように初期段階で読み込まれてるフォント、あるいは、動的に読み込んだフォントを再度使う場合は、そもそも新たにフォントデータを読み込む必要がないため、その判定も必要になる。</p>
+<h3 id="-">苦肉の策</h3>
+<p>ので、それでもなんとか使うには、以下のような苦肉の策が必要になる。</p>
+<ul>
+<li>読み込み済み判定<ul>
+<li>フォントリスト内の<code>FontFace.unicodeRange</code>を走査し、描画文字列がその範囲に含まれているか照合する</li>
+<li>文字列を構成する文字すべてが、いずれかの<code>FontFace.unicodeRange</code>に含まれていれば、フォントデータの読み込みを行わない</li>
+<li>含まれていなかった文字については、フォントデータの読み込み対象とする（読み込んだ結果、新たな<code>FontFace.unicodeRange</code>がフォントリストに追加される）</li>
+</ul>
+</li>
+<li>フォントデータ読み込み完了タイミングの判定<ul>
+<li>ダミー要素を append して、<code>document.fonts.size</code>が増えるのを監視するしかなさそう....</li>
+</ul>
+</li>
+</ul>
+<h3 id="fontfaceset-check-">FontFaceSet#check は？</h3>
+<p>読み込み済み判定については、<code>unicodeRange</code>も設定されてるし、<code>document.fonts.check</code>という便利そうなメソッドを使いたくなるが、このケースでは使えない。</p>
+<pre><code class="lang-js">document.fonts.check(フォント名, テキスト); // true or false
+</code></pre>
+<p>これは、フォントリスト内の<code>FontFace.unicodeRange</code>に、指摘したテキストが含まれていて、且つ、読み込み済みかを判定してくれるもの。なのだが、厳密には以下のように処理される。</p>
+<ul>
+<li><code>FontFace.unicodeRange</code>に一致したデータを見つけた場合<ul>
+<li><code>status = loaded</code> -&gt; <code>true</code></li>
+<li><code>status = unloaded</code> -&gt; <code>false</code></li>
+<li><code>status = laoding</code> -&gt; ?（調べてない）</li>
+</ul>
+</li>
+<li><code>FontFace.unicodeRange</code>に一致したデータが無かった場合<ul>
+<li><code>true</code> &lt;------ これが...</li>
+</ul>
+</li>
+</ul>
+<p>なので、静的サブセッティングのように利用可能性のあるサブセットが全てフォントリスト内にないと、意味をなさない。</p>
+<h3 id="-">読み込み済み判定</h3>
+<p>読み込み済み判定は、<code>unicodeRange</code>と照合するため、テキストを unicode に変換する必要がある。これは<code>String#codePointAt</code>で得られる。</p>
+<p><a href="https://jsprimer.net/basic/string-unicode/?utm_source=pocket_mylist">文字列と Unicode · JavaScript Primer #jsprimer</a></p>
+<pre><code class="lang-js">const convertCodePoints = (str) =&gt; {
+  return Array.from(str).map((char) =&gt; {
+    const codePoint = char.codePointAt(0).toString(16);
+    return `u+${codePoint}`.toUpperCase();
+  });
+};
+</code></pre>
+<p>あとは、テキストを上記関数で 1 文字づつ unicode 化して、<code>unicodeRange</code>と照合すればよい。</p>
+<pre><code class="lang-js">const unicodeRangeMatch = (fontName, text) =&gt; {
+  const codePoints = convertCodePoints(text);
+  return codePoints.every((codePoint) =&gt; {
+    let loaded = false;
+    document.fonts.forEach((fontFace) =&gt; {
+      if (
+        fontFace.family === fontName &amp;&amp;
+        fontFace.status === &quot;loaded&quot; &amp;&amp;
+        fontFace.unicodeRange.split(&quot;, &quot;).includes(codePoint)
+      ) {
+        loaded = true;
+      }
+    });
+    return loaded;
+  });
+};
+</code></pre>
+<h3 id="-">フォントデータ読み込み完了タイミングの判定</h3>
+<p>雑だけど、以下のような感じで実装できる。</p>
+<pre><code class="lang-js">const fontLoading = (fontName, text) =&gt; {
+  const $dummyText = document.createElement(&quot;div&quot;);
+  $dummyText.innerHTML = text;
+  $dummyText.style.fontFamily = fontName;
+  $dummyText.style.display = &quot;none&quot;; // 非表示でも検出対象になる！
+  document.body.appendChild($dummyText);
+
+  return new Promise((resolve) =&gt; {
+    const lastFontsSize = document.fonts.size;
+    const watchLoading = () =&gt; {
+      setTimeout(() =&gt; {
+        if (document.fonts.size &gt; lastFontsSize) {
+          $dummyText.remove();
+          let loaded = true;
+          document.fonts.forEach((fontFace) =&gt; {
+            if (fontFace.family === fontName &amp;&amp; fontFace.status !== &quot;loaded&quot;) {
+              loaded = false;
+            }
+          });
+          if (loaded) {
+            resolve();
+            return;
+          }
+          watchLoading();
+        }
+      }, 100);
+    };
+    watchLoading();
+  });
+};
+</code></pre>
+<p>検出は、独自 JS がやってるので、静的サブセッティング化で行われるブラウザによる検出と異なり、いろいろと厳密でないところがある。例えば、<code>$dummyText.style.display = &#39;none&#39;</code>とかしても検出の対象になる。</p>
+<h3 id="-">読み込み制御の実装</h3>
+<p>上記２つの関数を使い、次のように読み込み制御をすれば、Adobe Fonts 下でも Canvas に Web フォントを適用できる。</p>
+<pre><code class="lang-js">const loadFont = async (fontName, text) =&gt; {
+  // 読み込み済みならなにもしない
+  if (unicodeRangeMatch(fontName, text)) {
+    return;
+  }
+  // フォントデータを読み込んだら解決するPromiseを返す
+  return fontLoading(fontName, text);
+};
+
+$textInput.addEventListener(&quot;input&quot;, function (event) {
+  loadFont(&quot;pigmo-00&quot;, this.value).then(() =&gt; {
+    // Canvas描画
+  });
+});
+</code></pre>
+<p><img src="./images/image-12.png" alt=""></p>
+
+    </div>
+
+  </article>
+</div>
+
+  <div class="l-page-nav">
+    <div class="l-page-nav__body">
+  
+  <!--
+      <div class="wp-widget">
+        <div class="wp-widget__header">OTHER BLOG</div>
+        <div class="menu-other-blog-container">
+          <ul id="menu-other-blog" class="menu">
+            <li id="menu-item-207" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-207"><a href="http://cyokodog.tumblr.com/">CYOKOLOG | Tumblr</a></li>
+            <li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-208"><a href="http://d.hatena.ne.jp/cyokodog/">Cyokodog :: Diary | Hatena</a></li>
+            <li id="menu-item-209" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-209"><a href="http://d.hatena.ne.jp/cyokodog-memo/">Cyokodog :: Memo | Hatena</a></li>
+          </ul>
+        </div>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Category</div>
+        <ul>
+          <li><a href="/category/angular/">Angular</a></li>
+          <li><a href="/category/backbone-js/">Backbone.js</a></li>
+          <li><a href="/category/webpack/">Webpack</a></li>
+          <li><a href="/category/jquery/">jQuery</a></li>
+          <li><a href="/category/info/">Information</a></li>
+          <li><a href="/category/life/">Life</a></li>
+          <li><a href="/category/http/">HTTP</a></li>
+          <li><a href="/category/javascript/">JavaScript</a></li>
+          <li><a href="/category/redux/">Redux</a></li>
+          <li><a href="/category/wordpress/">WordPress</a></li>
+          <li><a href="/category/typescript/">TypeScript</a></li>
+          <li><a href="/category/cloud-service/">Cloud Service</a></li>
+        </ul>
+      </div>
+  
+      <div class="wp-widget">
+        <div class="wp-widget__header">Recent Posts</div>
+        <ul>
+          <li><a href="/blog/dynamic-subsetting-of-web-fonts-and-canvas/">動的サブセッティング下でのWebフォントのCanvasへの適用方法</a></li>
+          <li><a href="/blog/upload-examples/">アップロード処理の周辺実装のざっくりまとめ</a></li>
+          <li><a href="/blog/http-302-status/">セッション切れ時のフロント側の制御について</a></li>
+          <li><a href="/blog/code-splitting-and-async-component/">Code Splitting と非同期コンポーネント</a></li>
+          <li><a href="/blog/typescript-enum-replacement/">Enum の代わりに使う union 型</a></li>
+          <li><a href="/blog/redux-toolkit-entity-adapter/">Redux Toolkit の EntityAdapter をさわってみる</a></li>
+          <li><a href="/blog/redux-toolkit-async-thunk/">Redux Toolkit の AsyncThunk をさわってみる</a></li>
+          <li><a href="/blog/redux-tookit/">Redux Toolkitをさわってみる</a></li>
+          <li><a href="/blog/forever-http/">foreverとAutomator.appでMac起動時にHTTPサーバを自動起動する</a></li>
+          <li><a href="/blog/pixijs-retina-display/">Canvas, PixiJSからRetinaディスプレイに配慮した画像の切り出しを行う</a></li>
+          <li><a href="/blog/typescript-v3-8/">TypeScript v3.8 の新機能メモ</a></li>
+          <li><a href="/blog/fish-based-terminal-environment/">fish shellベースのターミナル環境を整える</a></li>
+          <li><a href="/blog/moment-i18n/">moment.js で i18n 対応したり期間を文字列化する時の注意点</a></li>
+          <li><a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a></li>
+          <li><a href="/blog/angular-fire/">AngularFire使ってみた</a></li>
+          <li><a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a></li>
+          <li><a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a></li>
+          <li><a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a></li>
+          <li><a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a></li>
+          <li><a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a></li>
+          <li><a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a></li>
+          <li><a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a></li>
+          <li><a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a></li>
+          <li><a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a></li>
+          <li><a href="/blog/bitbar/">BitBar を試してみる</a></li>
+          <li><a href="/blog/angular-cli/">Angular CLI を試してみる</a></li>
+          <li><a href="/blog/riot/">はじめてのRiot.js</a></li>
+          <li><a href="/blog/facebook-flux/">はじめてのfacebook/flux</a></li>
+          <li><a href="/blog/reactjs/">はじめてのReact.js</a></li>
+          <li><a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a></li>
+          <li><a href="/blog/electron/">Electron さわってみた</a></li>
+          <li><a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a></li>
+          <li><a href="/blog/wunderline/">Wunderline を使ってみた</a></li>
+          <li><a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a></li>
+          <li><a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a></li>
+          <li><a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a></li>
+          <li><a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a></li>
+          <li><a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a></li>
+          <li><a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a></li>
+          <li><a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a></li>
+          <li><a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a></li>
+          <li><a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a></li>
+          <li><a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a></li>
+          <li><a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a></li>
+          <li><a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a></li>
+          <li><a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a></li>
+          <li><a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a></li>
+          <li><a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a></li>
+          <li><a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a></li>
+          <li><a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a></li>
+          <li><a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a></li>
+          <li><a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a></li>
+          <li><a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a></li>
+          <li><a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a></li>
+          <li><a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a></li>
+          <li><a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a></li>
+          <li><a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a></li>
+          <li><a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a></li>
+          <li><a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a></li>
+          <li><a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a></li>
+          <li><a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a></li>
+          <li><a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a></li>
+          <li><a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a></li>
+          <li><a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a></li>
+          <li><a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a></li>
+          <li><a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a></li>
+          <li><a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a></li>
+          <li><a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a></li>
+          <li><a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a></li>
+          <li><a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a></li>
+          <li><a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a></li>
+          <li><a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a></li>
+          <li><a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a></li>
+          <li><a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a></li>
+          <li><a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a></li>
+          <li><a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a></li>
+          <li><a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a></li>
+          <li><a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a></li>
+          <li><a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a></li>
+          <li><a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a></li>
+          <li><a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a></li>
+          <li><a href="/blog/first-post/">引っ越してきました</a></li>
+        </ul>
+      </div>
+  -->
+    </div><!-- l-page-nav -->
+  </div><!-- l-page-nav__body -->
+
+  	</div>
+  </div><!-- l-contents -->
+
+
+  <style>
+  .l-banner{
+    xpadding-top:128px;
+    padding-bottom:128px;
+    background-image: url(https://lh4.googleusercontent.com/-oCiTMRZC7KI/VEaEI6xu2aI/AAAAAAAAIKk/da528QPvTYY/s800/IMG_1723.png);
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: 640px
+  }
+  l-footer{
+    margin-top:0;
+  }
+  .banner iframe,
+  .banner img{
+    xmargin:16px 0 0;
+    max-width: 260px;
+    xmax-height: 150px;
+    xdisplay:block;
+    border:none;
+  }
+  .banner__pxgrid{
+  }
+  </style>
+
+  <div class="l-contents l-banner">
+    <div class="u-layout-center">
+      <div class="banner">
+        <div>
+          <a href="http://www.codegrid.net/"><img src="/static/img/codegrid.png"/></a><a href="https://www.pxgrid.com/"><img class="banner__pxgrid" src="/static/img/pxgrid.png"/></a>
+        </div>
+        <div>
+          <iframe src="https://www.youtube.com/embed/gZvCPu7qZiM?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe><iframe src="https://www.youtube.com/embed/VKWWFvWsPUg?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div>
+        <iframe src="https://www.youtube.com/embed/5DU59_X-8lw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div><!-- l-contents -->
+
+
+  <div class="l-footer">
+    <div class="u-layout-center">
+      <div class="wp-widget">
+        <div class="wp-widget__header" id="allPosts">All Posts</div>
+          <ul>
+            <li>
+              <span class="post-date">2022-07-13</span>
+              <a href="/blog/dynamic-subsetting-of-web-fonts-and-canvas/">動的サブセッティング下でのWebフォントのCanvasへの適用方法</a>
+            </li>
+            <li>
+              <span class="post-date">2022-04-12</span>
+              <a href="/blog/upload-examples/">アップロード処理の周辺実装のざっくりまとめ</a>
+            </li>
+            <li>
+              <span class="post-date">2020-10-16</span>
+              <a href="/blog/http-302-status/">セッション切れ時のフロント側の制御について</a>
+            </li>
+            <li>
+              <span class="post-date">2020-10-10</span>
+              <a href="/blog/code-splitting-and-async-component/">Code Splitting と非同期コンポーネント</a>
+            </li>
+            <li>
+              <span class="post-date">2020-07-30</span>
+              <a href="/blog/typescript-enum-replacement/">Enum の代わりに使う union 型</a>
+            </li>
+            <li>
+              <span class="post-date">2020-07-09</span>
+              <a href="/blog/redux-toolkit-entity-adapter/">Redux Toolkit の EntityAdapter をさわってみる</a>
+            </li>
+            <li>
+              <span class="post-date">2020-06-04</span>
+              <a href="/blog/redux-toolkit-async-thunk/">Redux Toolkit の AsyncThunk をさわってみる</a>
+            </li>
+            <li>
+              <span class="post-date">2020-05-28</span>
+              <a href="/blog/redux-tookit/">Redux Toolkitをさわってみる</a>
+            </li>
+            <li>
+              <span class="post-date">2020-04-08</span>
+              <a href="/blog/forever-http/">foreverとAutomator.appでMac起動時にHTTPサーバを自動起動する</a>
+            </li>
+            <li>
+              <span class="post-date">2020-04-07</span>
+              <a href="/blog/pixijs-retina-display/">Canvas, PixiJSからRetinaディスプレイに配慮した画像の切り出しを行う</a>
+            </li>
+            <li>
+              <span class="post-date">2020-03-11</span>
+              <a href="/blog/typescript-v3-8/">TypeScript v3.8 の新機能メモ</a>
+            </li>
+            <li>
+              <span class="post-date">2020-02-01</span>
+              <a href="/blog/fish-based-terminal-environment/">fish shellベースのターミナル環境を整える</a>
+            </li>
+            <li>
+              <span class="post-date">2018-02-06</span>
+              <a href="/blog/moment-i18n/">moment.js で i18n 対応したり期間を文字列化する時の注意点</a>
+            </li>
+            <li>
+              <span class="post-date">2018-01-10</span>
+              <a href="/blog/inversify-js/">Nodeで書く時TypeScriptでDIしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-11-15</span>
+              <a href="/blog/angular-fire/">AngularFire使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-09-24</span>
+              <a href="/blog/puppeteer/">Headless Chrome を操作する Puppeteer で E2E テストを CircleCI で動かしてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-07-20</span>
+              <a href="/blog/computer-vision-api/">getUserMedia と連携させて Computer Vision API を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-30</span>
+              <a href="/blog/use-well-json-server/">JSON Serverのおしいところをなんとかしたい</a>
+            </li>
+            <li>
+              <span class="post-date">2017-06-15</span>
+              <a href="/blog/headless-chrome/">Headless Chrome をさわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2017-05-06</span>
+              <a href="/blog/zone-async-await/">zone.js と async / await を併用してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2017-03-08</span>
+              <a href="/blog/sqlite-and-sequelize/">SQlite と Sequelize</a>
+            </li>
+            <li>
+              <span class="post-date">2017-02-01</span>
+              <a href="/blog/vscode-debug/">VSCodeで便利にdebugする方法</a>
+            </li>
+            <li>
+              <span class="post-date">2016-12-21</span>
+              <a href="/blog/google-cloud-speech-api/">Google Cloud Speech API の使い方</a>
+            </li>
+            <li>
+              <span class="post-date">2016-08-23</span>
+              <a href="/blog/mediacaptureandstreams-and-mediarecorder/">Media Capture and Streams と MediaRecorder のその後と GitHubの複数アカウント利用方法メモ</a>
+            </li>
+            <li>
+              <span class="post-date">2016-07-05</span>
+              <a href="/blog/bitbar/">BitBar を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-30</span>
+              <a href="/blog/angular-cli/">Angular CLI を試してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-14</span>
+              <a href="/blog/riot/">はじめてのRiot.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-11</span>
+              <a href="/blog/facebook-flux/">はじめてのfacebook/flux</a>
+            </li>
+            <li>
+              <span class="post-date">2016-06-09</span>
+              <a href="/blog/reactjs/">はじめてのReact.js</a>
+            </li>
+            <li>
+              <span class="post-date">2016-05-18</span>
+              <a href="/blog/angular2/">Angular2で簡易ブログを作ってみる</a>
+            </li>
+            <li>
+              <span class="post-date">2016-03-02</span>
+              <a href="/blog/electron/">Electron さわってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2016-02-24</span>
+              <a href="/blog/svg-webaudio-typing-game/">SVG + Web Audio API でつくるタイピングゲーム</a>
+            </li>
+            <li>
+              <span class="post-date">2015-11-18</span>
+              <a href="/blog/wunderline/">Wunderline を使ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2015-04-08</span>
+              <a href="/blog/media-capture-and-streams-web-audio-api/">Media Capture and Streams と Web Audio API で実現する録画・録音・ WAVファイルの生成</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-18</span>
+              <a href="/blog/web-speechi-api/">ブラウザのみで音声認識とテキスト読み上げを実現する Web Speech API</a>
+            </li>
+            <li>
+              <span class="post-date">2015-03-09</span>
+              <a href="/blog/thinking-toc/">TOC（目次メニュー）の実装方法について考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-02-21</span>
+              <a href="/blog/web-audio-api-music/">HTML5 の Web Audio API で音楽してみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-28</span>
+              <a href="/blog/first-node-js/">Windows ではじめてみる Node.js</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-17</span>
+              <a href="/blog/angularjs/">MVWフロントエンド・フレームワーク、AngularJS をはじめてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2015-01-07</span>
+              <a href="/blog/backbone-js/">Backbone.js ではじめるクライアントサイド MVC プログラミング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-23</span>
+              <a href="/blog/pull-request-github/">Pull Request ではじめてみる！GitHub ソーシャルコーディング</a>
+            </li>
+            <li>
+              <span class="post-date">2014-12-14</span>
+              <a href="/blog/javascript-prototype/">JavaScript の prototype オブジェクト入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-16</span>
+              <a href="/blog/easy-code-prettify-doc/">マークダウンにも優しいライブデモ対応シンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-11-06</span>
+              <a href="/blog/ex-code-prettify-v05/">Ex Code Prettify をバージョンアップしました【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-26</span>
+              <a href="/blog/sk8-bs-bordslide/">うちの小３男子がダウンレールでＢ／Ｓボードスライドを習得した</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-05</span>
+              <a href="/blog/twitter-cards/">WordPress 製のブログを Twitter カードに対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-10-02</span>
+              <a href="/blog/wordpress-ogp/">WordPress 製のブログを OGP(Open Graph Protocol) に対応させてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-29</span>
+              <a href="/blog/fade-page-doc/">フェード効果で「ふわっ」とページ切替を行う jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-24</span>
+              <a href="/blog/fade-page-change/">フェードイン／フェードアウトで「ふわっ」とページを切り替える【追記あり】</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-23</span>
+              <a href="/blog/fit-sidebar-doc/">レスポンシブ対応でサイドメニューを一定範囲で固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-09-15</span>
+              <a href="/blog/making-fg-chopper/">挑戦！自作フィギュア　ワンピース・チョッパー編</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-24</span>
+              <a href="/blog/sketch-akuma-cyoojin/">大人だけど全力で「７人の悪魔超人編」の絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-15</span>
+              <a href="/blog/making-fg-ramen-2/">挑戦！自作フィギュア　ラーメンマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-07-11</span>
+              <a href="/blog/making-fg-ramen-1/">挑戦！自作フィギュア　ラーメンマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-24</span>
+              <a href="/blog/fitbar-doc/">ツールバーをスクロール位置に応じ画面の上下にピタっと固定表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-17</span>
+              <a href="/blog/picasa-zoom-doc/">Picasa の写真の拡大／縮小を簡単に行うことできる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/update-easy-social-buttons-and-social-info/">Easy Social Buttons と Social Info で Google+ の共有数を表示／取得できるようにしました</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/making-fg-2/">挑戦！自作フィギュア　ウォーズマン編　その２</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-09</span>
+              <a href="/blog/dqy-excel/">システム管理者におすすめ！SQL の実行結果を手軽にエクセルに出力する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-06-05</span>
+              <a href="/blog/mailto-doc/">mailto:リンク機能を利用しやすくする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-28</span>
+              <a href="/blog/ml-narisumasi-gmail-and-gas/">メーリングリストの「なりすまし」判定を Gmail と Google Apps Script で回避する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-25</span>
+              <a href="/blog/making-fg-1/">挑戦！自作フィギュア　ウォーズマン編　その１</a>
+            </li>
+            <li>
+              <span class="post-date">2014-05-18</span>
+              <a href="/blog/find-fg-akiba-3/">第３回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-25</span>
+              <a href="/blog/easy-social-buttons-doc/">はてブ、Twitter、Facebook、Google+ のソーシャルボタンをシンプルに表示する jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-05</span>
+              <a href="/blog/wordpress-openshift/">PaaS で動かす WordPress ＋ OpenShift 入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-03-02</span>
+              <a href="/blog/first-appengine-and-struts2/">Google App Engine for Java 入門 ＋ Struts2 デプロイ手順</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-25</span>
+              <a href="/blog/first-struts2/">2014年度版 Eclipse + Struts2 による Java Web アプリ開発入門</a>
+            </li>
+            <li>
+              <span class="post-date">2014-02-06</span>
+              <a href="/blog/social-info-doc/">はてブ、Twitter、Facebook、Google+ などのソーシャル系サービスの API を手軽に使用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-28</span>
+              <a href="/blog/easy-feed-doc/">Google Feed API を手軽に利用できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2014-01-04</span>
+              <a href="/blog/find-fg-akiba-2/">第２回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-17</span>
+              <a href="/blog/sketch-kinnikuman/">大人だけど全力でキン肉マンの絵を描いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-08</span>
+              <a href="/blog/hash-contents-doc/">location.hash に応じタブ、アコーディオン、ツリービュー形式等でコンテンツを切り替える jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-03</span>
+              <a href="/blog/keep-position-doc/">ページのスクロール位置を維持したままフォーム送信やページ切り替えができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-12-02</span>
+              <a href="/blog/find-fg-akiba-1/">第１回アキバ・フィギュア探しの旅</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-25</span>
+              <a href="/blog/keyinfo-doc/">入力キーの種類を調べることができる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-11-05</span>
+              <a href="/blog/parse-url-doc/">URL の構成要素や QueryString の値を簡単に参照できるようにする jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-10-31</span>
+              <a href="/blog/ex-scroll-doc/">スクロールイベントの開始／終了、方向を判別できる jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-23</span>
+              <a href="/blog/ex-code-prettify-doc/">その場で編集／実行できるシンタックスハイライター jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-07</span>
+              <a href="/blog/garamodel02/">ガラクタで重厚感のあるおもちゃを作ってみた ～その２～</a>
+            </li>
+            <li>
+              <span class="post-date">2013-09-04</span>
+              <a href="/blog/garamodel/">ガラクタで重厚感のあるおもちゃを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-14</span>
+              <a href="/blog/bootstrap-datetimepicker-ja/">Bootstrap ベースの日付／時刻ピッカーを日本語環境向けにカスタマイズした jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-08-12</span>
+              <a href="/blog/jquery-hash-contents/">location.hash の値に応じ表示コンテンツを切り替える jQuery プラグインを作ってみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-31</span>
+              <a href="/blog/jquery-keep-position/">フォームデータ登録後もページスクロール位置を維持する方法を考えてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-07-03</span>
+              <a href="/blog/jquery-sitekit/">Web サイト作成時に必要になりがちな機能をまとめた jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-24</span>
+              <a href="/blog/jquery-ex-code-prettify/">Google Code Prettify のかゆいとこをなんとかする jQuery プラグインを書いてみた</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-17</span>
+              <a href="/blog/wordpress-markdown-behave_js/">WordPress の Markdown 環境を『Behave.js』でさらに快適にしてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-04-11</span>
+              <a href="/blog/gmail-client/">Google 以外のメールアカウントで Gmail をメールクライアントとして使用する方法</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-31</span>
+              <a href="/blog/wordpress-my-setting-plugin-social/">WordPress のこまごま設定プラグインにソーシャルボタン設置機能、他を追加した</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-25</span>
+              <a href="/blog/wordpress-my-setting-plugin/">こまごました設定をまとめてできる WordPress プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-03-06</span>
+              <a href="/blog/extablefilter/">汎用性重視のテーブルフィルタリング系 jQuery プラグイン</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-27</span>
+              <a href="/blog/jquery19-browser/">jQuery 1.9 で $.browser が使えなくなってしまった対策</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/jquery-simple-table-filter/">jQuery によるシンプルなテーブルフィルタリング処理の実装を考えてみる</a>
+            </li>
+            <li>
+              <span class="post-date">2013-02-25</span>
+              <a href="/blog/first-post/">引っ越してきました</a>
+            </li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-4142215-12']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+
+<script type="text/javascript" src="/theme/cyokodog/js/bundle.js?"></script>
+
+
+
+  <script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js?ver=1.0'></script>
+  <script type='text/javascript' src='/theme/cyokodog/index.jsx?'></script>
+
+<script>
+//document.querySelector('.searchForm')
+$('.searchForm').on('submit' , function(){
+  $('.searchForm__queryData').val('site:www.cyokodog.net ' + $('.searchForm__query').val());
+});
+</script>
+
+<style>
+.easy-social-buttons-container{
+  margin-bottom:32px;
+}
+
+</style>
+
+</body>
+</html>
+
+

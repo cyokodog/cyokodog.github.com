@@ -75,7 +75,7 @@
         <a href="/blog/upload-examples/" title="アップロード処理の周辺実装のざっくりまとめ">アップロード処理の周辺実装のざっくりまとめ</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2020-10-16</li>
+        <li class="article__info__date">2022-04-12</li>
 <!--
         <li class="article__info__category"><a href="/category/http/" rel="category tag">HTTP</a></li>
 -->
@@ -86,6 +86,7 @@
 <ul>
 <li>ソースコード：<a href="https://github.com/cyokodog/file-upload-examples">https://github.com/cyokodog/file-upload-examples</a></li>
 </ul>
+<!--more-->
 <h2 id="post-">POST データの授受</h2>
 <p>まず、ミドルウェアに頼らない素の express では、form タグで POST された データの処理をどう実装するものなのか。次のようなフォームがあった場合、</p>
 <pre><code class="lang-html">&lt;form action=&quot;/simple_post&quot; method=&quot;post&quot;&gt;
@@ -505,6 +506,7 @@ app.use(json_post);
       <div class="wp-widget">
         <div class="wp-widget__header">Recent Posts</div>
         <ul>
+          <li><a href="/blog/dynamic-subsetting-of-web-fonts-and-canvas/">動的サブセッティング下でのWebフォントのCanvasへの適用方法</a></li>
           <li><a href="/blog/upload-examples/">アップロード処理の周辺実装のざっくりまとめ</a></li>
           <li><a href="/blog/http-302-status/">セッション切れ時のフロント側の制御について</a></li>
           <li><a href="/blog/code-splitting-and-async-component/">Code Splitting と非同期コンポーネント</a></li>
@@ -654,7 +656,11 @@ app.use(json_post);
         <div class="wp-widget__header" id="allPosts">All Posts</div>
           <ul>
             <li>
-              <span class="post-date">2020-10-16</span>
+              <span class="post-date">2022-07-13</span>
+              <a href="/blog/dynamic-subsetting-of-web-fonts-and-canvas/">動的サブセッティング下でのWebフォントのCanvasへの適用方法</a>
+            </li>
+            <li>
+              <span class="post-date">2022-04-12</span>
               <a href="/blog/upload-examples/">アップロード処理の周辺実装のざっくりまとめ</a>
             </li>
             <li>

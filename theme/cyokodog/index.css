@@ -487,7 +487,7 @@ a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
 b, u, i, center,
-dl, dt, dd, ol, ul, li,
+dl_, dt_, dd_, ol_, ul_, li_,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed,
@@ -573,6 +573,7 @@ h6 {
 list
 /---------------------------------------------------------------------------*/
 
+/*
 li{
 	list-style:square;
 }
@@ -610,6 +611,8 @@ dd ul,
 dd dl{
 	margin:0;
 }
+*/
+
 
 /*
 table
@@ -1187,6 +1190,7 @@ input[type=submit]{
 /*
 # Article Body List
 /---------------------------------------------------------------------------*/
+/*
 .article__body li ul{
 	margin-bottom: 1em;
 }
@@ -1197,14 +1201,20 @@ input[type=submit]{
 .article__body li ul li ul li{
 	margin-left: 32px;
 }
+*/
+
+
 
 /*
 # Article Body Define List
 /---------------------------------------------------------------------------*/
+/*
 .article__body dd{
 	margin-bottom:2em;
 }
+*/
 @media ( min-width : 640px ){
+/*
 	.article__body dl{
 		line-height:1.6;
 	}
@@ -1237,8 +1247,10 @@ input[type=submit]{
 		top:1.25em;
 		left:-9px;
 	}
+*/
 
 	/* Default Theme */
+/*
 	.article__body dt{
 		border-right:solid 3px #e0e0e0;
 	}
@@ -1249,6 +1261,7 @@ input[type=submit]{
 		background: #aaa;
 		border-radius: 100%;
 	}
+*/
 }
 
 /*
