@@ -74,6 +74,34 @@
           <article class="article">
             <div class="article__header">
               <h1 class="article__title">
+                <a href="/blog/webpack-vue-node-versions-settings/" title="WebpackベースのVueプロジェクトのビルド環境バージョンアップの作業記録">WebpackベースのVueプロジェクトのビルド環境バージョンアップの作業記録</a>
+              </h1>
+              <ul class="article__info">
+                <li class="article__info__date">2022-07-14</li>
+          <!--
+                <li class="article__info__category"><a href="" rel="category tag"></a></li>
+          -->
+              </ul>
+            </div>
+            <div class="article__body">
+              <p>coffee や backbone で構成された 2012 年頃にはじまったプロジェクトに、新しいアプリケーションを追加するという作業を 2018 年頃はじめ、今も継続して機能拡張や新規アプリの追加をしている。</p>
+          <p>新アプリの導入に際し、元々あった本体アプリとの連携は必要とはいえ、パラメータの受け渡しや、UI の連携がうまく処置できれば OK な要件だったのと、本体側の挙動に不安定な要素があったので、以下構成を採用した。</p>
+          <ul>
+          <li>ifame を画面いっぱい広げてその中に新アプリ表示（html 要素の背景を transparent で透過にして一体感を出す）</li>
+          <li>本体アプリと新アプリの中継をするアダプターアプリを配置する</li>
+          <li>TypeScript、webpack、Vue を採用</li>
+          <li>既存の package.json を利用（&lt;-- これがまずかった）</li>
+          </ul>
+          
+          <!--
+              <a href="/blog/webpack-vue-node-versions-settings/" class="more-link">Read More</a>
+          -->
+            </div>
+          
+          </article>
+          <article class="article">
+            <div class="article__header">
+              <h1 class="article__title">
                 <a href="/blog/dynamic-subsetting-of-web-fonts-and-canvas/" title="動的サブセッティング下でのWebフォントのCanvasへの適用方法">動的サブセッティング下でのWebフォントのCanvasへの適用方法</a>
               </h1>
               <ul class="article__info">
@@ -2520,6 +2548,7 @@
         <div class="wp-widget">
           <div class="wp-widget__header">Recent Posts</div>
           <ul>
+            <li><a href="/blog/webpack-vue-node-versions-settings/">WebpackベースのVueプロジェクトのビルド環境バージョンアップの作業記録</a></li>
             <li><a href="/blog/dynamic-subsetting-of-web-fonts-and-canvas/">動的サブセッティング下でのWebフォントのCanvasへの適用方法</a></li>
             <li><a href="/blog/upload-examples/">アップロード処理の周辺実装のざっくりまとめ</a></li>
             <li><a href="/blog/http-302-status/">セッション切れ時のフロント側の制御について</a></li>
@@ -2669,6 +2698,10 @@
       <div class="wp-widget">
         <div class="wp-widget__header" id="allPosts">All Posts</div>
           <ul>
+            <li>
+              <span class="post-date">2022-07-14</span>
+              <a href="/blog/webpack-vue-node-versions-settings/">WebpackベースのVueプロジェクトのビルド環境バージョンアップの作業記録</a>
+            </li>
             <li>
               <span class="post-date">2022-07-13</span>
               <a href="/blog/dynamic-subsetting-of-web-fonts-and-canvas/">動的サブセッティング下でのWebフォントのCanvasへの適用方法</a>

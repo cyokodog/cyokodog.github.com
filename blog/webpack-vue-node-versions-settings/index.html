@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Language" content="ja" />
 	<meta name="keywords" content="jquery,javascript,css" />
 	<meta name="description" content="" />
-	<title>動的サブセッティング下でのWebフォントのCanvasへの適用方法 | CYOKODOG</title>
+	<title>WebpackベースのVueプロジェクトのビルド環境バージョンアップの作業記録 | CYOKODOG</title>
 	<link rel="shortcut icon" href="/theme/cyokodog/favicon.ico">
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <!--
@@ -72,488 +72,157 @@
 
     <div class="article__header">
       <h1 class="article__title">
-        <a href="/blog/dynamic-subsetting-of-web-fonts-and-canvas/" title="動的サブセッティング下でのWebフォントのCanvasへの適用方法">動的サブセッティング下でのWebフォントのCanvasへの適用方法</a>
+        <a href="/blog/webpack-vue-node-versions-settings/" title="WebpackベースのVueプロジェクトのビルド環境バージョンアップの作業記録">WebpackベースのVueプロジェクトのビルド環境バージョンアップの作業記録</a>
       </h1>
       <ul class="article__info">
-        <li class="article__info__date">2022-07-13</li>
+        <li class="article__info__date">2022-07-14</li>
 <!--
         <li class="article__info__category"><a href="" rel="category tag"></a></li>
 -->
       </ul>
     </div>
     <div class="article__body">
-    <p>CodeGrid で、Canvas への文字描画で Web フォントを適用する方法について書いた。</p>
+    <p>coffee や backbone で構成された 2012 年頃にはじまったプロジェクトに、新しいアプリケーションを追加するという作業を 2018 年頃はじめ、今も継続して機能拡張や新規アプリの追加をしている。</p>
+<p>新アプリの導入に際し、元々あった本体アプリとの連携は必要とはいえ、パラメータの受け渡しや、UI の連携がうまく処置できれば OK な要件だったのと、本体側の挙動に不安定な要素があったので、以下構成を採用した。</p>
 <ul>
-<li><a href="https://www.codegrid.net/series/2022-webfont-on-canvas">Canvas の Web フォント描画で活用する CSS Font Loading API | CodeGrid</a></li>
+<li>ifame を画面いっぱい広げてその中に新アプリ表示（html 要素の背景を transparent で透過にして一体感を出す）</li>
+<li>本体アプリと新アプリの中継をするアダプターアプリを配置する</li>
+<li>TypeScript、webpack、Vue を採用</li>
+<li>既存の package.json を利用（&lt;-- これがまずかった）</li>
 </ul>
-<p>このシリーズでは、Google Fonts の静的サブセッティング下での適用方法を扱ったけど、動的サブセッティング下での解説は予定してないのでこちらに書いておく。</p>
 <!--more-->
-<h2 id="web-">Web フォントの基本的な仕組み</h2>
-<p>まず、Canvas 云々は置いといて、以下が Web フォントの基本的な仕組み（ほぼ CodeGrid に書いた内容）</p>
-<h3 id="-fontface-">フォントリストへの FontFace オブジェクトの追加</h3>
-<ul>
-<li>要素に Web フォントを適用するには以下前提がある<ul>
-<li>フォントソースとフォント名を紐付けた<code>FontFace</code>オブジェクトが、フォントリスト（<code>document.fonts</code>）内にある</li>
-<li><code>FontFace</code>の持つフォントソースからフォントデータが読み込まれている必要がある</li>
-</ul>
-</li>
-<li><code>FontFace</code>を追加する方法は 2 つある<ul>
-<li>CSS で<code>@font-face</code>ルールを書く<ul>
-<li><code>@font-face</code>の定義と同等の設定を持つ<code>FontFace</code>オブジェクトが自動的に生成され、フォントリストに追加される</li>
-<li>追加されるのを待つには、<code>document.fonts.ready</code>（Promise）を参照する（但し、これが有効なのは初期描画時点のみ）</li>
-</ul>
-</li>
-<li>JS で<code>FontFace</code>オブジェクトを生成しフォントリストに追加する<ul>
-<li><code>document.fonts.add(new FontFace(....))</code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h3 id="-fontface-">動的サブセッティングの FontFace オブジェクトの追加方法</h3>
-<ul>
-<li><strong>基本的には</strong>、「Web フォントが適用された要素を見つけたタイミング」で、その文字を含むフォントデータを得るためのフォントソースを API から得て「フォントリストに追加」する<ul>
-<li>（静的サブセッテイングの場合は、すべてのサブセットを最初からフォントリストに読み込む）</li>
-</ul>
-</li>
-<li>「 Web フォントが適用された要素を見つける」のは、<ul>
-<li>Web フォントサービスが提供する独自実装された JS で、サービスを利用するにはこの JS の読み込みが必要</li>
-<li>（静的サブセッテイングの場合は、ブラウザが勝手にやる）</li>
-</ul>
-</li>
-<li>「フォントリストに追加」する方法は、上記 JS の実装により異なる<ul>
-<li>JS だったり（<code>document.fonts.add</code>）</li>
-<li>CSS にまかせたり（<code>&lt;style&gt;@font-face{...}&lt;/style&gt;</code>を<code>&lt;head&gt;</code>に append）</li>
-<li>（静的サブセッテイングの場合は、ブラウザが勝手にやる）</li>
-</ul>
-</li>
-</ul>
-<h3 id="-">フォントデータの読み込み要求</h3>
-<ul>
-<li>ブラウザは次の条件でフォントデータの読み込みを試みる（試みはするけど実際に読み込まれるとは限らない）<ul>
-<li>フォントリスト内のフォントが適用された要素を検出した時<ul>
-<li>動的サブセッティング提供の JS がフォントリストの追加をするのは、要素へのフォント適用を検出した時なので、結果としてブラウザによる読み込み要求の対象となる</li>
-<li>ちなみに Canvas への Web フォント描画も検出対象になる、Web フォントで描画されないけど....（詳しくは CodeGrid）</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><code>document.fonts.laod(...)</code>、<code>fontFace.load()</code>が実行された時<ul>
-<li>動的サブセッティングのサービスによっては、この<code>load()</code>メソッドで読み込み要求する実装もある</li>
-</ul>
-</li>
-</ul>
-<h3 id="-">フォントデータの読み込み条件</h3>
-<ul>
-<li>ブラウザによるフォント適用の検出があった時、または、<code>document.fonts.laod(...)</code>が実行された時、以下条件に一致する<code>FontFace</code>をフォントリスト内から見つけると、その<code>FontFace</code>のフォントソースからフォントデータを読み込む（<code>fontFace.load()</code>の場合は以下 1 つ目の条件のみが適用される）<ul>
-<li><code>FontFace.status</code>が<code>unloaded</code>であること</li>
-<li>対象フォントと<code>FontFace.family</code>が一致していること</li>
-<li>対象「文字列」内のいずれかの文字が<code>FontFace.unicodeRange</code>内にあること<ul>
-<li>静的サブセッティングではサブセット内に存在するフォントデータの範囲を、この<code>unicodeRange</code>に設定する</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="typesquare-web-">TypeSquare 下での Web フォントの利用</h2>
-<p>動的サブセッティング下で Canvas 描画するには、フォントの検出＆読み込みをする独自 JS が、どのようにして Web フォントを適用しているかを知ることが大事。なので、Canvas でない要素に Web フォントを適用した時の挙動を調べる。</p>
-<h3 id="-js-">独自 JS の読み込み</h3>
-<pre><code class="lang-html">&lt;script type=&quot;text/javascript&quot;
-src=&quot;//typesquare.com/3/tsad/script/ja/typesquare.js?5cedf0....&amp;auto_load_font=true&quot;
-charset=&quot;utf-8&quot;&gt;
-</code></pre>
-<p><code>auto_load_font=true</code>クエリの指定で、動的な Web フォントの適用も検出対象となる。</p>
-<h3 id="-font-face-fontface-">@font-face -&gt; FontFace の追加</h3>
-<p>初期レンダリングの時点で、Web フォントがどの要素にも割り当てられてなければ、<code>@font-face</code>の定義も、フォントリスト内の<code>FontFace</code>も存在しない状態になる。</p>
-<p>初期レンダリングの時点の割り当てや、動的な割り当てを検出すると、その都度<code>@font-face</code>の定義を含む<code>&lt;style&gt;</code>が<code>&lt;head&gt;</code>内に append され、この定義を反映した<code>FontFace</code>がフォントリストにも追加される。以下は、<code>a</code>という 1 文字に<code>Suzumushi</code>というフォントを割り当てた時に、append された<code>@font-face</code>と<code>FontFace</code>。</p>
-<p><code>@font-face</code>
-<img src="./images/image.png" alt=""></p>
-<p><code>FontFace</code>
-<img src="./images/image-1.png" alt=""></p>
-<p><code>status</code>が<code>loaded</code>になっているのは append により、フォントの検出と取得が生じ、<code>unloaded</code> -&gt; <code>loading</code> -&gt; <code>loaded</code>という遷移をしたため。また、<code>uncode-range</code>デスクプリタが指定されていないため、<strong><code>unicodeRange</code>は全文字範囲（<code>U+0-10FFFF</code>）が指定された状態</strong>になる。</p>
-<p>必要になった文字は、<code>fonts[str]=YQ%3D%3D</code>というクエリで指定される。<code>YQ%3D%3D</code>は文字列の値であり、この場合<code>a</code>に相当する。検出文字列が<code>abc</code>であれば<code>YWJj</code>という値が指定される（どういう変換なのかはよくわからない）</p>
-<h3 id="-">フォントデータの重複読み込みの抑止</h3>
-<p>静的サブセッティング下では、利用可能性のある全てのサブセットを、<code>unicodeRange</code>による<code>@font-face</code>で指定されている前提があるため、重複読み込みを抑止する機能が自動的に働く。</p>
-<p>しかし、動的サブセッティングの場合、必要となったフォントデータのフォントソースの参照を、動的にフォントリスト内に追加する構成なので、上記のような自動的な抑止機能は働かない。提供された JS 内で抑止処置がされてなければ、重複読み込みは発生してしまう。</p>
-<h3 id="-">検出文字列が以前の検出結果とぴったり一致してる場合</h3>
-<p>TypeSquare 場合は、検出文字列が以前の検出結果とぴったり一致してる場合のみ、重複読み込みが抑止される。
-たとえば、<code>a</code>という文字に Web フォント指定し、3 回非同期で表示した場合、</p>
-<p><img src="./images/image-2.png" alt=""></p>
-<p><code>a</code>に相当する<code>YQ%3D%3D</code>という値がクエリで指定されたフォントソース（<code>src</code>）の定義を含む<code>@font-face</code>が、3 つ append される。</p>
-<p><img src="./images/image-3.png" alt=""></p>
-<p><code>&lt;style&gt;</code>タグをまたいだ同じ定義内容である上記の 3 つ<code>@font-face</code>は、<strong>定義内容が同じなため 1 つの<code>FontFace</code>オブジェクトとしてまとめられ、フォントリスト内に追加される</strong>（ブラウザがそういう挙動を示す）。</p>
-<p><img src="./images/image-4.png" alt=""></p>
-<p>しかし、仮に、次のように同一<code>&lt;style&gt;</code>タグ内に同じ定義の<code>@font-face</code>が 3 つ存在した場合は、</p>
-<p><img src="./images/image-5.png" alt=""></p>
-<p><code>FontFace</code>オブジェクトも 3 つ生成される。</p>
-<p><img src="./images/image-6.png" alt=""></p>
-<p>ので、JS で重複読み込みを抑止しているというより、ブラウザの気が効いていて、結果として抑止されているという感じ。</p>
-<h3 id="-">既にフォントデータを取得した文字が検出結果に含まれていた場合</h3>
-<p>たとえば、<code>ab</code>という文字のフォントは取得済みな状態で、新たな検出結果が<code>abc</code>という文字列だった場合、必要なフォントデータは<code>c</code>のみだけど<code>abc</code>を含むフォントデータが返される。
-ので、取得済みかどうかは関係なく、<code>fonts[str]</code>に指定する文字数が増える程、読み込みデータ量も増える結果となる。</p>
-<h2 id="typesquare-canvas-web-">TypeSquare 下での Canvas への Web フォントの適用</h2>
-<p>Canvas に Web フォントを適用するには、描画文字に対応するフォントデータが、読み込み済みの状態になっている必要がある。そのため、静的サブセティング下では、<code>FontFaceSet#load</code>を使い、事前に生成されたフォントリストの定義内容をもとにフォントデータの読み込みを行う。</p>
-<p>一方、動的サブセッティング下の場合、初期段階では、フォントリスト自体が空の状態のため、以下の一連の処理が必要になる。</p>
-<ol>
-<li>フォントを適用したい任意の文字列を指定することで、そのフォントデータが得られるフォントソースを返す、Web フォントサービスが提供する API の実行</li>
-<li>1 で得たフォントソースを指定した<code>FontFace</code>オブジェクトの生成とフォントリストへの追加</li>
-<li>フォントデータの読み込み実行と、読み込み待ち</li>
-<li>Web フォントを適用した文字列の Canvas への描画</li>
-</ol>
-<h3 id="-">フォントデータの読み込み待ち問題</h3>
-<p>TypeSquare では、1 を行うための<code>window.Ts.loadFontAsync(FontObj)</code>という API が用意されている。</p>
-<ul>
-<li><a href="https://typesquare.com/service/api_reference/">API リファレンス | Web フォント TypeSquare [タイプスクウェア]</a></li>
-</ul>
-<p><code>window.Ts</code>は、<code>//typesquare.com/3/tsad/script/ja/typesquare.js?....</code>を読み込むことで追加される。</p>
-<p>ドキュメントサイトに掲載されている利用例をみると、次のような実装になっている。</p>
-<pre><code class="lang-html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
-    &lt;script
-      type=&quot;text/javascript&quot;
-      src=&quot;//typesquare.com/3/tsst/script/ja/typesquare.js?5a2e354934b04540b59d7612ac1e029f&amp;onload=false&quot;
-      charset=&quot;utf-8&quot;
-    &gt;&lt;/script&gt;
-    &lt;style type=&quot;text/css&quot; rel=&quot;stylesheet&quot;&gt;
-      body {
-        font-family: &quot;Folk Bold&quot;;
-        margin: 15px;
-      }
-      .t1 {
-        font-size: 34px;
-        line-height: 1.5;
-      }
-    &lt;/style&gt;
-    &lt;script type=&quot;text/javascript&quot;&gt;
-      const fontasync = function () {
-        const callbackId = Date.now();
-        Ts.loadFontAsync({
-          cssName: &quot;Folk Bold&quot;,
-          text: document.getElementById(&quot;target&quot;).innerText,
-          hasHint: false,
-          outputType: &quot;json&quot;,
-          callbackId: callbackId,
-          callback: callbackJson,
-        });
-      };
-      const callbackJson = function (params) {
-        const styleElement = document.createElement(&quot;style&quot;);
-        styleElement.setAttribute(&quot;type&quot;, &quot;text/css&quot;);
-        styleElement.setAttribute(&quot;rel&quot;, &quot;stylesheet&quot;);
-        const data = JSON.parse(params.data);
-        const data_object = JSON.parse(data.res);
-        styleElement.innerHTML =
-          &quot;@font-face {font-family: &#39;&quot; +
-          data_object[&quot;fontFamily&quot;] +
-          &quot;&#39;; font-weight: &quot; +
-          data_object[&quot;font-weight&quot;] +
-          &quot;;src: url(data:font/woff;base64,&quot; +
-          data_object[&quot;src&quot;] +
-          &quot;);}&quot;;
-        document.head.appendChild(styleElement);
-      };
-    &lt;/script&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;div&gt;
-      &lt;input
-        class=&quot;btn&quot;
-        type=&quot;button&quot;
-        onclick=&quot;fontasync();&quot;
-        value=&quot;API Method の フォント取得機能を利用してフォントをロード&quot;
-      /&gt;
-      &lt;input
-        class=&quot;btn&quot;
-        type=&quot;button&quot;
-        onclick=&quot;document.location.reload();&quot;
-        value=&quot;このサンプルを再読み込みする&quot;
-      /&gt;
-      &lt;p id=&quot;target&quot; class=&quot;t1&quot;&gt;
-        TypeSquareはあなたのウェブサイトデザインを一新します。
-      &lt;/p&gt;
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
-<p>サービスが提供する JS と同じように、動的に<code>@font-face</code>の定義を含む<code>&lt;style&gt;</code>を<code>&lt;head&gt;</code>内に append していることが分かる。</p>
-<p>また、</p>
-<blockquote>
-<ul>
-<li>&quot;;src: url(data:font/woff;base64,&quot; ,&quot; + data_object[&#39;src&#39;] +&quot;);}&quot;;</li>
-</ul>
-</blockquote>
-<p>という記述から分かるように、この API を利用した場合は、base64 形式でフォントデータが返される。</p>
-<p>この処置により、前述手順の 1, 2 を行ったことになる。Canvas でなければ必要な処理は以上で済む。しかし、Canvas の場合は、3 の「フォントデータの読み込み実行と、読み込み待ち」が必要であり、上記のように実装してしまうと、ややこしくなる。</p>
-<p>まず、「フォントデータの読み込み実行」には、<code>@font-face</code>の設定がフォントリストに反映されるのをまつ必要があるが、これには<code>FontFaceSet.ready</code>は使えない。<code>FontFaceSet.ready</code>は、初期レンダリングの際のみにしか使えないので。</p>
-<p>なので、この状態で無理にでも 3 の処理を行うには、<code>auto_load_font=true</code>でサービスが提供する JS を読み込んでおき、適当な要素で Web フォントを適用した文字列を追加することで、提供 JS にその検出とフォントデータの読み込みを実行させ、<code>document.font</code>の<code>loadingdone</code>イベントを listen して、読み込み完了を待つ必要ある。</p>
-<pre><code class="lang-js">// フォントの読み込みを行わせるためのダミーテキスト
-const $dummyText = document.createElement(&#39;div&#39;);
-$dummyText.innerHTML = text;
-$dummyText.style.fontFamily = res.fontFamily;
-
-const loadingDoneHandle = () =&gt; {
-  document.fonts.removeEventListener(&#39;loadingdone&#39;, loadingDoneHandle);
-  $dummyArea.removeChild($dummyText);
-  ...
-};
-document.fonts.addEventListener(&#39;loadingdone&#39;, loadingDoneHandle);
-
-// laoding -&gt; loadingdoneを発火させるためのappend
-$dummyArea.appendChild($dummyText);
-</code></pre>
-<p>テキストフィールドでユーザが指定した文字列を<code>input</code>イベントで拾って、リアルタイムに Web フォントで描画するような、連続実行が想定されるケースでは、JS と CSS で処理が分断される上記のような実装だと、一連のリクエストをひと括りでまとめ処理するのが厄介になる。</p>
-<h3 id="-js-">フォントリストの追加とフォントデータの読み込みを JS で処理する</h3>
-<p>Canvas 描画のように、フォント読み込み後に JS でなにかしらの処理をしたい場合は、フォントリストの追加も、フォントデータの読み込みも、全部 JS でやってしまったほうが良い。</p>
-<p>次のように、<code>new FontFace(...)</code>と<code>FontFaceSet#add</code>を使えばそれが可能であり、スムーズに Canvas の描画処理につなげることができる。</p>
-<pre><code class="lang-js">window.Ts.loadFontAsync({
-  cssName: fontFamily,
-  text,
-  hasHint: false,
-  outputType: &quot;json&quot;,
-  callbackId: Date.now(),
-  callback: async (params) =&gt; {
-    const data = JSON.parse(params.data);
-    const res = JSON.parse(data.res);
-    const fontFace = new FontFace(
-      res.fontFamily,
-      `url(data:font/woff;base64,${res.src})`,
-      {
-        fontWeight: res[&quot;font-weight&quot;],
-      }
-    );
-    document.fonts.add(fontFace); // フォントリストの追加
-    await fontFace.load(); // フォントデータの読み込み
-
-    // Canvas描画処理
+<p>当時、Node.js は v6 ぐらいだった思うが、この時、新アプリに必要なパッケージも既存の同じ package.json で管理してしまった。</p>
+<p>この既存 package.json には、古い Node.js でないと動かないやつがいろいろあったようで、Node.js やパッケージのバージョンアップをしてく過程で、Node.js を v8 以降にあげようとするとインストールでコケるようになってしまった。</p>
+<p>そのため、Node.js のバージョンアップできないのにひっぱられ、もろもろの構成パッケージのバージョンアップもできなくなってしまい（ESLint とのからみもあった記憶）、長らく主要パッケージが以下のようなバージョンになってしまっていた。</p>
+<pre><code>  &quot;dependencies&quot;: {
+    ...
+    &quot;vue&quot;: &quot;^3.0.0&quot;
   },
-});
-</code></pre>
-<h3 id="-">フォントデータの重複読み込みの抑止</h3>
-<p>フォントデータの重複読み込みを抑止するには、単純に、API に投げた文字を記録しておき、その文字をクエリから除去して API を実行するようにすればよい。</p>
-<pre><code class="lang-js">const loadedStrings = [];
-const trimLoadedString = (text) =&gt; {
-  return text
-    .split(&quot;&quot;)
-    .filter((str) =&gt; loadedStrings.includes(str) === false)
-    .join(&quot;&quot;);
-};
-const addToLoadedStrings = (text) =&gt; {
-  loadedStrings.push(...text.split(&quot;&quot;));
-};
-
-const loadFont = async (fontFamily, text) =&gt; {
-  if (text === &quot;&quot;) {
-    return;
-  }
-  return new Promise((resolve) =&gt; {
-    const targetStrings = trimLoadedString(text); // 読み込み済み文字の除去
-    if (targetStrings === &quot;&quot;) {
-      resolve();
-      return;
-    }
-    window.Ts.loadFontAsync({
-      cssName: fontFamily,
-      text: targetStrings,
-      hasHint: false,
-      outputType: &quot;json&quot;,
-      callbackId: Date.now(),
-      callback: async (params) =&gt; {
-        const data = JSON.parse(params.data);
-        const res = JSON.parse(data.res);
-        const fontFace = new FontFace(
-          res.fontFamily,
-          `url(data:font/woff;base64,${res.src})`,
+  &quot;devDependencies&quot;: {
+    ...
+    &quot;@types/jest&quot;: &quot;23.1.0&quot;,
+    &quot;@types/node&quot;: &quot;10.5.4&quot;,
+    &quot;@vue/compiler-sfc&quot;: &quot;^3.0.0&quot;,
+    &quot;css-loader&quot;: &quot;^3.4.2&quot;,
+    &quot;file-loader&quot;: &quot;^6.0.0&quot;,
+    &quot;jest&quot;: &quot;23.1.0&quot;,
+    &quot;node-sass&quot;: &quot;4.9.4&quot;,
+    &quot;sass-loader&quot;: &quot;7.1.0&quot;,
+    &quot;sass-resources-loader&quot;: &quot;1.3.4&quot;,
+    &quot;ts-jest&quot;: &quot;22.4.6&quot;,
+    &quot;ts-loader&quot;: &quot;^8.0.3&quot;,
+    &quot;typescript&quot;: &quot;^4.0.2&quot;,
+    &quot;vue-jest&quot;: &quot;^3.0.5&quot;,
+    &quot;vue-loader&quot;: &quot;^16.0.0-beta.5&quot;,
+    &quot;vue-style-loader&quot;: &quot;4.1.2&quot;,
+    &quot;webpack&quot;: &quot;^4.42.1&quot;,
+    &quot;webpack-cli&quot;: &quot;^3.3.11&quot;,
+</code></pre><h2 id="webpack4-node-js-ts-vue-">webpack4 のまま、Node.js、TS、Vue のバージョンを上げる</h2>
+<p>新アプリ起動は、本体アプリの UI を必ず経由するので、本体アプリ側からみたら新アプリ（というかアダプターアプリ）のビルド結果を script タグで読み込めれば問題ない。
+ので、アダプターアプリや新アプリ用に別ディレクトリを切り、そこで専用の<code>package.json</code>を管理し、ビルド結果のみを本体アプリ側のディレクトリに出力するようにした。</p>
+<p>この状態でまずは Node.js を v16 や v17 にしたかったので、インストールでコケないように整合性が取れるにように各パッケージのバージョンを以下のように調整した。</p>
+<pre><code>  &quot;dependencies&quot;: {
+    ...
+    &quot;vue&quot;: &quot;^3.2.36&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;@types/jest&quot;: &quot;^27.4.1&quot;,
+    &quot;@types/node&quot;: &quot;^17.0.25&quot;,
+    &quot;@vue/compiler-sfc&quot;: &quot;^3.2.33&quot;,
+    &quot;@vue/vue3-jest&quot;: &quot;^27.0.0-alpha.4&quot;,
+    &quot;css-loader&quot;: &quot;^3.4.2&quot;,
+    &quot;file-loader&quot;: &quot;^6.2.0&quot;,
+    &quot;jest&quot;: &quot;^27.5.1&quot;,
+    &quot;sass&quot;: &quot;^1.50.1&quot;,
+    &quot;sass-loader&quot;: &quot;7.1.0&quot;,
+    &quot;sass-resources-loader&quot;: &quot;1.3.4&quot;,
+    &quot;ts-jest&quot;: &quot;^27.1.4&quot;,
+    &quot;ts-loader&quot;: &quot;^8.0.3&quot;,
+    &quot;typescript&quot;: &quot;^4.6.3&quot;,
+    &quot;vue-loader&quot;: &quot;^17.0.0&quot;,
+    &quot;vue-style-loader&quot;: &quot;4.1.2&quot;,
+    &quot;vue-template-compiler&quot;: &quot;^2.7.4&quot;,
+    &quot;webpack&quot;: &quot;^4.42.1&quot;,
+    &quot;webpack-cli&quot;: &quot;^3.3.11&quot;
+</code></pre><p>webpack についてはとりあえず現状維持で 4 系のままで、TS を 4.6 系、Vue を 3.2 系へ。その他は、インストールでこけないように微妙に古いバージョンになっている。</p>
+<h2 id="node-js-v17-5-0-">Node.js が v17.5.0 の場合</h2>
+<p>この設定で、Node.js が v17.5.0 だと以下エラーがでる。</p>
+<pre><code>Error: error:0308010C:digital envelope routines::unsupported
+    at new Hash (node:internal/crypto/hash:67:19)
+    at Object.createHash (node:crypto:135:10)
+</code></pre><p><a href="https://qiita.com/cnloni/items/1c83cac956599fb24158">https://qiita.com/cnloni/items/1c83cac956599fb24158</a> で、解決できるらしいという記事が散見されたが、解消されず。バージョンを、10.12.0 までおとすとエラーはなくなる。</p>
+<p>どうもこれは、wabpack の不具合らしく、v5 系では修正対応するが、v4 系では修正はされないらしい。</p>
+<ul>
+<li><a href="https://github.com/webpack/webpack/issues/14532">https://github.com/webpack/webpack/issues/14532</a></li>
+</ul>
+<p>v4 でも、次のように<code>export NODE_OPTIONS=--openssl-legacy-provider;</code>することで、解決できるけどやたらとコンパイル時間が長くなってしまう....</p>
+<pre><code>&quot;scripts&quot;: {
+  &quot;build&quot;: &quot;export NODE_OPTIONS=--openssl-legacy-provider;webpack --config webpack.fooApp --mode production&quot;,
+</code></pre><h2 id="node-js-v16-14-0-">Node.js が v16.14.0 の場合</h2>
+<p>次に Node.js を v16.14.0 にすると、次のようなエラーが発生する。</p>
+<p><img src="./images/image.png" alt=""></p>
+<p>いずれも vue ファイルまわりのエラーで、tsconfig との兼ね合いで出てるエラーもある。</p>
+<h3 id="-props-never-read-">$props の never read エラー</h3>
+<p>どうも Vue のバージョンアップで、SFC の型チェックが厳密？になったらしい...</p>
+<p>SFC から参照できる<code>$props</code>等の<code>$</code>うんたらがいろいろ生えてるが、これが未使用というエラーがでている（と言われてもそんなモノ必要としてないし...）。</p>
+<p>これは tsconfig の<code>noUnusedParameters:true</code>の影響で、参照されていないパラメータ定義があるとエラーを出す。パッケージのバージョン上げれない問題で、ESLint でこのチェックをできないという背景があったため、tsconfig で設定していた（<code>noUnusedLocals:true</code>も）。</p>
+<h3 id="parameter-n-impicitly-">Parameter &#39;n&#39; impicitly ... エラー</h3>
+<p>これも SFC の型チェックが変更された影響っぽい。
+tsconfig の<code>&quot;strict&quot;: true</code>をやめればでなくなるけど、って issue コメントあるけど、これはなんとかして欲しい....</p>
+<ul>
+<li><a href="https://github.com/vuejs/vue-loader/issues/1915">Scoped style leads to error: TS7006: Parameter &#39;n&#39; implicitly has an &#39;any&#39; type · Issue #1915 · vuejs/vue-loader</a></li>
+</ul>
+<h3 id="default-export-">default export エラー</h3>
+<p>これがよくわからない。</p>
+<p><a href="https://github.com/TypeStrong/ts-loader#appendtssuffixto">https://github.com/TypeStrong/ts-loader#appendtssuffixto</a> を参考に、以下のような webpack のローダーの設定でエラーがでなくなった。</p>
+<pre><code>      module: {
+        rules: [
           {
-            fontWeight: res[&quot;font-weight&quot;],
-          }
-        );
-        document.fonts.add(fontFace);
-        await fontFace.load();
-        addToLoadedStrings(targetStrings); // 読み込み済み文字の記録
-        resolve();
-      },
-    });
-  });
-};
-
-$textInput.addEventListener(&quot;input&quot;, function (event) {
-  loadFont(&quot;Suzumushi&quot;, this.value).then(() =&gt; {
-    // Canvasの描画
-  });
-});
-</code></pre>
-<p>（上記の実装だと、unloaded or loaded の 2 つの状態管理しかしてないので、loading 中にリクエストがくると重複読み込みしてしまう。ので、静的サブセッティングのように laoding 状態のリクエストには、その Promise の解決を待つといった工夫をしたほうがより良い）</p>
-<h2 id="adobe-fonts-web-">Adobe Fonts 下での Web フォントの利用</h2>
-<p>Adobe Fonts の場合、フォントデータの読み込みを動的 or 静的で選べるが、日本語フォントの場合は動的しか選べない。</p>
-<h3 id="-js-">独自 JS の読み込み</h3>
-<p>サイト上で、次のようなコードをコピペするよう指示される。これによってフォント検出＆取得をする独自 JS が読み込まれる。</p>
-<pre><code class="lang-js">(function (d) {
-  var config = {
-      kitId: &quot;.....&quot;,
-      scriptTimeout: 3000,
-      async: true,
-    },
-    h = d.documentElement,
-    t = setTimeout(function () {
-      h.className = h.className.replace(/\bwf-loading\b/g, &quot;&quot;) + &quot; wf-inactive&quot;;
-    }, config.scriptTimeout),
-    tk = d.createElement(&quot;script&quot;),
-    f = false,
-    s = d.getElementsByTagName(&quot;script&quot;)[0],
-    a;
-  h.className += &quot; wf-loading&quot;;
-  tk.src = &quot;https://use.typekit.net/&quot; + config.kitId + &quot;.js&quot;;
-  tk.async = true;
-  tk.onload = tk.onreadystatechange = function () {
-    a = this.readyState;
-    if (f || (a &amp;&amp; a != &quot;complete&quot; &amp;&amp; a != &quot;loaded&quot;)) return;
-    f = true;
-    clearTimeout(t);
-    try {
-      Typekit.load(config);
-    } catch (e) {}
-  };
-  s.parentNode.insertBefore(tk, s);
-})(document);
-</code></pre>
-<h3 id="-unicoderange-">英数字の事前読み込みと unicodeRange の設定</h3>
-<p>上記処置により、利用頻度の高い英数字は、そのサブセットをフォントリストに追加された状態になる。</p>
-<p><img src="./images/image-7.png" alt=""></p>
-<p><code>status</code>が<code>loaded</code>になっており、フォントデータの読み込みも済んだ状態になっている。また、<code>unicodeRange</code>には、フォントデータとして保持している個別の文字が設定されている。</p>
-<p>独自 JS は、これらの状態から読み込み状態を判断できるようで、例えば、Web フォントを適用した英数字を append しても、フォントデータの読み込みは行われずに、Web フォントが適用される。</p>
-<p><img src="./images/image-8.png" alt=""></p>
-<h3 id="-">フォントデータの重複読み込みの抑止</h3>
-<p>逆に、英数字以外の文字の場合は、新たなフォントデータが読み込まれる。</p>
-<p><img src="./images/image-9.png" alt=""></p>
-<p>フォントリストにも、それに対応する<code>FontFace</code>が追加される。</p>
-<p><img src="./images/image-10.png" alt=""></p>
-<p>（追加された<code>FonfFace</code>の<code>unicodeRange</code>を見ると、英数字が含まれているので、もしかしたら、毎回英数字を含んだフォントデータを返してるのかもしれないけど、基本的には）この処置によって必要になったフォントデータを取得しているのが分かる。</p>
-<p>さらに、一度利用した文字で、再度を Web フォントを適用し描画した場合、フォントデータは読み込まれず、不要な重複読み込みが抑止されているのが分かる。</p>
-<p><img src="./images/image-11.png" alt=""></p>
-<h2 id="adobe-fonts-canvas-web-">Adobe Fonts 下での Canvas への Web フォントの適用</h2>
-<p>Adobe Fonts の場合は、フォントデータを取得するための API が公開されていない。ので、フォントデータの事前読み込みをするには、以下のいずれかの方法を選択する必要がある。</p>
+            test: /\.ts$/,
+            exclude: /node_modules/,
+            loader: &#39;ts-loader&#39;,
+            options: {
+              appendTsSuffixTo: [/TS\.vue$/], // &lt;--- TSっていうをつけるパターン
+            },
+          },
+</code></pre><p>が、vue ファイルのみで完結するシンプルなパターンならこれでも動作するが、<a href="https://v3.ja.vuejs.org/api/sfc-spec.html#src-imports">src インポート</a>してるとエラーになってしまう。いくら VSCode が賢くなって SFC 上でも型を識別できるようになったとはいえ、個人的に SFC への全部書きは嫌いなのでこれはヤダ。</p>
+<h2 id="webpack5-node-v17-">Webpack5 で Node も v17 にしてその他も最新にする</h2>
+<p><code>splitChunks</code>の仕様が Webpack の v4 と v5 で違うので、v5 にするのを避けてたけど、もう面倒なので、一旦、みんな最新にしてどんな問題が出るか見る。</p>
+<pre><code>  &quot;dependencies&quot;: {
+    &quot;vue&quot;: &quot;^3.2.36&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;@types/jest&quot;: &quot;^28.1.4&quot;,
+    &quot;@types/node&quot;: &quot;^18.0.3&quot;,
+    &quot;@vue/compiler-sfc&quot;: &quot;^3.2.37&quot;,
+    &quot;css-loader&quot;: &quot;^6.7.1&quot;,
+    &quot;file-loader&quot;: &quot;^6.2.0&quot;,
+    &quot;jest&quot;: &quot;^26.6.3&quot;,
+    &quot;sass&quot;: &quot;^1.53.0&quot;,
+    &quot;sass-loader&quot;: &quot;^13.0.2&quot;,
+    &quot;sass-resources-loader&quot;: &quot;^2.2.5&quot;,
+    &quot;ts-jest&quot;: &quot;^26.5.6&quot;,
+    &quot;ts-loader&quot;: &quot;^9.3.1&quot;,
+    &quot;typescript&quot;: &quot;^4.7.4&quot;,
+    &quot;vue-jest&quot;: &quot;^5.0.0-alpha.10&quot;,
+    &quot;vue-loader&quot;: &quot;^17.0.0&quot;,
+    &quot;vue-style-loader&quot;: &quot;^4.1.3&quot;,
+    &quot;vue-template-compiler&quot;: &quot;^2.7.4&quot;,
+    &quot;webpack&quot;: &quot;^5.73.0&quot;,
+    &quot;webpack-cli&quot;: &quot;^4.10.0&quot;
+</code></pre><p>Node.js は v17.5.0、webpack は v5 系、Vue は 3.2.36、TS は 4.7.4、その他もろもろを最新に。</p>
+<p><img src="./images/image-1.png" alt=""></p>
+<p>$props の never read エラーだけになった w</p>
+<p><code>noUnusedParameters:true</code>やめて、ESLint でチェックすればいけそうだけど、もうちょい原因調査。</p>
+<p>さきほどの「Parameter &#39;n&#39; impicitly ... エラー」の対策として、vue-loader を 16.5 以前にすると解決するというコメントがあった。</p>
 <ul>
-<li>独自 JS が呼んでいる API の仕様を解析して、自身の JS から直接呼ぶ</li>
-<li>Web フォントを当てた適当な要素を append して、独自 JS にフォントデータを読み込ませる</li>
+<li><a href="https://github.com/vuejs/vue-loader/issues/1915#issuecomment-1003536795">https://github.com/vuejs/vue-loader/issues/1915#issuecomment-1003536795</a></li>
 </ul>
-<p>前者の場合、仕様が変わったらアウトだし、API のリクエストパラメータを見る限り、とても解析する気にはなれない。</p>
-<pre><code>URL: https://use.typekit.net/af/292347/00000000000000007735eae8/30/m?features=ALL&amp;v=4&amp;chunks=259.266&amp;state=127&amp;order=0
-</code></pre><p>一方、後者の場合、フォントデータの読み込み完了タイミングを得る必要があるが、TypeSquare のように、<code>document.fonts</code>の<code>loadingdone</code>イベントを使うことはできない。独自 JS では<code>FontFace#load</code>による読み込みをしているようで、<code>loadingdone</code>イベントが発火しない模様。</p>
-<p>また、英数字のように初期段階で読み込まれてるフォント、あるいは、動的に読み込んだフォントを再度使う場合は、そもそも新たにフォントデータを読み込む必要がないため、その判定も必要になる。</p>
-<h3 id="-">苦肉の策</h3>
-<p>ので、それでもなんとか使うには、以下のような苦肉の策が必要になる。</p>
+<p>試しにこれやってみたら、エラーが完全に消えてコンパイルが通るようになった！バンザイ！（アプリの動作も問題なし、はじめからこうすれば良かった...）</p>
+<p><code>splitChunks</code>まわりの変更や、チャンクファイルの命名が変更された都合でもろもろ修正は必要になったけど、とりあえずこのまま運用して<code>vue-loader</code>のバグ修正を待つつもり。</p>
 <ul>
-<li>読み込み済み判定<ul>
-<li>フォントリスト内の<code>FontFace.unicodeRange</code>を走査し、描画文字列がその範囲に含まれているか照合する</li>
-<li>文字列を構成する文字すべてが、いずれかの<code>FontFace.unicodeRange</code>に含まれていれば、フォントデータの読み込みを行わない</li>
-<li>含まれていなかった文字については、フォントデータの読み込み対象とする（読み込んだ結果、新たな<code>FontFace.unicodeRange</code>がフォントリストに追加される）</li>
+<li>サンプルコード: <a href="https://github.com/cyokodog/vue-webpack">cyokodog/vue-webpack</a></li>
 </ul>
-</li>
-<li>フォントデータ読み込み完了タイミングの判定<ul>
-<li>ダミー要素を append して、<code>document.fonts.size</code>が増えるのを監視するしかなさそう....</li>
-</ul>
-</li>
-</ul>
-<h3 id="fontfaceset-check-">FontFaceSet#check は？</h3>
-<p>読み込み済み判定については、<code>unicodeRange</code>も設定されてるし、<code>document.fonts.check</code>という便利そうなメソッドを使いたくなるが、このケースでは使えない。</p>
-<pre><code class="lang-js">document.fonts.check(フォント名, テキスト); // true or false
-</code></pre>
-<p>これは、フォントリスト内の<code>FontFace.unicodeRange</code>に、指摘したテキストが含まれていて、且つ、読み込み済みかを判定してくれるもの。なのだが、厳密には以下のように処理される。</p>
-<ul>
-<li><code>FontFace.unicodeRange</code>に一致したデータを見つけた場合<ul>
-<li><code>status = loaded</code> -&gt; <code>true</code></li>
-<li><code>status = unloaded</code> -&gt; <code>false</code></li>
-<li><code>status = laoding</code> -&gt; ?（調べてない）</li>
-</ul>
-</li>
-<li><code>FontFace.unicodeRange</code>に一致したデータが無かった場合<ul>
-<li><code>true</code> &lt;------ これが...</li>
-</ul>
-</li>
-</ul>
-<p>なので、静的サブセッティングのように利用可能性のあるサブセットが全てフォントリスト内にないと、意味をなさない。</p>
-<h3 id="-">読み込み済み判定</h3>
-<p>読み込み済み判定は、<code>unicodeRange</code>と照合するため、テキストを unicode に変換する必要がある。これは<code>String#codePointAt</code>で得られる。</p>
-<p><a href="https://jsprimer.net/basic/string-unicode/?utm_source=pocket_mylist">文字列と Unicode · JavaScript Primer #jsprimer</a></p>
-<pre><code class="lang-js">const convertCodePoints = (str) =&gt; {
-  return Array.from(str).map((char) =&gt; {
-    const codePoint = char.codePointAt(0).toString(16);
-    return `u+${codePoint}`.toUpperCase();
-  });
-};
-</code></pre>
-<p>あとは、テキストを上記関数で 1 文字づつ unicode 化して、<code>unicodeRange</code>と照合すればよい。</p>
-<pre><code class="lang-js">const unicodeRangeMatch = (fontName, text) =&gt; {
-  const codePoints = convertCodePoints(text);
-  return codePoints.every((codePoint) =&gt; {
-    let loaded = false;
-    document.fonts.forEach((fontFace) =&gt; {
-      if (
-        fontFace.family === fontName &amp;&amp;
-        fontFace.status === &quot;loaded&quot; &amp;&amp;
-        fontFace.unicodeRange.split(&quot;, &quot;).includes(codePoint)
-      ) {
-        loaded = true;
-      }
-    });
-    return loaded;
-  });
-};
-</code></pre>
-<h3 id="-">フォントデータ読み込み完了タイミングの判定</h3>
-<p>雑だけど、以下のような感じで実装できる。</p>
-<pre><code class="lang-js">const fontLoading = (fontName, text) =&gt; {
-  const $dummyText = document.createElement(&quot;div&quot;);
-  $dummyText.innerHTML = text;
-  $dummyText.style.fontFamily = fontName;
-  $dummyText.style.display = &quot;none&quot;; // 非表示でも検出対象になる！
-  document.body.appendChild($dummyText);
-
-  return new Promise((resolve) =&gt; {
-    const lastFontsSize = document.fonts.size;
-    const watchLoading = () =&gt; {
-      setTimeout(() =&gt; {
-        if (document.fonts.size &gt; lastFontsSize) {
-          $dummyText.remove();
-          let loaded = true;
-          document.fonts.forEach((fontFace) =&gt; {
-            if (fontFace.family === fontName &amp;&amp; fontFace.status !== &quot;loaded&quot;) {
-              loaded = false;
-            }
-          });
-          if (loaded) {
-            resolve();
-            return;
-          }
-          watchLoading();
-        }
-      }, 100);
-    };
-    watchLoading();
-  });
-};
-</code></pre>
-<p>検出は、独自 JS がやってるので、静的サブセッティング化で行われるブラウザによる検出と異なり、いろいろと厳密でないところがある。例えば、<code>$dummyText.style.display = &#39;none&#39;</code>とかしても検出の対象になる。</p>
-<h3 id="-">読み込み制御の実装</h3>
-<p>上記２つの関数を使い、次のように読み込み制御をすれば、Adobe Fonts 下でも Canvas に Web フォントを適用できる。</p>
-<pre><code class="lang-js">const loadFont = async (fontName, text) =&gt; {
-  // 読み込み済みならなにもしない
-  if (unicodeRangeMatch(fontName, text)) {
-    return;
-  }
-  // フォントデータを読み込んだら解決するPromiseを返す
-  return fontLoading(fontName, text);
-};
-
-$textInput.addEventListener(&quot;input&quot;, function (event) {
-  loadFont(&quot;pigmo-00&quot;, this.value).then(() =&gt; {
-    // Canvas描画
-  });
-});
-</code></pre>
-<p><img src="./images/image-12.png" alt=""></p>
 
     </div>
 
